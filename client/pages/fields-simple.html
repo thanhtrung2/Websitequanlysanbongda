@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách sân</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <nav class="bg-green-600 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">⚽ Quản lý Sân Bóng</h1>
+        <div class="flex items-center space-x-4">
+          <a href="../index.html" class="hover:text-green-200">Trang chủ</a>
+          <a href="fields-simple.html" class="hover:text-green-200">Sân bóng</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold mb-8">Danh sách sân bóng tại Trà Vinh</h2>
+    
+    <div id="loading" class="text-center py-8">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      <p class="mt-4 text-gray-600">Đang tải danh sách sân...</p>
+    </div>
+
+    <div id="fieldsList" class="grid md:grid-cols-3 gap-6"></div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    async function loadFields() {
+      console.log('Loading fields...');
+      const loading = document.getElementById('loading');
+      const fieldsList = document.getElementById('fieldsList');
+      
+      try {
+        const response = await fetch(`${API_URL}/fields`);
+        console.log('Response:', response.status);
+        const fields = await response.json();
+        console.log('Fields:', fields.length);
+        
+        loading.style.display = 'none';
+        
+        const typeMap = {
+          '5vs5': 'Sân 5 người',
+          '7vs7': 'Sân 7 người',
+          '11vs11': 'Sân 11 người'
+        };
+        
+        fieldsList.innerHTML = fields.map(field => `
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+            <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center relative">
+              <span class="text-6xl">⚽</span>
+              <div class="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-semibold text-green-600">
+                ${typeMap[field.type]}
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-bold mb-2">${field.name}</h3>
+              <p class="text-gray-600 text-sm mb-2">📍 ${field.location.address}</p>
+              <p class="text-green-600 font-bold text-lg mb-4">${field.pricePerHour.toLocaleString()}đ/giờ</p>
+              <button onclick="alert('Chức năng đặt sân đang phát triển!')" 
+                class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+                Đặt sân ngay
+              </button>
+            </div>
+          </div>
+        `).join('');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        loading.innerHTML = '<p class="text-red-600">Lỗi: ' + error.message + '</p>';
+      }
+    }
+    
+    // Load when page is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadFields);
+    } else {
+      loadFields();
+    }
+  </script>
+</body>
+</html>

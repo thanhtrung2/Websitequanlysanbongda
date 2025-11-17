@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Fields</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+  <h1 class="text-3xl font-bold mb-4">Test Danh Sách Sân</h1>
+  
+  <button onclick="testAPI()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">
+    Test API
+  </button>
+  
+  <div id="result" class="bg-white p-4 rounded shadow"></div>
+  
+  <hr class="my-8">
+  
+  <h2 class="text-2xl font-bold mb-4">Danh sách sân:</h2>
+  <div id="fieldsList" class="grid md:grid-cols-3 gap-6"></div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    async function testAPI() {
+      const result = document.getElementById('result');
+      result.innerHTML = 'Đang tải...';
+      
+      try {
+        const response = await fetch(`${API_URL}/fields`);
+        const data = await response.json();
+        
+        result.innerHTML = `
+          <p class="text-green-600 font-bold">✓ Thành công!</p>
+          <p>Số lượng sân: ${data.length}</p>
+          <pre class="mt-2 text-xs overflow-auto">${JSON.stringify(data, null, 2)}</pre>
+        `;
+        
+        displayFields(data);
+      } catch (error) {
+        result.innerHTML = `
+          <p class="text-red-600 font-bold">✗ Lỗi!</p>
+          <p>${error.message}</p>
+        `;
+      }
+    }
+    
+    function displayFields(fields) {
+      const fieldsList = document.getElementById('fieldsList');
+      
+      const typeMap = {
+        '5vs5': 'Sân 5 người',
+        '7vs7': 'Sân 7 người',
+        '11vs11': 'Sân 11 người'
+      };
+      
+      fieldsList.innerHTML = fields.map(field => `
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center relative">
+            <span class="text-6xl">⚽</span>
+            <div class="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-semibold text-green-600">
+              ${typeMap[field.type]}
+            </div>
+          </div>
+          <div class="p-5">
+            <h3 class="text-xl font-bold mb-2">${field.name}</h3>
+            <p class="text-gray-600 text-sm mb-2">📍 ${field.location.address}</p>
+            <p class="text-green-600 font-bold text-lg">${field.pricePerHour.toLocaleString()}đ/giờ</p>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Auto load on page load
+    window.addEventListener('DOMContentLoaded', testAPI);
+  </script>
+</body>
+</html>

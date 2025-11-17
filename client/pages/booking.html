@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt sân</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <nav class="bg-green-600 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">⚽ Quản lý Sân Bóng</h1>
+        <div class="flex items-center space-x-4">
+          <a href="../index.html" class="hover:text-green-200">Trang chủ</a>
+          <a href="fields.html" class="hover:text-green-200">Sân bóng</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Field Info -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <div class="h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center mb-4">
+            <span class="text-8xl">⚽</span>
+          </div>
+        </div>
+        <div>
+          <h2 id="fieldName" class="text-3xl font-bold mb-4">Đang tải...</h2>
+          <div class="space-y-3">
+            <p class="text-gray-700"><span class="font-semibold">Loại sân:</span> <span id="fieldType"></span></p>
+            <p class="text-gray-700"><span class="font-semibold">Địa chỉ:</span> <span id="fieldAddress"></span></p>
+            <p class="text-green-600 text-2xl font-bold"><span id="fieldPrice"></span>đ/giờ</p>
+            <div id="fieldAmenities" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking Calendar -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h3 class="text-2xl font-bold mb-6">Chọn ngày và giờ đặt sân</h3>
+      
+      <!-- Date Picker -->
+      <div class="mb-6">
+        <label class="block text-gray-700 font-semibold mb-2">Chọn ngày:</label>
+        <input type="date" id="bookingDate" 
+          class="w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+      </div>
+
+      <!-- Time Slots -->
+      <div class="mb-6">
+        <label class="block text-gray-700 font-semibold mb-4">Chọn khung giờ:</label>
+        <div id="timeSlots" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <!-- Time slots will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Booking Summary -->
+      <div id="bookingSummary" class="hidden bg-green-50 border-2 border-green-500 rounded-lg p-4 mb-6">
+        <h4 class="font-bold text-lg mb-2">Thông tin đặt sân:</h4>
+        <p><span class="font-semibold">Ngày:</span> <span id="summaryDate"></span></p>
+        <p><span class="font-semibold">Giờ:</span> <span id="summaryTime"></span></p>
+        <p><span class="font-semibold">Tổng tiền:</span> <span id="summaryPrice" class="text-green-600 font-bold"></span>đ</p>
+      </div>
+
+      <!-- Booking Button -->
+      <button id="confirmBooking" onclick="confirmBooking()" 
+        class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+        disabled>
+        Xác nhận đặt sân
+      </button>
+    </div>
+
+    <!-- Existing Bookings for Selected Date -->
+    <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+      <h3 class="text-2xl font-bold mb-4">Lịch đã đặt (Ngày được chọn)</h3>
+      <div id="existingBookings" class="space-y-3">
+        <p class="text-gray-500">Đang tải lịch đặt...</p>
+      </div>
+    </div>
+
+    <!-- User Booking History -->
+    <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+      <h3 class="text-2xl font-bold mb-4">Lịch sử đặt sân của bạn</h3>
+      <div class="mb-4 flex gap-2">
+        <button onclick="filterHistory('all')" class="filter-btn px-4 py-2 rounded-lg bg-green-600 text-white">Tất cả</button>
+        <button onclick="filterHistory('pending')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200">Chờ xác nhận</button>
+        <button onclick="filterHistory('confirmed')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200">Đã xác nhận</button>
+        <button onclick="filterHistory('completed')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200">Hoàn thành</button>
+        <button onclick="filterHistory('cancelled')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200">Đã hủy</button>
+      </div>
+      <div id="userBookingHistory" class="space-y-4">
+        <p class="text-gray-500">Đang tải lịch sử...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    const urlParams = new URLSearchParams(window.location.search);
+    const fieldId = urlParams.get('fieldId');
+    
+    let currentField = null;
+    let selectedDate = null;
+    let selectedTime = null;
+    let pricePerHour = 0;
+
+    // Time slots (6:00 - 22:00)
+    const timeSlots = [
+      '06:00-07:00', '07:00-08:00', '08:00-09:00', '09:00-10:00',
+      '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00',
+      '14:00-15:00', '15:00-16:00', '16:00-17:00', '17:00-18:00',
+      '18:00-19:00', '19:00-20:00', '20:00-21:00', '21:00-22:00'
+    ];
+
+    // Check login
+    function checkAuth() {
+      return !!localStorage.getItem('token');
+    }
+
+    if (!checkAuth()) {
+      alert('Vui lòng đăng nhập để đặt sân');
+      window.location.href = 'login.html';
+    }
+
+    if (!fieldId) {
+      alert('Không tìm thấy thông tin sân');
+      window.location.href = 'fields.html';
+    }
+
+    // Load field info
+    async function loadFieldInfo() {
+      try {
+        const response = await fetch(`${API_URL}/fields/${fieldId}`);
+        currentField = await response.json();
+        
+        const typeMap = {
+          '5vs5': 'Sân 5 người',
+          '7vs7': 'Sân 7 người',
+          '11vs11': 'Sân 11 người'
+        };
+        
+        document.getElementById('fieldName').textContent = currentField.name;
+        document.getElementById('fieldType').textContent = typeMap[currentField.type];
+        document.getElementById('fieldAddress').textContent = currentField.location.address;
+        document.getElementById('fieldPrice').textContent = currentField.pricePerHour.toLocaleString('vi-VN');
+        pricePerHour = currentField.pricePerHour;
+        
+        if (currentField.amenities && currentField.amenities.length > 0) {
+          document.getElementById('fieldAmenities').innerHTML = currentField.amenities.map(a => 
+            `<span class="bg-gray-100 px-3 py-1 rounded-full text-sm">${a}</span>`
+          ).join('');
+        }
+        
+        renderTimeSlots();
+      } catch (error) {
+        console.error('Error loading field:', error);
+        alert('Lỗi tải thông tin sân');
+      }
+    }
+
+    // Render time slots
+    function renderTimeSlots() {
+      const container = document.getElementById('timeSlots');
+      container.innerHTML = timeSlots.map(slot => `
+        <button onclick="selectTimeSlot('${slot}')" 
+          data-slot="${slot}"
+          class="time-slot px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition text-center font-semibold">
+          ${slot}
+        </button>
+      `).join('');
+    }
+
+    // Select time slot
+    function selectTimeSlot(slot) {
+      selectedTime = slot;
+      
+      // Remove previous selection
+      document.querySelectorAll('.time-slot').forEach(btn => {
+        btn.classList.remove('border-green-500', 'bg-green-100');
+        btn.classList.add('border-gray-300');
+      });
+      
+      // Highlight selected
+      const btn = document.querySelector(`[data-slot="${slot}"]`);
+      btn.classList.remove('border-gray-300');
+      btn.classList.add('border-green-500', 'bg-green-100');
+      
+      updateSummary();
+    }
+
+    // Date change handler
+    document.getElementById('bookingDate').addEventListener('change', (e) => {
+      selectedDate = e.target.value;
+      loadExistingBookings();
+      updateSummary();
+    });
+
+    // Update booking summary
+    function updateSummary() {
+      if (selectedDate && selectedTime) {
+        document.getElementById('bookingSummary').classList.remove('hidden');
+        document.getElementById('summaryDate').textContent = new Date(selectedDate).toLocaleDateString('vi-VN');
+        document.getElementById('summaryTime').textContent = selectedTime;
+        document.getElementById('summaryPrice').textContent = pricePerHour.toLocaleString('vi-VN');
+        document.getElementById('confirmBooking').disabled = false;
+      } else {
+        document.getElementById('bookingSummary').classList.add('hidden');
+        document.getElementById('confirmBooking').disabled = true;
+      }
+    }
+
+    // Load existing bookings
+    async function loadExistingBookings() {
+      if (!selectedDate) return;
+      
+      try {
+        const response = await fetch(`${API_URL}/bookings?fieldId=${fieldId}&date=${selectedDate}`);
+        const bookings = await response.json();
+        
+        const container = document.getElementById('existingBookings');
+        
+        if (bookings.length === 0) {
+          container.innerHTML = '<p class="text-gray-500">Chưa có lịch đặt nào cho ngày này</p>';
+        } else {
+          container.innerHTML = bookings.map(booking => `
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <div>
+                <span class="font-semibold">${booking.startTime} - ${booking.endTime}</span>
+                <span class="text-gray-600 ml-2">(Đã đặt)</span>
+              </div>
+              <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm">Không khả dụng</span>
+            </div>
+          `).join('');
+          
+          // Disable booked slots
+          bookings.forEach(booking => {
+            const slot = `${booking.startTime}-${booking.endTime}`;
+            const btn = document.querySelector(`[data-slot="${slot}"]`);
+            if (btn) {
+              btn.disabled = true;
+              btn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-200');
+              btn.innerHTML += '<br><span class="text-xs text-red-600">Đã đặt</span>';
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading bookings:', error);
+      }
+    }
+
+    // Confirm booking
+    async function confirmBooking() {
+      if (!selectedDate || !selectedTime) {
+        alert('Vui lòng chọn ngày và giờ');
+        return;
+      }
+
+      const [startTime, endTime] = selectedTime.split('-');
+      
+      const bookingData = {
+        field: fieldId,
+        date: selectedDate,
+        startTime,
+        endTime,
+        totalPrice: pricePerHour
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/bookings`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(bookingData)
+        });
+
+        if (response.ok) {
+          alert('Đặt sân thành công!');
+          window.location.href = 'profile.html';
+        } else {
+          const error = await response.json();
+          alert('Lỗi: ' + error.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi kết nối server');
+      }
+    }
+
+    // Set min date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('bookingDate').min = today;
+    document.getElementById('bookingDate').value = today;
+    selectedDate = today;
+
+    // Load user booking history
+    let allUserBookings = [];
+    let currentFilter = 'all';
+
+    async function loadUserBookingHistory() {
+      try {
+        const response = await fetch(`${API_URL}/bookings/my-bookings`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        
+        if (response.ok) {
+          allUserBookings = await response.json();
+          displayUserBookings();
+        }
+      } catch (error) {
+        console.error('Error loading user bookings:', error);
+        document.getElementById('userBookingHistory').innerHTML = 
+          '<p class="text-red-500">Lỗi tải lịch sử đặt sân</p>';
+      }
+    }
+
+    function filterHistory(status) {
+      currentFilter = status;
+      
+      // Update button styles
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-green-600', 'text-white');
+        btn.classList.add('bg-gray-200');
+      });
+      event.target.classList.remove('bg-gray-200');
+      event.target.classList.add('bg-green-600', 'text-white');
+      
+      displayUserBookings();
+    }
+
+    function displayUserBookings() {
+      const container = document.getElementById('userBookingHistory');
+      
+      let filteredBookings = allUserBookings;
+      if (currentFilter !== 'all') {
+        filteredBookings = allUserBookings.filter(b => b.status === currentFilter);
+      }
+      
+      // Sort by date (newest first)
+      filteredBookings.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      if (filteredBookings.length === 0) {
+        container.innerHTML = '<p class="text-gray-500">Không có lịch đặt nào</p>';
+        return;
+      }
+
+      const statusColors = {
+        'pending': 'bg-yellow-100 text-yellow-800',
+        'confirmed': 'bg-green-100 text-green-800',
+        'completed': 'bg-blue-100 text-blue-800',
+        'cancelled': 'bg-red-100 text-red-800'
+      };
+
+      const statusText = {
+        'pending': 'Chờ xác nhận',
+        'confirmed': 'Đã xác nhận',
+        'completed': 'Hoàn thành',
+        'cancelled': 'Đã hủy'
+      };
+
+      container.innerHTML = filteredBookings.map(booking => {
+        const bookingDate = new Date(booking.date);
+        const isPast = bookingDate < new Date();
+        const canCancel = booking.status === 'pending' || booking.status === 'confirmed';
+        
+        return `
+          <div class="border rounded-lg p-4 hover:shadow-md transition">
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex-1">
+                <h4 class="font-bold text-lg text-gray-800">${booking.field?.name || 'Sân bóng'}</h4>
+                <p class="text-gray-600 text-sm">${booking.field?.location?.address || ''}</p>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[booking.status]}">
+                ${statusText[booking.status]}
+              </span>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-3 mb-3">
+              <div>
+                <p class="text-gray-500 text-sm">Ngày đặt</p>
+                <p class="font-semibold">${bookingDate.toLocaleDateString('vi-VN')}</p>
+              </div>
+              <div>
+                <p class="text-gray-500 text-sm">Giờ</p>
+                <p class="font-semibold">${booking.startTime} - ${booking.endTime}</p>
+              </div>
+              <div>
+                <p class="text-gray-500 text-sm">Tổng tiền</p>
+                <p class="font-semibold text-green-600">${booking.totalPrice.toLocaleString('vi-VN')}đ</p>
+              </div>
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="viewBookingDetail('${booking._id}')" 
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm">
+                Chi tiết
+              </button>
+              ${canCancel && !isPast ? `
+                <button onclick="cancelBooking('${booking._id}')" 
+                  class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm">
+                  Hủy đặt
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function viewBookingDetail(bookingId) {
+      const booking = allUserBookings.find(b => b._id === bookingId);
+      if (!booking) return;
+      
+      const detail = `
+Thông tin đặt sân:
+
+Sân: ${booking.field?.name}
+Địa chỉ: ${booking.field?.location?.address}
+Ngày: ${new Date(booking.date).toLocaleDateString('vi-VN')}
+Giờ: ${booking.startTime} - ${booking.endTime}
+Giá: ${booking.totalPrice.toLocaleString('vi-VN')}đ
+Trạng thái: ${booking.status}
+Ngày đặt: ${new Date(booking.createdAt).toLocaleString('vi-VN')}
+      `;
+      
+      alert(detail);
+    }
+
+    async function cancelBooking(bookingId) {
+      if (!confirm('Bạn có chắc muốn hủy đặt sân này?')) return;
+      
+      try {
+        const response = await fetch(`${API_URL}/bookings/${bookingId}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ status: 'cancelled' })
+        });
+
+        if (response.ok) {
+          alert('Đã hủy đặt sân thành công!');
+          loadUserBookingHistory();
+          loadExistingBookings();
+        } else {
+          const error = await response.json();
+          alert('Lỗi: ' + error.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi kết nối server');
+      }
+    }
+
+    // Load data
+    loadFieldInfo();
+    loadExistingBookings();
+    loadUserBookingHistory();
+  </script>
+</body>
+</html>

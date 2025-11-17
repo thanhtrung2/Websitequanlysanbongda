@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Sân Bóng Đá - Trà Vinh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spin-slow {
+      animation: spin 20s linear infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .bounce-animation {
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes slideShow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      33% { opacity: 0.3; transform: scale(0.95); }
+      66% { opacity: 0.6; transform: scale(0.98); }
+    }
+    .slideshow {
+      animation: slideShow 6s ease-in-out infinite;
+    }
+    @keyframes ballMove {
+      0% { 
+        left: -10%; 
+        top: 20%;
+        transform: rotate(0deg);
+      }
+      25% {
+        left: 30%;
+        top: 60%;
+        transform: rotate(360deg);
+      }
+      50% {
+        left: 70%;
+        top: 30%;
+        transform: rotate(720deg);
+      }
+      75% {
+        left: 40%;
+        top: 70%;
+        transform: rotate(1080deg);
+      }
+      100% { 
+        left: 110%; 
+        top: 40%;
+        transform: rotate(1440deg);
+      }
+    }
+    .ball-move {
+      position: absolute;
+      animation: ballMove 8s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl fixed w-full z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Sân Bóng Trà Vinh</h1>
+            <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
+          </div>
+        </div>
+        <div id="navLinks" class="flex items-center space-x-6">
+          <a href="index.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Trang chủ</a>
+          <a href="san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
+          <a href="pages/about.html" class="hover:text-green-200 transition font-semibold">Giới thiệu</a>
+          <a href="pages/contact.html" class="hover:text-green-200 transition font-semibold">Liên hệ</a>
+          <a href="pages/advisory.html" class="hover:text-green-200 transition font-semibold">Tư vấn</a>
+          <div id="userMenu"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-green-500 via-green-600 to-green-800 text-white pt-32 pb-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 left-10 text-9xl">⚽</div>
+      <div class="absolute bottom-10 right-10 text-9xl">⚽</div>
+      <div class="absolute top-1/2 left-1/3 text-7xl">🥅</div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="fade-in-up">
+          <h2 class="text-6xl font-bold mb-6 leading-tight">
+            Đặt Sân Bóng<br>
+            <span class="text-yellow-300">Dễ Dàng & Nhanh Chóng</span>
+          </h2>
+          <p class="text-xl mb-8 text-green-50">
+            Hệ thống quản lý sân bóng hiện đại tại Trà Vinh.<br>
+            Đặt sân online 24/7, thanh toán linh hoạt!
+          </p>
+          <div class="flex gap-4" id="heroCTA"></div>
+            <a href="san-bong.html" class="bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 hover:text-green-800 transition transform hover:scale-105 shadow-lg">
+              🔍 Xem sân ngay
+            </a>
+            <a href="pages/register.html" id="heroSecondBtn" class="bg-green-800 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-green-900 transition transform hover:scale-105 shadow-lg">
+              📝 Đăng ký
+            </a>
+          </div>
+        </div>
+        <div class="hidden md:block relative">
+          <!-- Animated Soccer Field -->
+          <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-6 shadow-2xl overflow-hidden">
+            <!-- Soccer Field Background -->
+            <div class="relative h-80 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl overflow-hidden mb-4">
+              <!-- Field Lines -->
+              <div class="absolute inset-0">
+                <div class="absolute top-1/2 left-0 right-0 h-0.5 bg-white/30"></div>
+                <div class="absolute top-1/2 left-1/2 w-20 h-20 border-2 border-white/30 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="absolute top-1/2 left-1/2 w-2 h-2 bg-white/50 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+              
+              <!-- Animated Soccer Ball -->
+              <div class="ball-move">
+                <div class="text-6xl">⚽</div>
+              </div>
+              
+              <!-- Goal Posts -->
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-5xl opacity-50">🥅</div>
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 text-5xl opacity-50">🥅</div>
+              
+              <!-- Center Text -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center bg-black/20 backdrop-blur-sm rounded-2xl px-8 py-4">
+                  <p class="text-white font-bold text-2xl mb-1">Chất Lượng Cao</p>
+                  <p class="text-white/90 text-sm">Sân cỏ nhân tạo - Đèn chiếu sáng</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="text-center mb-4">
+              <h3 class="text-xl font-bold text-white">8 Sân Bóng</h3>
+              <p class="text-sm text-white/90">Tại Trà Vinh</p>
+            </div>
+            
+            <!-- Field Types -->
+            <div class="grid grid-cols-3 gap-3 text-center">
+              <div class="bg-white/30 backdrop-blur rounded-lg p-3 hover:bg-white/40 transition cursor-pointer transform hover:scale-105">
+                <div class="text-2xl font-bold text-white">5</div>
+                <div class="text-xs text-white/90">Sân 5</div>
+              </div>
+              <div class="bg-white/30 backdrop-blur rounded-lg p-3 hover:bg-white/40 transition cursor-pointer transform hover:scale-105">
+                <div class="text-2xl font-bold text-white">7</div>
+                <div class="text-xs text-white/90">Sân 7</div>
+              </div>
+              <div class="bg-white/30 backdrop-blur rounded-lg p-3 hover:bg-white/40 transition cursor-pointer transform hover:scale-105">
+                <div class="text-2xl font-bold text-white">11</div>
+                <div class="text-xs text-white/90">Sân 11</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8 text-center">
+        <div class="fade-in-up">
+          <div class="text-5xl font-bold text-green-600 mb-2">8+</div>
+          <div class="text-gray-600">Sân bóng</div>
+        </div>
+        <div class="fade-in-up" style="animation-delay: 0.1s">
+          <div class="text-5xl font-bold text-green-600 mb-2">100+</div>
+          <div class="text-gray-600">Khách hàng</div>
+        </div>
+        <div class="fade-in-up" style="animation-delay: 0.2s">
+          <div class="text-5xl font-bold text-green-600 mb-2">24/7</div>
+          <div class="text-gray-600">Hỗ trợ</div>
+        </div>
+        <div class="fade-in-up" style="animation-delay: 0.3s">
+          <div class="text-5xl font-bold text-green-600 mb-2">⭐⭐⭐⭐⭐</div>
+          <div class="text-gray-600">Đánh giá</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h3 class="text-4xl font-bold mb-4">Tại sao chọn chúng tôi?</h3>
+        <p class="text-gray-600 text-lg">Trải nghiệm đặt sân bóng hiện đại và tiện lợi nhất</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl mb-6">🔍</div>
+          <h4 class="text-2xl font-bold mb-4">Tìm kiếm thông minh</h4>
+          <p class="text-gray-600 leading-relaxed">Tìm sân theo vị trí, loại sân, giá cả và thời gian phù hợp với bạn</p>
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-6">📅</div>
+          <h4 class="text-2xl font-bold mb-4">Đặt lịch dễ dàng</h4>
+          <p class="text-gray-600 leading-relaxed">Đặt sân trực tuyến 24/7, xem lịch trống real-time, xác nhận tức thì</p>
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+          <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center text-3xl mb-6">💳</div>
+          <h4 class="text-2xl font-bold mb-4">Thanh toán linh hoạt</h4>
+          <p class="text-gray-600 leading-relaxed">Hỗ trợ nhiều hình thức: Tiền mặt, Momo, ZaloPay, VNPay</p>
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-3xl mb-6">⚡</div>
+          <h4 class="text-2xl font-bold mb-4">Xác nhận nhanh</h4>
+          <p class="text-gray-600 leading-relaxed">Nhận xác nhận đặt sân ngay lập tức qua email và SMS</p>
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl mb-6">🎁</div>
+          <h4 class="text-2xl font-bold mb-4">Ưu đãi hấp dẫn</h4>
+          <p class="text-gray-600 leading-relaxed">Nhiều chương trình khuyến mãi, tích điểm đổi quà</p>
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl mb-6">🏆</div>
+          <h4 class="text-2xl font-bold mb-4">Chất lượng đảm bảo</h4>
+          <p class="text-gray-600 leading-relaxed">Sân cỏ nhân tạo cao cấp, đèn chiếu sáng hiện đại</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-r from-green-600 to-green-800 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h3 class="text-4xl font-bold mb-6">Sẵn sàng đặt sân?</h3>
+      <p class="text-xl mb-8 text-green-100">Tham gia cùng hàng trăm người chơi khác tại Trà Vinh</p>
+      <div class="flex justify-center gap-4" id="ctaButtons">
+        <a href="san-bong.html" class="bg-white text-green-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 hover:text-green-800 transition transform hover:scale-105 shadow-xl">
+          Xem danh sách sân
+        </a>
+        <a href="pages/register.html" id="ctaSecondBtn" class="bg-green-900 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-green-950 transition transform hover:scale-105 shadow-xl"></a>
+       
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <span class="text-3xl">⚽</span>
+            <h4 class="text-xl font-bold">Sân Bóng Trà Vinh</h4>
+          </div>
+          <p class="text-gray-400">Hệ thống quản lý sân bóng hiện đại và chuyên nghiệp</p>
+        </div>
+        <div>
+          <h5 class="font-bold mb-4">Liên kết</h5>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="index.html" class="hover:text-white">Trang chủ</a></li>
+            <li><a href="san-bong.html" class="hover:text-white">Sân bóng</a></li>
+            <li><a href="pages/register.html" class="hover:text-white">Đăng ký</a></li>
+            <li><a href="pages/login.html" class="hover:text-white">Đăng nhập</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-bold mb-4">Liên hệ</h5>
+          <ul class="space-y-2 text-gray-400">
+            <li>📍 Trà Vinh, Việt Nam</li>
+            <li>📞 0123 456 789</li>
+            <li>✉️ contact@sanbong.vn</li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-bold mb-4">Theo dõi</h5>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-600 transition">f</a>
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-600 transition">📷</a>
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-600 transition">▶️</a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+        <p>&copy; 2024 Sân Bóng Trà Vinh. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Profile Button -->
+  <div id="floatingProfile"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function addFloatingProfile() {
+      const floatingProfile = document.getElementById('floatingProfile');
+      if (checkAuth()) {
+        const user = getUser();
+        const initial = user.name.charAt(0).toUpperCase();
+        floatingProfile.innerHTML = `
+          <a href="pages/profile.html" 
+             class="fixed bottom-6 right-6 w-16 h-16 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl font-bold transition-all hover:scale-110 z-40"
+             title="Xem profile">
+            ${initial}
+          </a>
+        `;
+      }
+    }
+    
+    function updateCTAButtons() {
+      if (checkAuth()) {
+        const user = getUser();
+        
+        // Update Hero section button
+        const heroBtn = document.getElementById('heroSecondBtn');
+        if (heroBtn) {
+          heroBtn.href = 'san-bong.html';
+          heroBtn.innerHTML = '⚽ Đặt sân ngay';
+          heroBtn.className = 'bg-yellow-400 text-green-800 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-500 transition transform hover:scale-105 shadow-lg';
+        }
+        
+        // Update CTA section
+        const ctaSection = document.querySelector('.py-20.bg-gradient-to-r.from-green-600');
+        if (ctaSection) {
+          ctaSection.querySelector('h3').textContent = `Xin chào ${user.name}! Sẵn sàng đặt sân?`;
+          ctaSection.querySelector('p').textContent = 'Chọn sân yêu thích và đặt lịch ngay hôm nay!';
+        }
+        
+        // Update CTA buttons
+        const ctaBtn = document.getElementById('ctaSecondBtn');
+        if (ctaBtn) {
+          ctaBtn.href = 'pages/profile.html';
+          ctaBtn.innerHTML = '👤 Xem profile';
+          ctaBtn.className = 'bg-yellow-400 text-green-800 px-10 py-4 rounded-full font-bold text-lg hover:bg-yellow-500 transition transform hover:scale-105 shadow-xl';
+        }
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      addFloatingProfile();
+      updateCTAButtons();
+    });
+  </script>
+</body>
+</html>

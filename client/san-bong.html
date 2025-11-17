@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sân Bóng Trà Vinh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Sân Bóng Trà Vinh</h1>
+            <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
+          </div>
+        </div>
+        <div id="navLinks" class="flex items-center space-x-6">
+          <a href="index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
+          <a href="san-bong.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Sân bóng</a>
+          <a href="pages/about.html" class="hover:text-green-200 transition font-semibold">Giới thiệu</a>
+          <a href="pages/contact.html" class="hover:text-green-200 transition font-semibold">Liên hệ</a>
+          <a href="pages/advisory.html" class="hover:text-green-200 transition font-semibold">Tư vấn</a>
+          <div id="userMenu"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold mb-8">Danh sách sân bóng</h2>
+    <div id="fields" class="grid md:grid-cols-3 gap-6"></div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Load fields
+    fetch('http://localhost:3000/api/fields')
+      .then(res => res.json())
+      .then(fields => {
+        const typeMap = {
+          '5vs5': 'Sân 5 người',
+          '7vs7': 'Sân 7 người',
+          '11vs11': 'Sân 11 người'
+        };
+        
+        document.getElementById('fields').innerHTML = fields.map(f => `
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+            <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 rounded-t flex items-center justify-center text-6xl relative">
+              ⚽
+              <div class="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-semibold text-green-600">
+                ${typeMap[f.type]}
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-bold text-xl mb-2">${f.name}</h3>
+              <p class="text-gray-600 text-sm mb-2">📍 ${f.location.address}</p>
+              <p class="text-green-600 font-bold text-lg mb-3">${f.pricePerHour.toLocaleString()}đ/giờ</p>
+              ${f.amenities && f.amenities.length > 0 ? `
+                <div class="flex flex-wrap gap-1 mb-3">
+                  ${f.amenities.slice(0, 3).map(a => `
+                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">${a}</span>
+                  `).join('')}
+                </div>
+              ` : ''}
+              <a href="pages/booking.html?fieldId=${f._id}" class="block w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-center font-semibold transition">
+                Đặt sân ngay
+              </a>
+            </div>
+          </div>
+        `).join('');
+      })
+      .catch(err => {
+        document.getElementById('fields').innerHTML = 
+          '<p class="text-red-600 col-span-3 text-center">Lỗi: ' + err.message + '</p>';
+      });
+  </script>
+</body>
+</html>

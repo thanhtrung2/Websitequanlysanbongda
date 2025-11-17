@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo & Thống kê - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-green-800 text-white">
+      <div class="p-6">
+        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+      </div>
+      <nav class="mt-6">
+        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📊</span> Dashboard
+        </a>
+        <a href="fields.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">⚽</span> Quản lý sân
+        </a>
+        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📅</span> Quản lý lịch đặt
+        </a>
+        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">👥</span> Quản lý khách hàng
+        </a>
+        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">💰</span> Quản lý tài chính
+        </a>
+        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📦</span> Quản lý kho
+        </a>
+        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">🎁</span> Quản lý khuyến mãi
+        </a>
+        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">👔</span> Quản lý nhân viên
+        </a>
+        <a href="reports.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
+          <span class="mr-3">📈</span> Báo cáo & Thống kê
+        </a>
+        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
+          <span class="mr-3">🏠</span> Về trang chủ
+        </a>
+        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
+          <span class="mr-3">🚪</span> Đăng xuất
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto">
+      <header class="bg-white shadow-sm">
+        <div class="flex justify-between items-center px-8 py-4">
+          <h2 class="text-2xl font-bold text-gray-800">Báo cáo & Thống kê</h2>
+          <button onclick="exportReport()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+            📥 Xuất báo cáo
+          </button>
+        </div>
+      </header>
+
+      <div class="p-8">
+        <!-- Time Filter -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div class="grid md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Loại báo cáo</label>
+              <select id="reportType" onchange="updateReport()" class="w-full px-4 py-2 border rounded-lg">
+                <option value="overview">Tổng quan</option>
+                <option value="revenue">Doanh thu</option>
+                <option value="bookings">Đặt sân</option>
+                <option value="customers">Khách hàng</option>
+                <option value="fields">Sân bóng</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Kỳ báo cáo</label>
+              <select id="reportPeriod" onchange="updateReport()" class="w-full px-4 py-2 border rounded-lg">
+                <option value="today">Hôm nay</option>
+                <option value="week">7 ngày qua</option>
+                <option value="month">Tháng này</option>
+                <option value="year">Năm nay</option>
+                <option value="custom">Tùy chọn</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">So sánh với</label>
+              <select id="compareWith" onchange="updateReport()" class="w-full px-4 py-2 border rounded-lg">
+                <option value="none">Không so sánh</option>
+                <option value="previous">Kỳ trước</option>
+                <option value="lastyear">Cùng kỳ năm trước</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overview Stats -->
+        <div class="grid md:grid-cols-4 gap-6 mb-6">
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-gray-500 text-sm">Tổng doanh thu</p>
+            <p class="text-3xl font-bold text-green-600" id="totalRevenue">0đ</p>
+            <p class="text-sm mt-1" id="revenueChange">+0%</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-gray-500 text-sm">Tổng đặt sân</p>
+            <p class="text-3xl font-bold text-blue-600" id="totalBookings">0</p>
+            <p class="text-sm mt-1" id="bookingsChange">+0%</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-gray-500 text-sm">Khách hàng mới</p>
+            <p class="text-3xl font-bold text-purple-600" id="newCustomers">0</p>
+            <p class="text-sm mt-1" id="customersChange">+0%</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-gray-500 text-sm">Tỷ lệ lấp đầy</p>
+            <p class="text-3xl font-bold text-orange-600" id="occupancyRate">0%</p>
+            <p class="text-sm mt-1" id="occupancyChange">+0%</p>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Xu hướng doanh thu</h3>
+            <canvas id="revenueTrendChart"></canvas>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Đặt sân theo giờ</h3>
+            <canvas id="bookingTimeChart"></canvas>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Top sân được đặt nhiều</h3>
+            <canvas id="topFieldsChart"></canvas>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Khách hàng theo loại</h3>
+            <canvas id="customerTypeChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Detailed Table -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="p-6 border-b">
+            <h3 class="text-lg font-bold text-gray-800">Chi tiết báo cáo</h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr id="tableHeader">
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Đặt sân</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doanh thu</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách mới</th>
+                </tr>
+              </thead>
+              <tbody id="reportTable" class="divide-y divide-gray-200">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    const token = localStorage.getItem('token');
+    let allBookings = [];
+    let allFields = [];
+    let charts = {};
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = '../index.html';
+    }
+
+    async function loadData() {
+      try {
+        const [bookingsRes, fieldsRes] = await Promise.all([
+          fetch(`${API_URL}/bookings`, { headers: { 'Authorization': `Bearer ${token}` } }),
+          fetch(`${API_URL}/fields`)
+        ]);
+
+        allBookings = await bookingsRes.json();
+        allFields = await fieldsRes.json();
+        
+        updateReport();
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function updateReport() {
+      const period = document.getElementById('reportPeriod').value;
+      const filteredBookings = filterByPeriod(allBookings, period);
+      
+      updateStats(filteredBookings);
+      drawCharts(filteredBookings);
+      updateTable(filteredBookings);
+    }
+
+    function filterByPeriod(bookings, period) {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      return bookings.filter(b => {
+        const bookingDate = new Date(b.date);
+        
+        switch(period) {
+          case 'today':
+            return bookingDate.toDateString() === today.toDateString();
+          case 'week':
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return bookingDate >= weekAgo;
+          case 'month':
+            return bookingDate.getMonth() === now.getMonth() && bookingDate.getFullYear() === now.getFullYear();
+          case 'year':
+            return bookingDate.getFullYear() === now.getFullYear();
+          default:
+            return true;
+        }
+      });
+    }
+
+    function updateStats(bookings) {
+      const revenue = bookings.filter(b => b.status !== 'cancelled').reduce((sum, b) => sum + b.totalPrice, 0);
+      document.getElementById('totalRevenue').textContent = revenue.toLocaleString() + 'đ';
+      document.getElementById('totalBookings').textContent = bookings.length;
+      
+      // Mock data for other stats
+      document.getElementById('newCustomers').textContent = Math.floor(bookings.length * 0.3);
+      
+      const totalSlots = allFields.length * 12; // 12 slots per day
+      const occupancy = totalSlots > 0 ? (bookings.length / totalSlots * 100).toFixed(1) : 0;
+      document.getElementById('occupancyRate').textContent = occupancy + '%';
+      
+      // Mock changes
+      document.getElementById('revenueChange').textContent = '+12.5%';
+      document.getElementById('bookingsChange').textContent = '+8.3%';
+      document.getElementById('customersChange').textContent = '+15.2%';
+      document.getElementById('occupancyChange').textContent = '+5.1%';
+    }
+
+    function drawCharts(bookings) {
+      // Revenue Trend Chart
+      const ctx1 = document.getElementById('revenueTrendChart').getContext('2d');
+      if (charts.revenue) charts.revenue.destroy();
+      
+      const last7Days = [];
+      const revenueData = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        last7Days.push(date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }));
+        
+        const dayRevenue = bookings
+          .filter(b => new Date(b.date).toDateString() === date.toDateString() && b.status !== 'cancelled')
+          .reduce((sum, b) => sum + b.totalPrice, 0);
+        revenueData.push(dayRevenue / 1000);
+      }
+
+      charts.revenue = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: last7Days,
+          datasets: [{
+            label: 'Doanh thu (nghìn đồng)',
+            data: revenueData,
+            borderColor: 'rgb(34, 197, 94)',
+            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      // Booking Time Chart
+      const ctx2 = document.getElementById('bookingTimeChart').getContext('2d');
+      if (charts.time) charts.time.destroy();
+      
+      const timeSlots = {};
+      bookings.forEach(b => {
+        const hour = parseInt(b.startTime.split(':')[0]);
+        const slot = `${hour}:00`;
+        timeSlots[slot] = (timeSlots[slot] || 0) + 1;
+      });
+
+      charts.time = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(timeSlots).sort(),
+          datasets: [{
+            label: 'Số lượt đặt',
+            data: Object.values(timeSlots),
+            backgroundColor: 'rgb(59, 130, 246)'
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      // Top Fields Chart
+      const ctx3 = document.getElementById('topFieldsChart').getContext('2d');
+      if (charts.fields) charts.fields.destroy();
+      
+      const fieldBookings = {};
+      bookings.forEach(b => {
+        if (b.field) {
+          const name = b.field.name;
+          fieldBookings[name] = (fieldBookings[name] || 0) + 1;
+        }
+      });
+
+      const topFields = Object.entries(fieldBookings)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      charts.fields = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: topFields.map(f => f[0]),
+          datasets: [{
+            label: 'Số lượt đặt',
+            data: topFields.map(f => f[1]),
+            backgroundColor: 'rgb(34, 197, 94)'
+          }]
+        },
+        options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+      });
+
+      // Customer Type Chart
+      const ctx4 = document.getElementById('customerTypeChart').getContext('2d');
+      if (charts.customers) charts.customers.destroy();
+      
+      charts.customers = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+          labels: ['Khách mới', 'Khách quen', 'VIP'],
+          datasets: [{
+            data: [30, 50, 20],
+            backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b']
+          }]
+        },
+        options: { responsive: true }
+      });
+    }
+
+    function updateTable(bookings) {
+      const tbody = document.getElementById('reportTable');
+      
+      // Group by date
+      const byDate = {};
+      bookings.forEach(b => {
+        const date = new Date(b.date).toLocaleDateString('vi-VN');
+        if (!byDate[date]) byDate[date] = { bookings: 0, revenue: 0, customers: new Set() };
+        byDate[date].bookings++;
+        if (b.status !== 'cancelled') byDate[date].revenue += b.totalPrice;
+        if (b.user) byDate[date].customers.add(b.user._id || b.user.id);
+      });
+
+      tbody.innerHTML = Object.entries(byDate)
+        .sort((a, b) => new Date(b[0]) - new Date(a[0]))
+        .map(([date, data]) => `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 font-semibold">${date}</td>
+            <td class="px-6 py-4">${data.bookings}</td>
+            <td class="px-6 py-4 text-green-600 font-semibold">${data.revenue.toLocaleString()}đ</td>
+            <td class="px-6 py-4">${data.customers.size}</td>
+          </tr>
+        `).join('');
+    }
+
+    function exportReport() {
+      alert('Chức năng xuất báo cáo đang được phát triển!');
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

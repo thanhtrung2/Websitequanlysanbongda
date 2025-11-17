@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách sân</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <nav class="bg-green-600 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">⚽ Quản lý Sân Bóng</h1>
+        <div id="navLinks" class="flex items-center space-x-4">
+          <a href="../index.html" class="hover:text-green-200">Trang chủ</a>
+          <a href="fields.html" class="hover:text-green-200">Sân bóng</a>
+          <div id="userMenu"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold mb-8">Danh sách sân bóng tại Trà Vinh</h2>
+    
+    <div id="loading" class="text-center py-8">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      <p class="mt-4 text-gray-600">Đang tải danh sách sân...</p>
+    </div>
+
+    <div id="fieldsList" class="grid md:grid-cols-3 gap-6"></div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    // Helper functions
+    function checkAuth() {
+      return !!localStorage.getItem('token');
+    }
+    
+    function getUser() {
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
+    }
+    
+    async function loadFields() {
+      console.log('=== Starting loadFields ===');
+      const loading = document.getElementById('loading');
+      const fieldsList = document.getElementById('fieldsList');
+      
+      if (!loading || !fieldsList) {
+        console.error('Elements not found!');
+        return;
+      }
+      
+      try {
+        console.log('Fetching from:', `${API_URL}/fields`);
+        const response = await fetch(`${API_URL}/fields`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const fields = await response.json();
+        console.log('✓ Loaded', fields.length, 'fields:', fields);
+        
+        loading.style.display = 'none';
+        
+        if (fields.length === 0) {
+          fieldsList.innerHTML = '<p class="col-span-3 text-center text-gray-600">Chưa có sân bóng nào</p>';
+          return;
+        }
+        
+        const typeMap = {
+          '5vs5': 'Sân 5 người',
+          '7vs7': 'Sân 7 người',
+          '11vs11': 'Sân 11 người'
+        };
+        
+        fieldsList.innerHTML = fields.map(field => `
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+            <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center relative">
+              <span class="text-6xl">⚽</span>
+              <div class="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-semibold text-green-600">
+                ${typeMap[field.type] || field.type}
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-bold mb-2">${field.name}</h3>
+              <p class="text-gray-600 text-sm mb-2">📍 ${field.location?.address || 'Trà Vinh'}</p>
+              <p class="text-green-600 font-bold text-lg mb-4">${field.pricePerHour.toLocaleString('vi-VN')}đ/giờ</p>
+              ${field.amenities && field.amenities.length > 0 ? `
+                <div class="flex flex-wrap gap-1 mb-3">
+                  ${field.amenities.slice(0, 3).map(amenity => `
+                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">${amenity}</span>
+                  `).join('')}
+                </div>
+              ` : ''}
+              <button onclick="bookField('${field._id}')" 
+                class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+                Đặt sân ngay
+              </button>
+            </div>
+          </div>
+        `).join('');
+        
+        console.log('✓ Fields displayed successfully');
+        
+      } catch (error) {
+        console.error('✗ Error loading fields:', error);
+        loading.innerHTML = `
+          <div class="text-center">
+            <p class="text-red-600 font-bold mb-2">Lỗi tải dữ liệu</p>
+            <p class="text-gray-600">${error.message}</p>
+            <button onclick="location.reload()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">
+              Thử lại
+            </button>
+          </div>
+        `;
+      }
+    }
+    
+    function bookField(fieldId) {
+      if (!checkAuth()) {
+        alert('Vui lòng đăng nhập để đặt sân');
+        window.location.href = 'login.html';
+        return;
+      }
+      alert('Chức năng đặt sân đang được phát triển!');
+    }
+    
+    // Load immediately when script runs
+    console.log('Script loaded, waiting for DOM...');
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM loaded, calling loadFields...');
+        loadFields();
+      });
+    } else {
+      console.log('DOM already loaded, calling loadFields immediately...');
+      loadFields();
+    }
+  </script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liên hệ - Sân Bóng Trà Vinh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Sân Bóng Trà Vinh</h1>
+            <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
+          </div>
+        </div>
+        <div id="navLinks" class="flex items-center space-x-6">
+          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
+          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
+          <a href="about.html" class="hover:text-green-200 transition font-semibold">Giới thiệu</a>
+          <a href="contact.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Liên hệ</a>
+          <a href="advisory.html" class="hover:text-green-200 transition font-semibold">Tư vấn</a>
+          <div id="userMenu"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-4xl font-bold text-green-700 mb-8 text-center">Liên hệ với chúng tôi</h1>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Contact Form -->
+        <div class="bg-white rounded-lg shadow-md p-8">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">Gửi tin nhắn</h2>
+          <form id="contactForm" class="space-y-4">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Họ và tên *</label>
+              <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Email *</label>
+              <input type="email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Số điện thoại *</label>
+              <input type="tel" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Nội dung *</label>
+              <textarea required rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+              Gửi tin nhắn
+            </button>
+          </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div>
+          <div class="bg-white rounded-lg shadow-md p-8 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Thông tin liên hệ</h2>
+            <div class="space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">📍</div>
+                <div>
+                  <h3 class="font-bold text-gray-800">Địa chỉ</h3>
+                  <p class="text-gray-600">Trà Vinh, Việt Nam</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">📞</div>
+                <div>
+                  <h3 class="font-bold text-gray-800">Điện thoại</h3>
+                  <p class="text-gray-600">0123 456 789</p>
+                  <p class="text-gray-600">0987 654 321</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">✉️</div>
+                <div>
+                  <h3 class="font-bold text-gray-800">Email</h3>
+                  <p class="text-gray-600">contact@sanbongtravinh.vn</p>
+                  <p class="text-gray-600">support@sanbongtravinh.vn</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">🕐</div>
+                <div>
+                  <h3 class="font-bold text-gray-800">Giờ làm việc</h3>
+                  <p class="text-gray-600">Thứ 2 - Chủ nhật: 6:00 - 22:00</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-3">Kết nối với chúng tôi</h3>
+            <div class="flex gap-4">
+              <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition text-2xl">
+                f
+              </a>
+              <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition text-2xl">
+                📷
+              </a>
+              <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition text-2xl">
+                📱
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.');
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Sân - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-green-800 text-white">
+      <div class="p-6">
+        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+      </div>
+      <nav class="mt-6">
+        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📊</span> Dashboard
+        </a>
+        <a href="fields.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
+          <span class="mr-3">⚽</span> Quản lý sân
+        </a>
+        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📅</span> Quản lý lịch đặt
+        </a>
+        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">👥</span> Quản lý khách hàng
+        </a>
+        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">💰</span> Quản lý tài chính
+        </a>
+        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📦</span> Quản lý kho
+        </a>
+        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">🎁</span> Quản lý khuyến mãi
+        </a>
+        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">👔</span> Quản lý nhân viên
+        </a>
+        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📈</span> Báo cáo & Thống kê
+        </a>
+        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
+          <span class="mr-3">🏠</span> Về trang chủ
+        </a>
+        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
+          <span class="mr-3">🚪</span> Đăng xuất
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto">
+      <header class="bg-white shadow-sm">
+        <div class="flex justify-between items-center px-8 py-4">
+          <h2 class="text-2xl font-bold text-gray-800">Quản lý Sân Bóng</h2>
+          <button onclick="openAddModal()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+            ➕ Thêm sân mới
+          </button>
+        </div>
+      </header>
+
+      <div class="p-8">
+        <!-- Loading -->
+        <div id="loading" class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p class="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+        </div>
+
+        <!-- Fields Grid -->
+        <div id="fieldsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6 hidden"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="fieldModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b">
+        <h3 id="modalTitle" class="text-2xl font-bold text-gray-800">Thêm sân mới</h3>
+      </div>
+      <form id="fieldForm" class="p-6 space-y-4">
+        <input type="hidden" id="fieldId">
+        
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Tên sân *</label>
+            <input type="text" id="fieldName" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Loại sân *</label>
+            <select id="fieldType" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+              <option value="5vs5">Sân 5 người</option>
+              <option value="7vs7">Sân 7 người</option>
+              <option value="11vs11">Sân 11 người</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Địa chỉ *</label>
+          <input type="text" id="fieldAddress" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Giá/giờ (VNĐ) *</label>
+          <input type="number" id="fieldPrice" required min="0" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Tiện ích (mỗi dòng 1 tiện ích)</label>
+          <textarea id="fieldAmenities" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Đèn chiếu sáng&#10;Phòng thay đồ&#10;Bãi đỗ xe"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Trạng thái</label>
+          <select id="fieldStatus" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option value="active">Hoạt động</option>
+            <option value="maintenance">Bảo trì</option>
+            <option value="inactive">Không hoạt động</option>
+          </select>
+        </div>
+
+        <div class="flex gap-4 pt-4">
+          <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+            Lưu
+          </button>
+          <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
+            Hủy
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    const token = localStorage.getItem('token');
+    let allFields = [];
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = '../index.html';
+    }
+
+    // Load all fields
+    async function loadFields() {
+      try {
+        const response = await fetch(`${API_URL}/fields`);
+        allFields = await response.json();
+        
+        document.getElementById('loading').classList.add('hidden');
+        displayFields(allFields);
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').innerHTML = '<p class="text-red-600">Lỗi tải dữ liệu</p>';
+      }
+    }
+
+    function displayFields(fields) {
+      const grid = document.getElementById('fieldsGrid');
+      grid.classList.remove('hidden');
+      
+      const typeMap = {
+        '5vs5': 'Sân 5 người',
+        '7vs7': 'Sân 7 người',
+        '11vs11': 'Sân 11 người'
+      };
+
+      const statusMap = {
+        'active': { text: 'Hoạt động', color: 'bg-green-100 text-green-800' },
+        'maintenance': { text: 'Bảo trì', color: 'bg-yellow-100 text-yellow-800' },
+        'inactive': { text: 'Không hoạt động', color: 'bg-red-100 text-red-800' }
+      };
+
+      grid.innerHTML = fields.map(field => `
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="h-40 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-6xl">
+            ⚽
+          </div>
+          <div class="p-4">
+            <h3 class="text-xl font-bold mb-2">${field.name}</h3>
+            <p class="text-gray-600 text-sm mb-2">📍 ${field.location?.address || 'N/A'}</p>
+            <p class="text-gray-600 text-sm mb-2">🏟️ ${typeMap[field.type]}</p>
+            <p class="text-green-600 font-bold text-lg mb-3">${field.pricePerHour.toLocaleString()}đ/giờ</p>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusMap[field.status]?.color || 'bg-gray-100 text-gray-800'}">
+              ${statusMap[field.status]?.text || field.status}
+            </span>
+            <div class="flex gap-2 mt-4">
+              <button onclick="editField('${field._id}')" class="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
+                ✏️ Sửa
+              </button>
+              <button onclick="deleteField('${field._id}', '${field.name}')" class="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
+                🗑️ Xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Open add modal
+    function openAddModal() {
+      document.getElementById('modalTitle').textContent = 'Thêm sân mới';
+      document.getElementById('fieldForm').reset();
+      document.getElementById('fieldId').value = '';
+      document.getElementById('fieldModal').classList.remove('hidden');
+    }
+
+    // Edit field
+    async function editField(id) {
+      const field = allFields.find(f => f._id === id);
+      if (!field) return;
+
+      document.getElementById('modalTitle').textContent = 'Chỉnh sửa sân';
+      document.getElementById('fieldId').value = field._id;
+      document.getElementById('fieldName').value = field.name;
+      document.getElementById('fieldType').value = field.type;
+      document.getElementById('fieldAddress').value = field.location?.address || '';
+      document.getElementById('fieldPrice').value = field.pricePerHour;
+      document.getElementById('fieldAmenities').value = field.amenities?.join('\n') || '';
+      document.getElementById('fieldStatus').value = field.status;
+      document.getElementById('fieldModal').classList.remove('hidden');
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('fieldModal').classList.add('hidden');
+    }
+
+    // Save field
+    document.getElementById('fieldForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('fieldId').value;
+      const data = {
+        name: document.getElementById('fieldName').value,
+        type: document.getElementById('fieldType').value,
+        location: {
+          address: document.getElementById('fieldAddress').value,
+          city: 'Trà Vinh'
+        },
+        pricePerHour: parseInt(document.getElementById('fieldPrice').value),
+        amenities: document.getElementById('fieldAmenities').value.split('\n').filter(a => a.trim()),
+        status: document.getElementById('fieldStatus').value
+      };
+
+      try {
+        const url = id ? `${API_URL}/fields/${id}` : `${API_URL}/fields`;
+        const method = id ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          alert(id ? 'Cập nhật sân thành công!' : 'Thêm sân thành công!');
+          closeModal();
+          loadFields();
+        } else {
+          const error = await response.json();
+          alert('Lỗi: ' + error.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi kết nối server');
+      }
+    });
+
+    // Delete field
+    async function deleteField(id, name) {
+      if (!confirm(`Bạn có chắc muốn xóa sân "${name}"?`)) return;
+
+      try {
+        const response = await fetch(`${API_URL}/fields/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          alert('Xóa sân thành công!');
+          loadFields();
+        } else {
+          const error = await response.json();
+          alert('Lỗi: ' + error.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi kết nối server');
+      }
+    }
+
+    // Load on page load
+    loadFields();
+  </script>
+</body>
+</html>
