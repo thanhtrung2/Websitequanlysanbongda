@@ -135,6 +135,50 @@
     </main>
   </div>
 
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-4xl">⚠️</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">Xác nhận thay đổi</h3>
+        <p id="confirmMessage" class="text-gray-600"></p>
+      </div>
+      
+      <div class="flex gap-3">
+        <button id="confirmBtn" onclick="confirmStatusUpdate()" 
+          class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+          Xác nhận
+        </button>
+        <button onclick="closeConfirmModal()" 
+          class="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
+          Hủy
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="notification" class="hidden"></div>
+
+  <style>
+    @keyframes slide-in {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .animate-slide-in {
+      animation: slide-in 0.3s ease-out;
+    }
+  </style>
+
   <script>
     const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
@@ -263,8 +307,42 @@
       displayBookings();
     }
 
+    let pendingStatusUpdate = null;
+
     async function updateStatus(id, status) {
-      if (!confirm(`Xác nhận thay đổi trạng thái?`)) return;
+      pendingStatusUpdate = { id, status };
+      
+      const statusText = {
+        'confirmed': 'duyệt',
+        'cancelled': 'hủy',
+        'completed': 'hoàn thành'
+      };
+      
+      const statusColors = {
+        'confirmed': 'green',
+        'cancelled': 'red',
+        'completed': 'blue'
+      };
+      
+      document.getElementById('confirmMessage').innerHTML = `
+        Bạn có chắc chắn muốn <strong class="text-${statusColors[status]}-600">${statusText[status]}</strong> đặt sân này?
+      `;
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
+      pendingStatusUpdate = null;
+    }
+
+    async function confirmStatusUpdate() {
+      if (!pendingStatusUpdate) return;
+      
+      const { id, status } = pendingStatusUpdate;
+      
+      // Show loading
+      document.getElementById('confirmBtn').disabled = true;
+      document.getElementById('confirmBtn').innerHTML = '<span class="animate-spin">⏳</span> Đang xử lý...';
 
       try {
         const response = await fetch(`${API_URL}/bookings/${id}/status`, {
@@ -277,16 +355,48 @@
         });
 
         if (response.ok) {
-          alert('Cập nhật thành công!');
+          closeConfirmModal();
+          showSuccessNotification('Cập nhật trạng thái thành công!');
           loadBookings();
         } else {
           const error = await response.json();
-          alert('Lỗi: ' + error.message);
+          showErrorNotification('Lỗi: ' + error.message);
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Lỗi kết nối server');
+        showErrorNotification('Lỗi kết nối server');
+      } finally {
+        document.getElementById('confirmBtn').disabled = false;
+        document.getElementById('confirmBtn').innerHTML = 'Xác nhận';
       }
+    }
+
+    function showSuccessNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-in';
+      notification.innerHTML = `
+        <span class="text-2xl">✓</span>
+        <span>${message}</span>
+      `;
+      notification.classList.remove('hidden');
+      
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 3000);
+    }
+
+    function showErrorNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-in';
+      notification.innerHTML = `
+        <span class="text-2xl">✗</span>
+        <span>${message}</span>
+      `;
+      notification.classList.remove('hidden');
+      
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 3000);
     }
 
     loadBookings();

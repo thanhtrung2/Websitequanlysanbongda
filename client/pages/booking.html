@@ -99,6 +99,112 @@
     </div>
   </div>
 
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-4xl">⚽</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">Xác nhận đặt sân</h3>
+        <div id="confirmDetails" class="text-left bg-gray-50 rounded-lg p-4 mb-4">
+          <!-- Details will be inserted here -->
+        </div>
+        <p class="text-gray-600 text-sm">Bạn có chắc chắn muốn đặt sân này?</p>
+      </div>
+      
+      <div class="flex gap-3">
+        <button id="confirmBtn" onclick="processBooking()" 
+          class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+          Xác nhận đặt sân
+        </button>
+        <button onclick="closeConfirmModal()" 
+          class="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
+          Hủy
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-5xl">✓</span>
+        </div>
+        <h3 class="text-2xl font-bold text-green-600 mb-2">Đặt sân thành công!</h3>
+        <p class="text-gray-600 mb-4">Đơn đặt sân của bạn đã được ghi nhận. Vui lòng chờ xác nhận từ quản lý.</p>
+        
+        <div id="bookingInfo" class="bg-gray-50 rounded-lg p-4 mb-4 text-left text-sm">
+          <!-- Booking info will be inserted here -->
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <button onclick="printBill()" 
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition font-semibold text-sm">
+            🖨️ In hóa đơn
+          </button>
+          <button onclick="downloadBill()" 
+            class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition font-semibold text-sm">
+            📥 Tải hóa đơn
+          </button>
+        </div>
+        
+        <div class="flex gap-3">
+          <button onclick="goToProfile()" 
+            class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+            Xem lịch đặt
+          </button>
+          <button onclick="continueBooking()" 
+            class="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
+            Đặt sân khác
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="notification" class="hidden"></div>
+
+  <style>
+    @keyframes slide-in {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .animate-slide-in {
+      animation: slide-in 0.3s ease-out;
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.3s ease-out;
+    }
+
+    #confirmModal > div,
+    #successModal > div {
+      animation: fade-in 0.3s ease-out;
+    }
+  </style>
+
   <script>
     const API_URL = 'http://localhost:3000/api';
     const urlParams = new URLSearchParams(window.location.search);
@@ -135,8 +241,15 @@
     // Load field info
     async function loadFieldInfo() {
       try {
+        console.log('Loading field info for ID:', fieldId);
         const response = await fetch(`${API_URL}/fields/${fieldId}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         currentField = await response.json();
+        console.log('Field loaded:', currentField);
         
         const typeMap = {
           '5vs5': 'Sân 5 người',
@@ -146,7 +259,7 @@
         
         document.getElementById('fieldName').textContent = currentField.name;
         document.getElementById('fieldType').textContent = typeMap[currentField.type];
-        document.getElementById('fieldAddress').textContent = currentField.location.address;
+        document.getElementById('fieldAddress').textContent = currentField.location?.address || 'Trà Vinh';
         document.getElementById('fieldPrice').textContent = currentField.pricePerHour.toLocaleString('vi-VN');
         pricePerHour = currentField.pricePerHour;
         
@@ -159,7 +272,8 @@
         renderTimeSlots();
       } catch (error) {
         console.error('Error loading field:', error);
-        alert('Lỗi tải thông tin sân');
+        alert('Lỗi tải thông tin sân: ' + error.message);
+        window.location.href = 'fields.html';
       }
     }
 
@@ -253,13 +367,74 @@
       }
     }
 
-    // Confirm booking
-    async function confirmBooking() {
+    // Notification functions
+    function showSuccessNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-in';
+      notification.innerHTML = `
+        <span class="text-2xl">✓</span>
+        <span>${message}</span>
+      `;
+      notification.classList.remove('hidden');
+      
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 3000);
+    }
+
+    function showErrorNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-in';
+      notification.innerHTML = `
+        <span class="text-2xl">✗</span>
+        <span>${message}</span>
+      `;
+      notification.classList.remove('hidden');
+      
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Confirm booking - Show modal
+    function confirmBooking() {
       if (!selectedDate || !selectedTime) {
-        alert('Vui lòng chọn ngày và giờ');
+        showErrorNotification('Vui lòng chọn ngày và giờ');
         return;
       }
 
+      // Show confirmation modal with details
+      const bookingDate = new Date(selectedDate);
+      document.getElementById('confirmDetails').innerHTML = `
+        <div class="space-y-2">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Sân:</span>
+            <span class="font-semibold">${currentField.name}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Ngày:</span>
+            <span class="font-semibold">${bookingDate.toLocaleDateString('vi-VN')}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Giờ:</span>
+            <span class="font-semibold">${selectedTime}</span>
+          </div>
+          <div class="flex justify-between border-t pt-2 mt-2">
+            <span class="text-gray-600">Tổng tiền:</span>
+            <span class="font-bold text-green-600 text-lg">${pricePerHour.toLocaleString('vi-VN')}đ</span>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
+    }
+
+    // Process booking after confirmation
+    async function processBooking() {
       const [startTime, endTime] = selectedTime.split('-');
       
       const bookingData = {
@@ -269,6 +444,11 @@
         endTime,
         totalPrice: pricePerHour
       };
+
+      // Show loading
+      const confirmBtn = document.getElementById('confirmBtn');
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = '<span class="animate-spin inline-block">⏳</span> Đang xử lý...';
 
       try {
         const response = await fetch(`${API_URL}/bookings`, {
@@ -281,18 +461,149 @@
         });
 
         if (response.ok) {
-          alert('Đặt sân thành công!');
-          window.location.href = 'profile.html';
+          closeConfirmModal();
+          showSuccessModal();
         } else {
           const error = await response.json();
-          alert('Lỗi: ' + error.message);
+          showErrorNotification('Lỗi: ' + error.message);
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Lỗi kết nối server');
+        showErrorNotification('Lỗi kết nối server');
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = 'Xác nhận đặt sân';
       }
     }
 
+    let lastBookingData = null;
+
+    function showSuccessModal() {
+      // Store booking data for bill generation
+      const bookingDate = new Date(selectedDate);
+      const user = JSON.parse(localStorage.getItem('user'));
+      
+      lastBookingData = {
+        bookingId: 'BK' + Date.now(),
+        fieldName: currentField.name,
+        fieldType: currentField.type,
+        fieldAddress: currentField.location?.address || 'Trà Vinh',
+        customerName: user.name,
+        customerEmail: user.email,
+        customerPhone: user.phone || 'N/A',
+        date: bookingDate.toLocaleDateString('vi-VN'),
+        time: selectedTime,
+        price: pricePerHour,
+        bookingDate: new Date().toLocaleString('vi-VN')
+      };
+
+      // Display booking info
+      document.getElementById('bookingInfo').innerHTML = `
+        <div class="space-y-2">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Mã đặt sân:</span>
+            <span class="font-semibold">${lastBookingData.bookingId}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Sân:</span>
+            <span class="font-semibold">${lastBookingData.fieldName}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Ngày:</span>
+            <span class="font-semibold">${lastBookingData.date}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Giờ:</span>
+            <span class="font-semibold">${lastBookingData.time}</span>
+          </div>
+          <div class="flex justify-between border-t pt-2">
+            <span class="text-gray-600">Tổng tiền:</span>
+            <span class="font-bold text-green-600">${lastBookingData.price.toLocaleString('vi-VN')}đ</span>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    function goToProfile() {
+      window.location.href = 'profile.html';
+    }
+
+    function continueBooking() {
+      window.location.href = 'fields.html';
+    }
+
+    // Print bill
+    function printBill() {
+      if (!lastBookingData) return;
+      window.print();
+    }
+
+    // Download bill as text
+    function downloadBill() {
+      if (!lastBookingData) return;
+      
+      const typeMap = {
+        '5vs5': 'Sân 5 người',
+        '7vs7': 'Sân 7 người',
+        '11vs11': 'Sân 11 người'
+      };
+      
+      const billText = `
+========================================
+       HÓA ĐƠN ĐẶT SÂN BÓNG
+       Sân Bóng Trà Vinh
+========================================
+
+Mã đặt sân: ${lastBookingData.bookingId}
+Ngày đặt: ${lastBookingData.bookingDate}
+Trạng thái: Chờ xác nhận
+
+----------------------------------------
+THÔNG TIN KHÁCH HÀNG
+----------------------------------------
+Họ tên: ${lastBookingData.customerName}
+Email: ${lastBookingData.customerEmail}
+Số điện thoại: ${lastBookingData.customerPhone}
+
+----------------------------------------
+CHI TIẾT ĐẶT SÂN
+----------------------------------------
+Tên sân: ${lastBookingData.fieldName}
+Loại sân: ${typeMap[lastBookingData.fieldType]}
+Địa chỉ: ${lastBookingData.fieldAddress}
+Ngày đá: ${lastBookingData.date}
+Giờ đá: ${lastBookingData.time}
+
+----------------------------------------
+TỔNG TIỀN: ${lastBookingData.price.toLocaleString('vi-VN')}đ
+----------------------------------------
+
+Lưu ý: Vui lòng mang theo hóa đơn này khi đến sân.
+Đơn đặt sân sẽ được xác nhận trong vòng 24 giờ.
+
+Cảm ơn quý khách đã sử dụng dịch vụ!
+Hotline: 0123-456-789
+
+© 2024 Sân Bóng Trà Vinh
+========================================
+      `;
+      
+      const blob = new Blob([billText], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `HoaDon_${lastBookingData.bookingId}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showSuccessNotification('Đã tải hóa đơn thành công!');
+    }
+
+    // Set min date to today
     // Set min date to today
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('bookingDate').min = today;

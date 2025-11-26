@@ -43,6 +43,32 @@
       const userStr = localStorage.getItem('user');
       return userStr ? JSON.parse(userStr) : null;
     }
+
+    // Update navigation menu
+    function updateNavMenu() {
+      const userMenu = document.getElementById('userMenu');
+      if (checkAuth()) {
+        const user = getUser();
+        userMenu.innerHTML = `
+          <a href="profile.html" class="hover:text-green-200">👤 ${user?.name || 'Tài khoản'}</a>
+          <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">
+            Đăng xuất
+          </button>
+        `;
+      } else {
+        userMenu.innerHTML = `
+          <a href="login.html" class="hover:text-green-200">Đăng nhập</a>
+          <a href="register.html" class="bg-white text-green-600 px-4 py-2 rounded hover:bg-green-50">
+            Đăng ký
+          </a>
+        `;
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = '../index.html';
+    }
     
     async function loadFields() {
       console.log('=== Starting loadFields ===');
@@ -128,7 +154,7 @@
         window.location.href = 'login.html';
         return;
       }
-      alert('Chức năng đặt sân đang được phát triển!');
+      window.location.href = `booking.html?fieldId=${fieldId}`;
     }
     
     // Load immediately when script runs
@@ -137,13 +163,14 @@
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
         console.log('DOM loaded, calling loadFields...');
+        updateNavMenu();
         loadFields();
       });
     } else {
       console.log('DOM already loaded, calling loadFields immediately...');
+      updateNavMenu();
       loadFields();
     }
   </script>
-  <script src="../js/main.js"></script>
 </body>
 </html>
