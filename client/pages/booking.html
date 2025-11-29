@@ -59,12 +59,34 @@
         </div>
       </div>
 
+      <!-- Promo Code -->
+      <div class="mb-6">
+        <label class="block text-gray-700 font-semibold mb-2">Mã giảm giá (nếu có):</label>
+        <div class="flex gap-2">
+          <input type="text" id="promoCode" placeholder="Nhập mã giảm giá" 
+            class="flex-1 px-4 py-2 border rounded-lg uppercase">
+          <button onclick="applyPromoCode()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-semibold">
+            Áp dụng
+          </button>
+        </div>
+        <p class="text-sm text-gray-500 mt-1">Ví dụ: NEW20 (giảm 20% cho khách mới)</p>
+        <div id="promoMessage" class="mt-2"></div>
+      </div>
+
       <!-- Booking Summary -->
       <div id="bookingSummary" class="hidden bg-green-50 border-2 border-green-500 rounded-lg p-4 mb-6">
         <h4 class="font-bold text-lg mb-2">Thông tin đặt sân:</h4>
         <p><span class="font-semibold">Ngày:</span> <span id="summaryDate"></span></p>
         <p><span class="font-semibold">Giờ:</span> <span id="summaryTime"></span></p>
-        <p><span class="font-semibold">Tổng tiền:</span> <span id="summaryPrice" class="text-green-600 font-bold"></span>đ</p>
+        <div id="promoDetails" class="hidden">
+          <p class="text-sm text-gray-600 mt-2">
+            <span class="font-semibold">Giá gốc:</span> <span id="originalPrice"></span>đ
+          </p>
+          <p class="text-sm text-green-600">
+            <span class="font-semibold">Giảm giá:</span> -<span id="discountAmount"></span>đ
+          </p>
+        </div>
+        <p class="mt-2 pt-2 border-t"><span class="font-semibold">Tổng tiền:</span> <span id="summaryPrice" class="text-green-600 font-bold text-xl"></span>đ</p>
       </div>
 
       <!-- Booking Button -->
@@ -214,6 +236,8 @@
     let selectedDate = null;
     let selectedTime = null;
     let pricePerHour = 0;
+    let appliedPromo = null;
+    let finalPrice = 0;
 
     // Time slots (6:00 - 22:00)
     const timeSlots = [
@@ -314,13 +338,64 @@
       updateSummary();
     });
 
+    // Apply promo code
+    async function applyPromoCode() {
+      const code = document.getElementById('promoCode').value.trim().toUpperCase();
+      const messageDiv = document.getElementById('promoMessage');
+      
+      if (!code) {
+        messageDiv.innerHTML = '<p class="text-red-500 text-sm">Vui lòng nhập mã giảm giá</p>';
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/promotions/validate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            code: code,
+            amount: pricePerHour
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.valid) {
+          appliedPromo = data;
+          messageDiv.innerHTML = `<p class="text-green-600 text-sm font-semibold">✓ Áp dụng thành công! Giảm ${data.discount.toLocaleString('vi-VN')}đ</p>`;
+          updateSummary();
+        } else {
+          appliedPromo = null;
+          messageDiv.innerHTML = `<p class="text-red-500 text-sm">${data.message || 'Mã giảm giá không hợp lệ'}</p>`;
+          updateSummary();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        messageDiv.innerHTML = '<p class="text-red-500 text-sm">Lỗi khi kiểm tra mã giảm giá</p>';
+      }
+    }
+
     // Update booking summary
     function updateSummary() {
       if (selectedDate && selectedTime) {
         document.getElementById('bookingSummary').classList.remove('hidden');
         document.getElementById('summaryDate').textContent = new Date(selectedDate).toLocaleDateString('vi-VN');
         document.getElementById('summaryTime').textContent = selectedTime;
-        document.getElementById('summaryPrice').textContent = pricePerHour.toLocaleString('vi-VN');
+        
+        if (appliedPromo) {
+          finalPrice = appliedPromo.finalAmount;
+          document.getElementById('promoDetails').classList.remove('hidden');
+          document.getElementById('originalPrice').textContent = pricePerHour.toLocaleString('vi-VN');
+          document.getElementById('discountAmount').textContent = appliedPromo.discount.toLocaleString('vi-VN');
+          document.getElementById('summaryPrice').textContent = finalPrice.toLocaleString('vi-VN');
+        } else {
+          finalPrice = pricePerHour;
+          document.getElementById('promoDetails').classList.add('hidden');
+          document.getElementById('summaryPrice').textContent = pricePerHour.toLocaleString('vi-VN');
+        }
+        
         document.getElementById('confirmBooking').disabled = false;
       } else {
         document.getElementById('bookingSummary').classList.add('hidden');
@@ -442,7 +517,10 @@
         date: selectedDate,
         startTime,
         endTime,
-        totalPrice: pricePerHour
+        totalPrice: finalPrice,
+        promoCode: appliedPromo ? appliedPromo.promotion.code : null,
+        originalPrice: appliedPromo ? pricePerHour : null,
+        discount: appliedPromo ? appliedPromo.discount : null
       };
 
       // Show loading

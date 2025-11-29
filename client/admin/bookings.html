@@ -116,8 +116,9 @@
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sân</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giờ</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày đá</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giờ đá</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giờ đặt</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giá</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
@@ -205,7 +206,7 @@
       } catch (error) {
         console.error('Error:', error);
         document.getElementById('bookingsTable').innerHTML = 
-          '<tr><td colspan="7" class="px-6 py-4 text-center text-red-500">Lỗi tải dữ liệu</td></tr>';
+          '<tr><td colspan="8" class="px-6 py-4 text-center text-red-500">Lỗi tải dữ liệu</td></tr>';
       }
     }
 
@@ -213,7 +214,7 @@
       const tbody = document.getElementById('bookingsTable');
       
       if (filteredBookings.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Không có dữ liệu</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Không có dữ liệu</td></tr>';
         return;
       }
 
@@ -231,7 +232,29 @@
         'completed': 'Hoàn thành'
       };
 
-      tbody.innerHTML = filteredBookings.map(booking => `
+      tbody.innerHTML = filteredBookings.map(booking => {
+        // Calculate time ago
+        const createdDate = new Date(booking.createdAt);
+        const now = new Date();
+        const diffMs = now - createdDate;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+        
+        let timeAgo = '';
+        if (diffMins < 1) {
+          timeAgo = 'Vừa xong';
+        } else if (diffMins < 60) {
+          timeAgo = `${diffMins} phút trước`;
+        } else if (diffHours < 24) {
+          timeAgo = `${diffHours} giờ trước`;
+        } else if (diffDays < 7) {
+          timeAgo = `${diffDays} ngày trước`;
+        } else {
+          timeAgo = createdDate.toLocaleDateString('vi-VN');
+        }
+        
+        return `
         <tr class="hover:bg-gray-50">
           <td class="px-6 py-4">
             <div class="font-semibold">${booking.user?.name || 'N/A'}</div>
@@ -239,8 +262,16 @@
           </td>
           <td class="px-6 py-4">${booking.field?.name || 'N/A'}</td>
           <td class="px-6 py-4">${new Date(booking.date).toLocaleDateString('vi-VN')}</td>
-          <td class="px-6 py-4">${booking.startTime} - ${booking.endTime}</td>
-          <td class="px-6 py-4 font-semibold">${booking.totalPrice.toLocaleString()}đ</td>
+          <td class="px-6 py-4">
+            <span class="font-semibold">${booking.startTime} - ${booking.endTime}</span>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-sm">
+              <div class="font-medium text-gray-700">${timeAgo}</div>
+              <div class="text-xs text-gray-500">${createdDate.toLocaleString('vi-VN')}</div>
+            </div>
+          </td>
+          <td class="px-6 py-4 font-semibold text-green-600">${booking.totalPrice.toLocaleString()}đ</td>
           <td class="px-6 py-4">
             <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[booking.status]}">
               ${statusText[booking.status]}
@@ -268,7 +299,8 @@
             </div>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function updateStats() {
