@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Sân - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-green-800 text-white">
+      <div class="p-6">
+        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+      </div>
+      <nav class="mt-6">
+        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📊</span> Dashboard
+        </a>
+        <a href="fields.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
+          <span class="mr-3">⚽</span> Quản lý sân
+        </a>
+        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📅</span> Quản lý lịch đặt
+        </a>
+        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">👥</span> Quản lý khách hàng
+        </a>
+        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
+          <span class="mr-3">🏠</span> Về trang chủ
+        </a>
+        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
+          <span class="mr-3">🚪</span> Đăng xuất
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto">
+      <header class="bg-white shadow-sm">
+        <div class="flex justify-between items-center px-8 py-4">
+          <h2 class="text-2xl font-bold text-gray-800">Quản lý Sân Bóng</h2>
+          <button onclick="openAddModal()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+            ➕ Thêm sân mới
+          </button>
+        </div>
+      </header>
+
+      <div class="p-8">
+        <div id="loading" class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p class="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+        </div>
+        <div id="fieldsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6 hidden"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="fieldModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b">
+        <h3 id="modalTitle" class="text-2xl font-bold text-gray-800">Thêm sân mới</h3>
+      </div>
+      <form id="fieldForm" class="p-6 space-y-4">
+        <input type="hidden" id="fieldId">
+        
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Tên sân *</label>
+            <input type="text" id="fieldName" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Loại sân *</label>
+            <select id="fieldType" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+              <option value="5vs5">Sân 5 người</option>
+              <option value="7vs7">Sân 7 người</option>
+              <option value="11vs11">Sân 11 người</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Địa chỉ *</label>
+          <input type="text" id="fieldAddress" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Giá/giờ (VNĐ) *</label>
+          <input type="number" id="fieldPrice" required min="0" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Tiện ích</label>
+          <textarea id="fieldAmenities" rows="2" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Đèn chiếu sáng, Phòng thay đồ, Bãi đỗ xe"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Trạng thái</label>
+          <select id="fieldStatus" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option value="active">Hoạt động</option>
+            <option value="maintenance">Bảo trì</option>
+            <option value="inactive">Không hoạt động</option>
+          </select>
+        </div>
+
+        <div class="flex gap-4 pt-4">
+          <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+            Lưu
+          </button>
+          <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
+            Hủy
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Image Upload Modal -->
+  <div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-2xl font-bold text-gray-800">📷 Quản lý ảnh sân</h3>
+            <div id="imageFieldInfo" class="mt-2 p-3 bg-green-50 rounded-lg">
+              <!-- Field info will be inserted here -->
+            </div>
+          </div>
+          <button onclick="closeImageModal()" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
+        </div>
+      </div>
+      <div class="p-6">
+        <input type="hidden" id="imageFieldId">
+        
+        <!-- Upload form -->
+        <div class="mb-6 p-4 border-2 border-dashed border-green-400 rounded-lg bg-green-50">
+          <label class="block text-gray-700 font-semibold mb-2">📤 Thêm ảnh mới</label>
+          <p class="text-sm text-gray-500 mb-3">Chọn tối đa 5 ảnh, mỗi ảnh ≤ 5MB (jpg, png, gif, webp)</p>
+          <input type="file" id="imageInput" multiple accept="image/*" class="w-full mb-3 p-2 border rounded">
+          <div id="previewImages" class="flex gap-2 flex-wrap mb-3"></div>
+          <button type="button" onclick="uploadImages()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+            ⬆️ Upload ảnh
+          </button>
+        </div>
+
+        <!-- Current images -->
+        <div>
+          <h4 class="font-semibold text-gray-700 mb-3">🖼️ Ảnh hiện tại (<span id="imageCount">0</span> ảnh):</h4>
+          <div id="currentImages" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    const token = localStorage.getItem('token');
+    let allFields = [];
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = '../index.html';
+    }
+
+    async function loadFields() {
+      try {
+        const response = await fetch(`${API_URL}/fields`);
+        allFields = await response.json();
+        document.getElementById('loading').classList.add('hidden');
+        displayFields(allFields);
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').innerHTML = '<p class="text-red-600">Lỗi tải dữ liệu</p>';
+      }
+    }
+
+    function displayFields(fields) {
+      const grid = document.getElementById('fieldsGrid');
+      grid.classList.remove('hidden');
+      
+      const typeMap = { '5vs5': 'Sân 5', '7vs7': 'Sân 7', '11vs11': 'Sân 11' };
+      const statusMap = {
+        'active': { text: 'Hoạt động', color: 'bg-green-100 text-green-800' },
+        'maintenance': { text: 'Bảo trì', color: 'bg-yellow-100 text-yellow-800' },
+        'inactive': { text: 'Ngừng', color: 'bg-red-100 text-red-800' }
+      };
+
+      grid.innerHTML = fields.map(field => {
+        const hasImage = field.images && field.images.length > 0;
+        const imageUrl = hasImage ? field.images[0] : null;
+        
+        return `
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="h-48 bg-gray-200 relative">
+              ${hasImage 
+                ? `<img src="${imageUrl}" alt="${field.name}" class="w-full h-full object-cover">`
+                : `<div class="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-6xl">⚽</div>`
+              }
+              <span class="absolute top-2 right-2 px-2 py-1 rounded text-xs font-semibold ${statusMap[field.status]?.color}">
+                ${statusMap[field.status]?.text}
+              </span>
+              ${hasImage ? `<span class="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">${field.images.length} ảnh</span>` : ''}
+            </div>
+            <div class="p-4">
+              <h3 class="text-lg font-bold mb-1">${field.name}</h3>
+              <p class="text-gray-600 text-sm mb-1">📍 ${field.location?.address || 'N/A'}</p>
+              <p class="text-gray-600 text-sm mb-2">🏟️ ${typeMap[field.type]}</p>
+              <p class="text-green-600 font-bold mb-3">${field.pricePerHour.toLocaleString()}đ/giờ</p>
+              <div class="flex gap-2">
+                <button onclick="openImageModal('${field._id}')" class="flex-1 bg-purple-500 text-white py-2 rounded hover:bg-purple-600 text-sm">
+                  📷 Ảnh
+                </button>
+                <button onclick="editField('${field._id}')" class="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 text-sm">
+                  ✏️ Sửa
+                </button>
+                <button onclick="deleteField('${field._id}', '${field.name}')" class="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-600 text-sm">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAddModal() {
+      document.getElementById('modalTitle').textContent = 'Thêm sân mới';
+      document.getElementById('fieldForm').reset();
+      document.getElementById('fieldId').value = '';
+      document.getElementById('fieldModal').classList.remove('hidden');
+    }
+
+    function editField(id) {
+      const field = allFields.find(f => f._id === id);
+      if (!field) return;
+
+      document.getElementById('modalTitle').textContent = 'Chỉnh sửa sân';
+      document.getElementById('fieldId').value = field._id;
+      document.getElementById('fieldName').value = field.name;
+      document.getElementById('fieldType').value = field.type;
+      document.getElementById('fieldAddress').value = field.location?.address || '';
+      document.getElementById('fieldPrice').value = field.pricePerHour;
+      document.getElementById('fieldAmenities').value = field.amenities?.join(', ') || '';
+      document.getElementById('fieldStatus').value = field.status;
+      document.getElementById('fieldModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('fieldModal').classList.add('hidden');
+    }
+
+    // Image Modal
+    const typeMap = { '5vs5': 'Sân 5 người', '7vs7': 'Sân 7 người', '11vs11': 'Sân 11 người' };
+    
+    function openImageModal(id) {
+      const field = allFields.find(f => f._id === id);
+      if (!field) return;
+      
+      document.getElementById('imageFieldId').value = id;
+      document.getElementById('imageInput').value = '';
+      document.getElementById('previewImages').innerHTML = '';
+      
+      // Hiển thị thông tin sân
+      document.getElementById('imageFieldInfo').innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-2xl text-white">⚽</div>
+          <div>
+            <p class="font-bold text-lg text-green-800">${field.name}</p>
+            <p class="text-sm text-gray-600">📍 ${field.location?.address || 'N/A'} • ${typeMap[field.type]} • ${field.pricePerHour.toLocaleString()}đ/giờ</p>
+          </div>
+        </div>
+      `;
+      
+      loadFieldImages(id);
+      document.getElementById('imageModal').classList.remove('hidden');
+    }
+
+    function closeImageModal() {
+      document.getElementById('imageModal').classList.add('hidden');
+    }
+
+    // Preview ảnh trước khi upload
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+      const preview = document.getElementById('previewImages');
+      preview.innerHTML = '';
+      
+      if (this.files.length > 5) {
+        alert('Chỉ được chọn tối đa 5 ảnh!');
+        this.value = '';
+        return;
+      }
+      
+      for (let file of this.files) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`Ảnh "${file.name}" vượt quá 5MB!`);
+          continue;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.innerHTML += `
+            <div class="relative">
+              <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border-2 border-green-400">
+              <span class="absolute -top-1 -right-1 bg-green-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">✓</span>
+            </div>
+          `;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function loadFieldImages(id) {
+      const field = allFields.find(f => f._id === id);
+      const container = document.getElementById('currentImages');
+      const countEl = document.getElementById('imageCount');
+      
+      if (!field || !field.images || field.images.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">📷 Chưa có ảnh nào. Hãy upload ảnh cho sân này!</p>';
+        countEl.textContent = '0';
+        return;
+      }
+
+      countEl.textContent = field.images.length;
+      container.innerHTML = field.images.map((img, index) => `
+        <div class="relative group">
+          <img src="${img}" alt="Ảnh ${index + 1}" class="w-full h-32 object-cover rounded-lg border">
+          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition rounded-lg"></div>
+          <span class="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">Ảnh ${index + 1}</span>
+          <button onclick="deleteImage('${id}', ${index})" 
+            class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full opacity-0 group-hover:opacity-100 transition hover:bg-red-600"
+            title="Xóa ảnh này">
+            ✕
+          </button>
+        </div>
+      `).join('');
+    }
+
+    async function uploadImages() {
+      const id = document.getElementById('imageFieldId').value;
+      const input = document.getElementById('imageInput');
+      
+      if (!input.files || input.files.length === 0) {
+        alert('Vui lòng chọn ảnh');
+        return;
+      }
+
+      const formData = new FormData();
+      for (let file of input.files) {
+        formData.append('images', file);
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/fields/${id}/images`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('Upload ảnh thành công!');
+          // Cập nhật lại field trong allFields
+          const fieldIndex = allFields.findIndex(f => f._id === id);
+          if (fieldIndex !== -1) {
+            allFields[fieldIndex].images = data.images;
+          }
+          loadFieldImages(id);
+          displayFields(allFields);
+          input.value = '';
+        } else {
+          alert('Lỗi: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi upload ảnh');
+      }
+    }
+
+    async function deleteImage(fieldId, imageIndex) {
+      if (!confirm('Xóa ảnh này?')) return;
+
+      try {
+        const response = await fetch(`${API_URL}/fields/${fieldId}/images/${imageIndex}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          const fieldIndex = allFields.findIndex(f => f._id === fieldId);
+          if (fieldIndex !== -1) {
+            allFields[fieldIndex].images = data.images;
+          }
+          loadFieldImages(fieldId);
+          displayFields(allFields);
+        } else {
+          alert('Lỗi: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi xóa ảnh');
+      }
+    }
+
+    document.getElementById('fieldForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('fieldId').value;
+      const amenitiesText = document.getElementById('fieldAmenities').value;
+      const data = {
+        name: document.getElementById('fieldName').value,
+        type: document.getElementById('fieldType').value,
+        location: {
+          address: document.getElementById('fieldAddress').value,
+          city: 'Trà Vinh'
+        },
+        pricePerHour: parseInt(document.getElementById('fieldPrice').value),
+        amenities: amenitiesText ? amenitiesText.split(',').map(a => a.trim()).filter(a => a) : [],
+        status: document.getElementById('fieldStatus').value
+      };
+
+      try {
+        const url = id ? `${API_URL}/fields/${id}` : `${API_URL}/fields`;
+        const method = id ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          alert(id ? 'Cập nhật thành công!' : 'Thêm sân thành công!');
+          closeModal();
+          loadFields();
+        } else {
+          const error = await response.json();
+          alert('Lỗi: ' + error.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi kết nối server');
+      }
+    });
+
+    async function deleteField(id, name) {
+      if (!confirm(`Xóa sân "${name}"?`)) return;
+
+      try {
+        const response = await fetch(`${API_URL}/fields/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          alert('Xóa thành công!');
+          loadFields();
+        } else {
+          const error = await response.json();
+          alert('Lỗi: ' + error.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi kết nối server');
+      }
+    }
+
+    loadFields();
+  </script>
+</body>
+</html>

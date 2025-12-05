@@ -15,11 +15,23 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: function() {
+      return !this.googleId; // Password không bắt buộc nếu đăng nhập bằng Google
+    }
   },
   phone: {
     type: String,
-    required: true
+    required: function() {
+      return !this.googleId; // Phone không bắt buộc nếu đăng nhập bằng Google
+    }
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true // Cho phép null/undefined
+  },
+  avatar: {
+    type: String
   },
   role: {
     type: String,
@@ -33,7 +45,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });

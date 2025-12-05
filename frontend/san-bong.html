@@ -47,31 +47,42 @@
           '11vs11': 'Sân 11 người'
         };
         
-        document.getElementById('fields').innerHTML = fields.map(f => `
-          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
-            <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 rounded-t flex items-center justify-center text-6xl relative">
-              ⚽
-              <div class="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-semibold text-green-600">
-                ${typeMap[f.type]}
+        document.getElementById('fields').innerHTML = fields.map(f => {
+          // Ưu tiên ảnh local (bắt đầu bằng /uploads), nếu không có thì lấy ảnh đầu tiên
+          let displayImage = null;
+          if (f.images && f.images.length > 0) {
+            displayImage = f.images.find(img => img.startsWith('/uploads')) || f.images[0];
+          }
+          const hasImage = !!displayImage;
+          return `
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+              <div class="h-48 relative">
+                ${hasImage 
+                  ? `<img src="${displayImage}" alt="${f.name}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-6xl\\'>⚽</div>'">`
+                  : `<div class="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-6xl">⚽</div>`
+                }
+                <div class="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-semibold text-green-600">
+                  ${typeMap[f.type]}
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-xl mb-2">${f.name}</h3>
+                <p class="text-gray-600 text-sm mb-2">📍 ${f.location.address}</p>
+                <p class="text-green-600 font-bold text-lg mb-3">${f.pricePerHour.toLocaleString()}đ/giờ</p>
+                ${f.amenities && f.amenities.length > 0 ? `
+                  <div class="flex flex-wrap gap-1 mb-3">
+                    ${f.amenities.slice(0, 3).map(a => `
+                      <span class="text-xs bg-gray-100 px-2 py-1 rounded">${a}</span>
+                    `).join('')}
+                  </div>
+                ` : ''}
+                <a href="pages/booking.html?fieldId=${f._id}" class="block w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-center font-semibold transition">
+                  Đặt sân ngay
+                </a>
               </div>
             </div>
-            <div class="p-4">
-              <h3 class="font-bold text-xl mb-2">${f.name}</h3>
-              <p class="text-gray-600 text-sm mb-2">📍 ${f.location.address}</p>
-              <p class="text-green-600 font-bold text-lg mb-3">${f.pricePerHour.toLocaleString()}đ/giờ</p>
-              ${f.amenities && f.amenities.length > 0 ? `
-                <div class="flex flex-wrap gap-1 mb-3">
-                  ${f.amenities.slice(0, 3).map(a => `
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">${a}</span>
-                  `).join('')}
-                </div>
-              ` : ''}
-              <a href="pages/booking.html?fieldId=${f._id}" class="block w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-center font-semibold transition">
-                Đặt sân ngay
-              </a>
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       })
       .catch(err => {
         document.getElementById('fields').innerHTML = 

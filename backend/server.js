@@ -28,8 +28,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/promotions', promotionRoutes);
 
-// Static files
-app.use(express.static('client'));
+// Static files - serve frontend từ thư mục frontend
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Error handler
 app.use((err, req, res, next) => {

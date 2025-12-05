@@ -48,6 +48,52 @@ exports.login = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      avatar: user.avatar,
+      token: generateToken(user._id)
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Đăng nhập bằng Google
+exports.googleLogin = async (req, res) => {
+  try {
+    const { googleId, email, name, avatar } = req.body;
+
+    if (!googleId || !email) {
+      return res.status(400).json({ message: 'Thiếu thông tin Google' });
+    }
+
+    // Tìm user theo googleId hoặc email
+    let user = await User.findOne({ 
+      $or: [{ googleId }, { email }] 
+    });
+
+    if (user) {
+      // Nếu user tồn tại nhưng chưa có googleId, cập nhật
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.avatar = avatar;
+        await user.save();
+      }
+    } else {
+      // Tạo user mới
+      user = await User.create({
+        googleId,
+        email,
+        name,
+        avatar,
+        role: 'customer'
+      });
+    }
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
       token: generateToken(user._id)
     });
   } catch (error) {

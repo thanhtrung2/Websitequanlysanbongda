@@ -24,9 +24,29 @@
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
       <div class="grid md:grid-cols-2 gap-6">
         <div>
-          <div class="h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center mb-4">
-            <span class="text-8xl">⚽</span>
+          <!-- Image Slideshow -->
+          <div class="relative h-64 rounded-lg overflow-hidden">
+            <div id="slideshow" class="relative w-full h-full">
+              <div id="slideshowImages" class="w-full h-full">
+                <div class="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                  <span class="text-8xl">⚽</span>
+                </div>
+              </div>
+            </div>
+            <!-- Navigation Arrows -->
+            <button onclick="prevSlide()" id="prevBtn" class="hidden absolute left-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white w-10 h-10 rounded-full hover:bg-opacity-70 transition">
+              ❮
+            </button>
+            <button onclick="nextSlide()" id="nextBtn" class="hidden absolute right-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white w-10 h-10 rounded-full hover:bg-opacity-70 transition">
+              ❯
+            </button>
+            <!-- Dots Indicator -->
+            <div id="slideDots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2"></div>
+            <!-- Image Counter -->
+            <div id="imageCounter" class="hidden absolute top-3 right-3 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm"></div>
           </div>
+          <!-- Thumbnail Gallery -->
+          <div id="thumbnails" class="flex gap-2 mt-3 overflow-x-auto pb-2"></div>
         </div>
         <div>
           <h2 id="fieldName" class="text-3xl font-bold mb-4">Đang tải...</h2>
@@ -238,6 +258,11 @@
     let pricePerHour = 0;
     let appliedPromo = null;
     let finalPrice = 0;
+    
+    // Slideshow variables
+    let fieldImages = [];
+    let currentSlide = 0;
+    let slideInterval = null;
 
     // Time slots (6:00 - 22:00)
     const timeSlots = [
@@ -293,11 +318,114 @@
           ).join('');
         }
         
+        // Setup slideshow with field images
+        setupSlideshow(currentField.images);
+        
         renderTimeSlots();
       } catch (error) {
         console.error('Error loading field:', error);
         alert('Lỗi tải thông tin sân: ' + error.message);
         window.location.href = 'fields.html';
+      }
+    }
+
+    // Setup slideshow
+    function setupSlideshow(images) {
+      // Filter valid images (local uploads first)
+      fieldImages = [];
+      if (images && images.length > 0) {
+        // Prioritize local images
+        const localImages = images.filter(img => img.startsWith('/uploads'));
+        const otherImages = images.filter(img => !img.startsWith('/uploads'));
+        fieldImages = [...localImages, ...otherImages];
+      }
+      
+      if (fieldImages.length === 0) {
+        // No images, keep default
+        return;
+      }
+      
+      // Show navigation if multiple images
+      if (fieldImages.length > 1) {
+        document.getElementById('prevBtn').classList.remove('hidden');
+        document.getElementById('nextBtn').classList.remove('hidden');
+        document.getElementById('imageCounter').classList.remove('hidden');
+        
+        // Create dots
+        const dotsContainer = document.getElementById('slideDots');
+        dotsContainer.innerHTML = fieldImages.map((_, i) => 
+          `<button onclick="goToSlide(${i})" class="slide-dot w-3 h-3 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/50'} transition"></button>`
+        ).join('');
+        
+        // Start auto-slide
+        startAutoSlide();
+      }
+      
+      // Create thumbnails
+      const thumbContainer = document.getElementById('thumbnails');
+      thumbContainer.innerHTML = fieldImages.map((img, i) => 
+        `<img src="${img}" onclick="goToSlide(${i})" 
+          class="thumb w-16 h-16 object-cover rounded cursor-pointer border-2 ${i === 0 ? 'border-green-500' : 'border-transparent'} hover:border-green-300 transition"
+          onerror="this.style.display='none'">`
+      ).join('');
+      
+      // Show first image
+      showSlide(0);
+    }
+    
+    function showSlide(index) {
+      if (fieldImages.length === 0) return;
+      
+      currentSlide = index;
+      if (currentSlide >= fieldImages.length) currentSlide = 0;
+      if (currentSlide < 0) currentSlide = fieldImages.length - 1;
+      
+      // Update main image
+      document.getElementById('slideshowImages').innerHTML = `
+        <img src="${fieldImages[currentSlide]}" alt="Ảnh sân" 
+          class="w-full h-full object-cover transition-opacity duration-300"
+          onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-8xl\\'>⚽</div>'">
+      `;
+      
+      // Update counter
+      document.getElementById('imageCounter').textContent = `${currentSlide + 1}/${fieldImages.length}`;
+      
+      // Update dots
+      document.querySelectorAll('.slide-dot').forEach((dot, i) => {
+        dot.className = `slide-dot w-3 h-3 rounded-full ${i === currentSlide ? 'bg-white' : 'bg-white/50'} transition`;
+      });
+      
+      // Update thumbnails
+      document.querySelectorAll('.thumb').forEach((thumb, i) => {
+        thumb.className = `thumb w-16 h-16 object-cover rounded cursor-pointer border-2 ${i === currentSlide ? 'border-green-500' : 'border-transparent'} hover:border-green-300 transition`;
+      });
+    }
+    
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+      resetAutoSlide();
+    }
+    
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+      resetAutoSlide();
+    }
+    
+    function goToSlide(index) {
+      showSlide(index);
+      resetAutoSlide();
+    }
+    
+    function startAutoSlide() {
+      slideInterval = setInterval(() => {
+        showSlide(currentSlide + 1);
+      }, 4000); // Chuyển ảnh mỗi 4 giây
+    }
+    
+    function resetAutoSlide() {
+      if (slideInterval) {
+        clearInterval(slideInterval);
+        startAutoSlide();
       }
     }
 
