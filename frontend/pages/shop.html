@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cửa hàng - Thành Trung M10</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <a href="../index.html" class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
+            <p class="text-xs text-green-100">Cửa hàng thể thao</p>
+          </div>
+        </a>
+        <div class="flex items-center space-x-6">
+          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
+          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
+          <a href="shop.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Cửa hàng</a>
+          <a href="contact.html" class="hover:text-green-200 transition font-semibold">Liên hệ</a>
+          <div id="userMenu"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-green-500 to-green-600 text-white py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl font-bold mb-4">🛒 Cửa hàng Thể thao</h1>
+      <p class="text-green-100 text-lg">Đồ uống, bóng đá, thiết bị thể thao chất lượng cao</p>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Filter & Search -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <div class="flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="filterCategory('all')" class="filter-btn active px-4 py-2 rounded-full bg-green-600 text-white font-semibold transition" data-cat="all">
+            Tất cả
+          </button>
+          <button onclick="filterCategory('drink')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-green-100 transition" data-cat="drink">
+            🥤 Đồ uống
+          </button>
+          <button onclick="filterCategory('ball')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-green-100 transition" data-cat="ball">
+            ⚽ Bóng đá
+          </button>
+          <button onclick="filterCategory('equipment')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-green-100 transition" data-cat="equipment">
+            🎽 Thiết bị
+          </button>
+          <button onclick="filterCategory('other')" class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-green-100 transition" data-cat="other">
+            📦 Khác
+          </button>
+        </div>
+        <div class="relative">
+          <input type="text" id="searchInput" placeholder="Tìm sản phẩm..." 
+            class="pl-10 pr-4 py-2 border rounded-full w-64 focus:outline-none focus:ring-2 focus:ring-green-500">
+          <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      <p class="mt-4 text-gray-600">Đang tải sản phẩm...</p>
+    </div>
+    
+    <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden"></div>
+    
+    <div id="emptyState" class="hidden text-center py-12">
+      <div class="text-6xl mb-4">📦</div>
+      <p class="text-gray-500 text-lg">Không tìm thấy sản phẩm nào</p>
+    </div>
+  </div>
+
+  <!-- Cart Button (Fixed) -->
+  <div id="cartButton" class="hidden fixed bottom-6 right-6 z-50">
+    <button onclick="openCart()" class="bg-green-600 text-white px-6 py-4 rounded-full shadow-2xl hover:bg-green-700 transition flex items-center gap-3">
+      <span class="text-2xl">🛒</span>
+      <span class="font-bold">Giỏ hàng</span>
+      <span id="cartCount" class="bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">0</span>
+    </button>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+      <div class="p-6 border-b bg-green-600 text-white">
+        <div class="flex justify-between items-center">
+          <h3 class="text-2xl font-bold">🛒 Giỏ hàng</h3>
+          <button onclick="closeCart()" class="text-white hover:text-green-200 text-3xl">&times;</button>
+        </div>
+      </div>
+      <div id="cartItems" class="p-6 max-h-[50vh] overflow-y-auto">
+        <!-- Cart items here -->
+      </div>
+      <div class="p-6 border-t bg-gray-50">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-lg font-semibold">Tổng cộng:</span>
+          <span id="cartTotal" class="text-2xl font-bold text-green-600">0đ</span>
+        </div>
+        <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition">
+          📞 Liên hệ đặt hàng
+        </button>
+        <p class="text-center text-gray-500 text-sm mt-2">Nhân viên sẽ liên hệ xác nhận đơn hàng</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // API_URL đã được khai báo trong main.js
+    let allProducts = [];
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    let currentCategory = 'all';
+
+    const categoryInfo = {
+      drink: { name: 'Đồ uống', icon: '🥤', color: 'bg-blue-100 text-blue-800' },
+      ball: { name: 'Bóng đá', icon: '⚽', color: 'bg-green-100 text-green-800' },
+      equipment: { name: 'Thiết bị', icon: '🎽', color: 'bg-purple-100 text-purple-800' },
+      other: { name: 'Khác', icon: '📦', color: 'bg-gray-100 text-gray-800' }
+    };
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500' };
+      
+      toast.className = `${colors[type]} text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2`;
+      toast.innerHTML = `<span>${type === 'success' ? '✓' : 'ℹ'}</span> ${message}`;
+      container.appendChild(toast);
+      
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Load products
+    async function loadProducts() {
+      try {
+        console.log('Đang tải sản phẩm từ:', `${API_URL}/inventory`);
+        const response = await fetch(`${API_URL}/inventory`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Raw data:', data);
+        
+        // Kiểm tra nếu data là array hoặc object có property
+        allProducts = Array.isArray(data) ? data : (data.items || data.products || data);
+        console.log('Đã tải được', allProducts.length, 'sản phẩm');
+        
+        // Chỉ hiển thị sản phẩm active và còn hàng
+        allProducts = allProducts.filter(p => p.status === 'active' && p.stock > 0);
+        
+        document.getElementById('loading').classList.add('hidden');
+        displayProducts(allProducts);
+        updateCartUI();
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').innerHTML = `
+          <div class="text-center">
+            <div class="text-6xl mb-4">⚠️</div>
+            <p class="text-red-600 font-semibold mb-2">Không thể kết nối server!</p>
+            <p class="text-gray-500 mb-4">Hãy chắc chắn server đang chạy:</p>
+            <code class="bg-gray-100 px-4 py-2 rounded text-sm">cd backend && node server.js</code>
+            <br><br>
+            <button onclick="loadProducts()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+              🔄 Thử lại
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Display products
+    function displayProducts(products) {
+      const grid = document.getElementById('productsGrid');
+      const empty = document.getElementById('emptyState');
+      
+      if (products.length === 0) {
+        grid.classList.add('hidden');
+        empty.classList.remove('hidden');
+        return;
+      }
+      
+      empty.classList.add('hidden');
+      grid.classList.remove('hidden');
+      
+      grid.innerHTML = products.map(product => {
+        const cat = categoryInfo[product.category];
+        const inCart = cart.find(c => c._id === product._id);
+        
+        return `
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition group">
+            <div class="h-40 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-6xl relative">
+              ${cat.icon}
+              <span class="absolute top-2 left-2 ${cat.color} px-2 py-1 rounded-full text-xs font-semibold">
+                ${cat.name}
+              </span>
+              ${product.stock <= product.minStock ? `
+                <span class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                  Sắp hết
+                </span>
+              ` : ''}
+            </div>
+            <div class="p-4">
+              <h3 class="font-bold text-gray-800 mb-1 truncate" title="${product.name}">${product.name}</h3>
+              <p class="text-gray-500 text-sm mb-2 truncate">${product.description || ''}</p>
+              <div class="flex justify-between items-center mb-3">
+                <span class="text-green-600 font-bold text-lg">${product.price.toLocaleString()}đ</span>
+                <span class="text-gray-400 text-sm">Còn ${product.stock}</span>
+              </div>
+              ${inCart ? `
+                <div class="flex items-center gap-2">
+                  <button onclick="updateCartItem('${product._id}', -1)" class="w-10 h-10 bg-gray-200 rounded-lg hover:bg-gray-300 font-bold text-xl">-</button>
+                  <span class="flex-1 text-center font-bold text-lg">${inCart.quantity}</span>
+                  <button onclick="updateCartItem('${product._id}', 1)" class="w-10 h-10 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold text-xl">+</button>
+                </div>
+              ` : `
+                <button onclick="addToCart('${product._id}')" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+                  🛒 Thêm vào giỏ
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Filter by category
+    function filterCategory(category) {
+      currentCategory = category;
+      
+      // Update button styles
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.cat === category) {
+          btn.classList.remove('bg-gray-200', 'text-gray-700');
+          btn.classList.add('bg-green-600', 'text-white');
+        } else {
+          btn.classList.remove('bg-green-600', 'text-white');
+          btn.classList.add('bg-gray-200', 'text-gray-700');
+        }
+      });
+      
+      applyFilters();
+    }
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      let filtered = allProducts;
+      
+      if (currentCategory !== 'all') {
+        filtered = filtered.filter(p => p.category === currentCategory);
+      }
+      
+      if (search) {
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(search) || 
+          (p.description && p.description.toLowerCase().includes(search))
+        );
+      }
+      
+      displayProducts(filtered);
+    }
+
+    // Cart functions
+    function addToCart(productId) {
+      const product = allProducts.find(p => p._id === productId);
+      if (!product) return;
+      
+      const existing = cart.find(c => c._id === productId);
+      if (existing) {
+        if (existing.quantity < product.stock) {
+          existing.quantity++;
+        } else {
+          showToast('Đã đạt số lượng tối đa!', 'error');
+          return;
+        }
+      } else {
+        cart.push({ _id: productId, name: product.name, price: product.price, quantity: 1 });
+      }
+      
+      saveCart();
+      showToast(`Đã thêm "${product.name}" vào giỏ!`);
+      applyFilters();
+    }
+
+    function updateCartItem(productId, change) {
+      const product = allProducts.find(p => p._id === productId);
+      const item = cart.find(c => c._id === productId);
+      if (!item) return;
+      
+      item.quantity += change;
+      
+      if (item.quantity <= 0) {
+        cart = cart.filter(c => c._id !== productId);
+        showToast('Đã xóa khỏi giỏ hàng', 'info');
+      } else if (item.quantity > product.stock) {
+        item.quantity = product.stock;
+        showToast('Đã đạt số lượng tối đa!', 'error');
+      }
+      
+      saveCart();
+      applyFilters();
+    }
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById('cartCount').textContent = count;
+      document.getElementById('cartButton').classList.toggle('hidden', count === 0);
+    }
+
+    function openCart() {
+      const modal = document.getElementById('cartModal');
+      const itemsContainer = document.getElementById('cartItems');
+      
+      if (cart.length === 0) {
+        itemsContainer.innerHTML = `
+          <div class="text-center py-8">
+            <div class="text-6xl mb-4">🛒</div>
+            <p class="text-gray-500">Giỏ hàng trống</p>
+          </div>
+        `;
+      } else {
+        itemsContainer.innerHTML = cart.map(item => `
+          <div class="flex items-center gap-4 py-3 border-b">
+            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl">
+              ${categoryInfo[allProducts.find(p => p._id === item._id)?.category || 'other'].icon}
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold">${item.name}</h4>
+              <p class="text-green-600 font-bold">${item.price.toLocaleString()}đ</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="updateCartItem('${item._id}', -1); openCart();" class="w-8 h-8 bg-gray-200 rounded hover:bg-gray-300 font-bold">-</button>
+              <span class="w-8 text-center font-bold">${item.quantity}</span>
+              <button onclick="updateCartItem('${item._id}', 1); openCart();" class="w-8 h-8 bg-green-600 text-white rounded hover:bg-green-700 font-bold">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      document.getElementById('cartTotal').textContent = total.toLocaleString() + 'đ';
+      
+      modal.classList.remove('hidden');
+    }
+
+    function closeCart() {
+      document.getElementById('cartModal').classList.add('hidden');
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        showToast('Giỏ hàng trống!', 'error');
+        return;
+      }
+      
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const items = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
+      
+      // Tạo tin nhắn đặt hàng
+      const message = `Xin chào, tôi muốn đặt hàng:\n${items}\nTổng: ${total.toLocaleString()}đ`;
+      
+      // Có thể mở Zalo/Messenger hoặc hiển thị thông tin liên hệ
+      alert(`📞 Liên hệ đặt hàng:\n\nHotline: 0123 456 789\nZalo: 0123 456 789\n\nĐơn hàng của bạn:\n${items}\n\nTổng tiền: ${total.toLocaleString()}đ`);
+      
+      // Clear cart sau khi đặt
+      // cart = [];
+      // saveCart();
+      // closeCart();
+      // applyFilters();
+    }
+
+    // Init
+    console.log('Shop page loaded, calling loadProducts...');
+    loadProducts().then(() => {
+      console.log('loadProducts completed');
+    }).catch(err => {
+      console.error('loadProducts failed:', err);
+    });
+  </script>
+</body>
+</html>

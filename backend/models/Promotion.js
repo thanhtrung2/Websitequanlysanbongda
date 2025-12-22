@@ -13,6 +13,10 @@ const promotionSchema = new mongoose.Schema({
     uppercase: true,
     trim: true
   },
+  description: {
+    type: String,
+    default: ''
+  },
   type: {
     type: String,
     enum: ['percent', 'fixed'],
@@ -47,6 +51,15 @@ const promotionSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'inactive'],
     default: 'active'
+  },
+  // Hiển thị trên banner trang chủ
+  showOnBanner: {
+    type: Boolean,
+    default: false
+  },
+  bannerColor: {
+    type: String,
+    default: 'from-orange-500 via-red-500 to-pink-500' // Tailwind gradient classes
   }
 }, {
   timestamps: true

@@ -1,12 +1,23 @@
-<!DOCTYPE html>
+*<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý Khách hàng - Admin</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
+
+  <!-- Customer Detail Modal -->
+  <div id="customerModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div id="customerModalContent"></div>
+    </div>
+  </div>
+
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-green-800 text-white">
@@ -25,6 +36,9 @@
         </a>
         <a href="customers.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
           <span class="mr-3">👥</span> Quản lý khách hàng
+        </a>
+        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">🏆</span> Quản lý cộng đồng
         </a>
         <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
           <span class="mr-3">💰</span> Quản lý tài chính
@@ -266,9 +280,138 @@
     function viewCustomerDetail(id) {
       const customer = allCustomers.find(c => c._id === id);
       const bookings = allBookings.filter(b => b.user && (b.user._id === id || b.user.id === id));
+      const totalSpent = bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
       
-      alert(`Chi tiết khách hàng:\n\nTên: ${customer.name}\nEmail: ${customer.email}\nSố lần đặt: ${bookings.length}\nTổng chi tiêu: ${bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0).toLocaleString()}đ`);
+      const roleText = { 'customer': 'Khách hàng', 'admin': 'Admin', 'staff': 'Nhân viên' };
+      const roleColors = { 'customer': 'bg-blue-100 text-blue-800', 'admin': 'bg-red-100 text-red-800', 'staff': 'bg-green-100 text-green-800' };
+      const statusText = { 'pending': 'Chờ xác nhận', 'confirmed': 'Đã xác nhận', 'completed': 'Hoàn thành', 'cancelled': 'Đã hủy' };
+      const statusColors = { 'pending': 'bg-yellow-100 text-yellow-800', 'confirmed': 'bg-green-100 text-green-800', 'completed': 'bg-blue-100 text-blue-800', 'cancelled': 'bg-red-100 text-red-800' };
+      
+      // Determine VIP status
+      const isVip = bookings.length >= 5;
+      
+      document.getElementById('customerModalContent').innerHTML = `
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 text-white">
+          <div class="flex justify-between items-start">
+            <div class="flex items-center gap-4">
+              <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-4xl font-bold">
+                ${customer.avatar ? `<img src="${customer.avatar}" class="w-full h-full rounded-full object-cover">` : customer.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h3 class="text-2xl font-bold flex items-center gap-2">
+                  ${customer.name}
+                  ${isVip ? '<span class="text-yellow-300 text-lg">⭐ VIP</span>' : ''}
+                </h3>
+                <p class="text-green-100">${customer.email}</p>
+                <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/20">
+                  ${roleText[customer.role] || customer.role}
+                </span>
+              </div>
+            </div>
+            <button onclick="closeCustomerModal()" class="text-white/80 hover:text-white text-3xl">&times;</button>
+          </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 p-6 bg-gray-50">
+          <div class="text-center">
+            <p class="text-3xl font-bold text-green-600">${bookings.length}</p>
+            <p class="text-gray-500 text-sm">Lần đặt sân</p>
+          </div>
+          <div class="text-center">
+            <p class="text-3xl font-bold text-blue-600">${totalSpent.toLocaleString()}đ</p>
+            <p class="text-gray-500 text-sm">Tổng chi tiêu</p>
+          </div>
+          <div class="text-center">
+            <p class="text-3xl font-bold text-purple-600">${customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('vi-VN') : 'N/A'}</p>
+            <p class="text-gray-500 text-sm">Ngày tham gia</p>
+          </div>
+        </div>
+        
+        <!-- Contact Info -->
+        <div class="p-6 border-b">
+          <h4 class="font-bold text-gray-800 mb-3">📞 Thông tin liên hệ</h4>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <span class="text-2xl">📧</span>
+              <div>
+                <p class="text-xs text-gray-500">Email</p>
+                <p class="font-semibold">${customer.email}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <span class="text-2xl">📱</span>
+              <div>
+                <p class="text-xs text-gray-500">Số điện thoại</p>
+                <p class="font-semibold">${customer.phone || 'Chưa cập nhật'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Recent Bookings -->
+        <div class="p-6 max-h-[300px] overflow-y-auto">
+          <h4 class="font-bold text-gray-800 mb-3">📅 Lịch sử đặt sân gần đây</h4>
+          ${bookings.length === 0 ? 
+            '<p class="text-gray-500 text-center py-4">Chưa có lịch đặt sân nào</p>' :
+            `<div class="space-y-3">
+              ${bookings.slice(0, 5).map(b => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-xl">⚽</div>
+                    <div>
+                      <p class="font-semibold">${b.field?.name || 'Sân bóng'}</p>
+                      <p class="text-sm text-gray-500">${new Date(b.date).toLocaleDateString('vi-VN')} • ${b.startTime}-${b.endTime}</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-bold text-green-600">${(b.totalPrice || 0).toLocaleString()}đ</p>
+                    <span class="px-2 py-1 rounded-full text-xs ${statusColors[b.status] || 'bg-gray-100'}">${statusText[b.status] || b.status}</span>
+                  </div>
+                </div>
+              `).join('')}
+              ${bookings.length > 5 ? `<p class="text-center text-gray-500 text-sm">Và ${bookings.length - 5} lịch đặt khác...</p>` : ''}
+            </div>`
+          }
+        </div>
+        
+        <!-- Footer -->
+        <div class="p-4 bg-gray-50 flex justify-end gap-3">
+          <button onclick="closeCustomerModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold">
+            Đóng
+          </button>
+        </div>
+      `;
+      
+      document.getElementById('customerModal').classList.remove('hidden');
     }
+
+    function closeCustomerModal() {
+      document.getElementById('customerModal').classList.add('hidden');
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const colors = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500', info: 'bg-blue-500' };
+      const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+      
+      toast.className = `flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl text-white min-w-[300px] ${colors[type]} animate-[slideIn_0.3s_ease-out]`;
+      toast.innerHTML = `
+        <span class="text-xl">${icons[type]}</span>
+        <span class="flex-1">${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white">&times;</button>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Close modal on outside click
+    document.getElementById('customerModal').addEventListener('click', function(e) {
+      if (e.target === this) closeCustomerModal();
+    });
 
     loadData();
   </script>

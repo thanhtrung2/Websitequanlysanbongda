@@ -14,7 +14,7 @@ const connectDB = async () => {
 
 const sampleFields = [
   {
-    name: 'Sân bóng Trà Vinh Stadium',
+    name: 'Thành Trung M10 Stadium',
     type: '11vs11',
     location: {
       address: 'Đường 30/4, Phường 1',

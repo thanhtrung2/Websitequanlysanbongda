@@ -1,7 +1,57 @@
 const Booking = require('../models/Booking');
+const Promotion = require('../models/Promotion');
 
 exports.createBooking = async (req, res) => {
   try {
+    const { field, date, startTime, endTime, promoCode } = req.body;
+    
+    // Kiểm tra trùng lịch đặt sân
+    const existingBooking = await Booking.findOne({
+      field: field,
+      date: new Date(date),
+      status: { $nin: ['cancelled'] }, // Không tính các booking đã hủy
+      $or: [
+        // Trường hợp 1: Giờ bắt đầu mới nằm trong khoảng booking cũ
+        {
+          startTime: { $lte: startTime },
+          endTime: { $gt: startTime }
+        },
+        // Trường hợp 2: Giờ kết thúc mới nằm trong khoảng booking cũ
+        {
+          startTime: { $lt: endTime },
+          endTime: { $gte: endTime }
+        },
+        // Trường hợp 3: Booking mới bao trùm booking cũ
+        {
+          startTime: { $gte: startTime },
+          endTime: { $lte: endTime }
+        }
+      ]
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({ 
+        message: `Sân đã được đặt vào khung giờ ${existingBooking.startTime} - ${existingBooking.endTime}. Vui lòng chọn giờ khác!`
+      });
+    }
+
+    // Nếu có mã khuyến mãi, tăng số lượt sử dụng
+    if (promoCode) {
+      const promotion = await Promotion.findOne({ code: promoCode.toUpperCase() });
+      if (promotion) {
+        // Kiểm tra lại xem còn lượt không trước khi tăng
+        if (promotion.usageLimit !== null && promotion.usageCount >= promotion.usageLimit) {
+          return res.status(400).json({ 
+            message: 'Mã khuyến mãi đã hết lượt sử dụng!'
+          });
+        }
+        
+        // Tăng số lượt sử dụng
+        promotion.usageCount = (promotion.usageCount || 0) + 1;
+        await promotion.save();
+      }
+    }
+
     const booking = await Booking.create({
       ...req.body,
       user: req.user._id
@@ -47,6 +97,52 @@ exports.updateBookingStatus = async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy đặt sân' });
     }
     res.json(booking);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Lấy các booking của một sân trong ngày (để hiển thị lịch đã đặt)
+exports.getFieldBookings = async (req, res) => {
+  try {
+    const { fieldId, date } = req.query;
+    
+    if (!fieldId || !date) {
+      return res.status(400).json({ message: 'Thiếu fieldId hoặc date' });
+    }
+
+    const bookings = await Booking.find({
+      field: fieldId,
+      date: new Date(date),
+      status: { $nin: ['cancelled'] }
+    }).select('startTime endTime status');
+
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Kiểm tra khung giờ có trống không
+exports.checkAvailability = async (req, res) => {
+  try {
+    const { fieldId, date, startTime, endTime } = req.query;
+    
+    const existingBooking = await Booking.findOne({
+      field: fieldId,
+      date: new Date(date),
+      status: { $nin: ['cancelled'] },
+      $or: [
+        { startTime: { $lte: startTime }, endTime: { $gt: startTime } },
+        { startTime: { $lt: endTime }, endTime: { $gte: endTime } },
+        { startTime: { $gte: startTime }, endTime: { $lte: endTime } }
+      ]
+    });
+
+    res.json({ 
+      available: !existingBooking,
+      conflictWith: existingBooking ? `${existingBooking.startTime} - ${existingBooking.endTime}` : null
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

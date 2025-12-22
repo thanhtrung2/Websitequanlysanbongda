@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cộng đồng - Thành Trung M10</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <a href="../index.html" class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
+            <p class="text-xs text-green-100">Cộng đồng bóng đá</p>
+          </div>
+        </a>
+        <div class="flex items-center space-x-6">
+          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
+          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
+          <a href="community.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Cộng đồng</a>
+          <a href="shop.html" class="hover:text-green-200 transition font-semibold">Cửa hàng</a>
+          <div id="userMenu"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl font-bold mb-4">🏆 Cộng đồng Bóng đá</h1>
+      <p class="text-purple-100 text-lg mb-6">Kết nối, tìm đội, tìm đối thủ và chia sẻ đam mê</p>
+      <button onclick="openCreateModal()" class="bg-white text-purple-600 px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition">
+        ✏️ Đăng bài mới
+      </button>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Sidebar -->
+      <div class="lg:w-64 flex-shrink-0">
+        <div class="bg-white rounded-xl shadow-md p-4 sticky top-4">
+          <h3 class="font-bold text-gray-800 mb-4">📋 Danh mục</h3>
+          <div class="space-y-2">
+            <button onclick="filterPosts('all')" class="filter-btn w-full text-left px-4 py-3 rounded-lg bg-purple-100 text-purple-700 font-semibold" data-type="all">
+              🌐 Tất cả
+            </button>
+            <button onclick="filterPosts('find_match')" class="filter-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-type="find_match">
+              ⚽ Tìm kèo / Ghép đội
+            </button>
+            <button onclick="filterPosts('tournament')" class="filter-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-type="tournament">
+              🏆 Giải đấu
+            </button>
+            <button onclick="filterPosts('share')" class="filter-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-type="share">
+              💬 Chia sẻ / Thảo luận
+            </button>
+          </div>
+          
+          <div class="mt-6 pt-6 border-t">
+            <h3 class="font-bold text-gray-800 mb-3">📊 Thống kê</h3>
+            <div class="space-y-2 text-sm text-gray-600">
+              <p>📝 <span id="totalPosts">0</span> bài đăng</p>
+              <p>👥 <span id="totalMembers">500+</span> thành viên</p>
+              <p>⚽ <span id="totalMatches">100+</span> trận đấu</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1">
+        <div id="loading" class="text-center py-12">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+          <p class="mt-4 text-gray-600">Đang tải bài đăng...</p>
+        </div>
+        
+        <div id="postsContainer" class="space-y-6 hidden"></div>
+        
+        <div id="emptyState" class="hidden text-center py-12">
+          <div class="text-6xl mb-4">📭</div>
+          <p class="text-gray-500 text-lg">Chưa có bài đăng nào</p>
+          <button onclick="openCreateModal()" class="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+            Đăng bài đầu tiên
+          </button>
+        </div>
+        
+        <!-- Pagination -->
+        <div id="pagination" class="hidden flex justify-center gap-2 mt-8"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Create Post Modal -->
+  <div id="createModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-2xl">
+        <div class="flex justify-between items-center">
+          <h3 class="text-2xl font-bold">✏️ Đăng bài mới</h3>
+          <button onclick="closeCreateModal()" class="text-white hover:text-gray-200 text-3xl">&times;</button>
+        </div>
+      </div>
+      <form id="postForm" class="p-6 space-y-4">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Loại bài đăng *</label>
+          <select id="postType" required class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500" onchange="toggleMatchInfo()">
+            <option value="">-- Chọn loại --</option>
+            <option value="find_match">⚽ Tìm kèo / Ghép đội / Tìm đối thủ</option>
+            <option value="tournament">🏆 Tạo giải đấu / Thông báo giải</option>
+            <option value="share">💬 Chia sẻ, thảo luận</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Tiêu đề *</label>
+          <input type="text" id="postTitle" required maxlength="200" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="VD: Tìm đối thủ giao lưu tối thứ 7">
+        </div>
+        
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Nội dung *</label>
+          <textarea id="postContent" required rows="4" maxlength="2000" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Mô tả chi tiết..."></textarea>
+        </div>
+        
+        <!-- Match Info (hiện khi chọn tìm đội/đối thủ) -->
+        <div id="matchInfoSection" class="hidden space-y-4 p-4 bg-purple-50 rounded-lg">
+          <h4 class="font-bold text-purple-800">📅 Thông tin trận đấu</h4>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700 text-sm mb-1">Ngày</label>
+              <input type="date" id="matchDate" class="w-full px-3 py-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm mb-1">Giờ</label>
+              <input type="time" id="matchTime" class="w-full px-3 py-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm mb-1">Địa điểm</label>
+              <input type="text" id="matchLocation" class="w-full px-3 py-2 border rounded-lg" placeholder="VD: Sân Thành Trung M10">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm mb-1">Loại sân</label>
+              <select id="matchFieldType" class="w-full px-3 py-2 border rounded-lg">
+                <option value="5vs5">Sân 5 người</option>
+                <option value="7vs7">Sân 7 người</option>
+                <option value="11vs11">Sân 11 người</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm mb-1">Trình độ</label>
+              <select id="matchSkillLevel" class="w-full px-3 py-2 border rounded-lg">
+                <option value="any">Tất cả trình độ</option>
+                <option value="beginner">Mới chơi</option>
+                <option value="intermediate">Trung bình</option>
+                <option value="advanced">Nâng cao</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm mb-1">SĐT liên hệ</label>
+              <input type="tel" id="matchPhone" class="w-full px-3 py-2 border rounded-lg" placeholder="0123 456 789">
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex gap-4 pt-4">
+          <button type="submit" class="flex-1 bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold">
+            📤 Đăng bài
+          </button>
+          <button type="button" onclick="closeCreateModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
+            Hủy
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Post Detail Modal -->
+  <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // API_URL đã được khai báo trong main.js
+    let currentType = 'all';
+    let currentPage = 1;
+    let allPosts = [];
+
+    const typeInfo = {
+      find_match: { icon: '⚽', name: 'Tìm kèo', color: 'bg-green-100 text-green-800' },
+      tournament: { icon: '🏆', name: 'Giải đấu', color: 'bg-yellow-100 text-yellow-800' },
+      share: { icon: '💬', name: 'Chia sẻ', color: 'bg-purple-100 text-purple-800' }
+    };
+
+    const skillLevelMap = {
+      any: 'Tất cả',
+      beginner: 'Mới chơi',
+      intermediate: 'Trung bình',
+      advanced: 'Nâng cao'
+    };
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500' };
+      toast.className = `${colors[type]} text-white px-6 py-3 rounded-xl shadow-lg`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    async function loadPosts() {
+      try {
+        const typeQuery = currentType !== 'all' ? `&type=${currentType}` : '';
+        const response = await fetch(`${API_URL}/community?page=${currentPage}&limit=10${typeQuery}`);
+        const data = await response.json();
+        
+        allPosts = data.posts;
+        document.getElementById('totalPosts').textContent = data.pagination.total;
+        document.getElementById('loading').classList.add('hidden');
+        
+        if (allPosts.length === 0) {
+          document.getElementById('postsContainer').classList.add('hidden');
+          document.getElementById('emptyState').classList.remove('hidden');
+        } else {
+          document.getElementById('emptyState').classList.add('hidden');
+          displayPosts(allPosts);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').innerHTML = '<p class="text-red-600">Lỗi tải dữ liệu</p>';
+      }
+    }
+
+    function displayPosts(posts) {
+      const container = document.getElementById('postsContainer');
+      container.classList.remove('hidden');
+      
+      container.innerHTML = posts.map(post => {
+        const type = typeInfo[post.type] || { icon: '📝', name: 'Bài đăng', color: 'bg-gray-100 text-gray-800' };
+        const date = new Date(post.createdAt).toLocaleDateString('vi-VN');
+        const hasMatchInfo = post.matchInfo && post.matchInfo.date;
+        
+        return `
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer" onclick="openDetailModal('${post._id}')">
+            <div class="p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-xl">
+                    ${post.author?.name?.charAt(0).toUpperCase() || '?'}
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-800">${post.author?.name || 'Ẩn danh'}</p>
+                    <p class="text-sm text-gray-500">${date}</p>
+                  </div>
+                </div>
+                <span class="px-3 py-1 rounded-full text-sm font-semibold ${type.color}">
+                  ${type.icon} ${type.name}
+                </span>
+              </div>
+              
+              <h3 class="text-xl font-bold text-gray-800 mb-2">${post.title}</h3>
+              <p class="text-gray-600 mb-4 line-clamp-2">${post.content}</p>
+              
+              ${hasMatchInfo ? `
+                <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                  <div class="flex flex-wrap gap-4 text-sm">
+                    <span>📅 ${new Date(post.matchInfo.date).toLocaleDateString('vi-VN')}</span>
+                    ${post.matchInfo.time ? `<span>⏰ ${post.matchInfo.time}</span>` : ''}
+                    ${post.matchInfo.location ? `<span>📍 ${post.matchInfo.location}</span>` : ''}
+                    ${post.matchInfo.fieldType ? `<span>🏟️ Sân ${post.matchInfo.fieldType.replace('vs', ' vs ')}</span>` : ''}
+                  </div>
+                </div>
+              ` : ''}
+              
+              <div class="flex items-center gap-6 text-gray-500 text-sm">
+                <span>❤️ ${post.likes?.length || 0} thích</span>
+                <span>💬 ${post.comments?.length || 0} bình luận</span>
+                <span>👁️ ${post.views || 0} lượt xem</span>
+                ${post.interested?.length ? `<span class="text-green-600 font-semibold">✅ ${post.interested.length} quan tâm</span>` : ''}
+              </div>
+            </div>
+            ${post.status === 'closed' ? `
+              <div class="bg-gray-200 text-gray-600 text-center py-2 text-sm font-semibold">
+                ✅ Đã đóng
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterPosts(type) {
+      currentType = type;
+      currentPage = 1;
+      
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.type === type) {
+          btn.className = 'filter-btn w-full text-left px-4 py-3 rounded-lg bg-purple-100 text-purple-700 font-semibold';
+        } else {
+          btn.className = 'filter-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition';
+        }
+      });
+      
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('postsContainer').classList.add('hidden');
+      loadPosts();
+    }
+
+    function toggleMatchInfo() {
+      const type = document.getElementById('postType').value;
+      const section = document.getElementById('matchInfoSection');
+      if (['find_match', 'tournament'].includes(type)) {
+        section.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+      }
+    }
+
+    function openCreateModal() {
+      if (!checkAuth()) {
+        showToast('Vui lòng đăng nhập để đăng bài', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1500);
+        return;
+      }
+      document.getElementById('postForm').reset();
+      document.getElementById('matchInfoSection').classList.add('hidden');
+      document.getElementById('createModal').classList.remove('hidden');
+    }
+
+    function closeCreateModal() {
+      document.getElementById('createModal').classList.add('hidden');
+    }
+
+    document.getElementById('postForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const type = document.getElementById('postType').value;
+      const data = {
+        type,
+        title: document.getElementById('postTitle').value,
+        content: document.getElementById('postContent').value
+      };
+      
+      if (['find_match', 'tournament'].includes(type)) {
+        data.matchInfo = {
+          date: document.getElementById('matchDate').value || null,
+          time: document.getElementById('matchTime').value || null,
+          location: document.getElementById('matchLocation').value || null,
+          fieldType: document.getElementById('matchFieldType').value,
+          skillLevel: document.getElementById('matchSkillLevel').value,
+          contactPhone: document.getElementById('matchPhone').value || null
+        };
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/community`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          if (result.warning) {
+            showToast('⏳ ' + result.warning, 'info');
+          } else {
+            showToast('Đăng bài thành công!');
+          }
+          closeCreateModal();
+          loadPosts();
+        } else {
+          showToast(result.message || 'Lỗi đăng bài', 'error');
+        }
+      } catch (error) {
+        showToast('Lỗi kết nối server', 'error');
+      }
+    });
+
+    async function openDetailModal(postId) {
+      try {
+        const response = await fetch(`${API_URL}/community/${postId}`);
+        const post = await response.json();
+        
+        const type = typeInfo[post.type] || { icon: '📝', name: 'Bài đăng', color: 'bg-gray-100 text-gray-800' };
+        const isAuthor = checkAuth() && getUser()?._id === post.author?._id;
+        
+        document.getElementById('detailContent').innerHTML = `
+          <div class="p-6 border-b">
+            <div class="flex justify-between items-start">
+              <span class="px-3 py-1 rounded-full text-sm font-semibold ${type.color}">
+                ${type.icon} ${type.name}
+              </span>
+              <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mt-4">${post.title}</h2>
+            <div class="flex items-center gap-3 mt-4">
+              <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                ${post.author?.name?.charAt(0).toUpperCase() || '?'}
+              </div>
+              <div>
+                <p class="font-semibold">${post.author?.name || 'Ẩn danh'}</p>
+                <p class="text-sm text-gray-500">${new Date(post.createdAt).toLocaleString('vi-VN')}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <p class="text-gray-700 whitespace-pre-wrap mb-6">${post.content}</p>
+            
+            ${post.matchInfo?.date ? `
+              <div class="bg-purple-50 rounded-xl p-4 mb-6">
+                <h4 class="font-bold text-purple-800 mb-3">📅 Thông tin trận đấu</h4>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                  <p><span class="text-gray-500">Ngày:</span> <strong>${new Date(post.matchInfo.date).toLocaleDateString('vi-VN')}</strong></p>
+                  ${post.matchInfo.time ? `<p><span class="text-gray-500">Giờ:</span> <strong>${post.matchInfo.time}</strong></p>` : ''}
+                  ${post.matchInfo.location ? `<p><span class="text-gray-500">Địa điểm:</span> <strong>${post.matchInfo.location}</strong></p>` : ''}
+                  ${post.matchInfo.fieldType ? `<p><span class="text-gray-500">Loại sân:</span> <strong>Sân ${post.matchInfo.fieldType.replace('vs', ' vs ')}</strong></p>` : ''}
+                  ${post.matchInfo.skillLevel ? `<p><span class="text-gray-500">Trình độ:</span> <strong>${skillLevelMap[post.matchInfo.skillLevel]}</strong></p>` : ''}
+                  ${post.matchInfo.contactPhone ? `<p><span class="text-gray-500">Liên hệ:</span> <strong><a href="tel:${post.matchInfo.contactPhone}" class="text-blue-600">${post.matchInfo.contactPhone}</a></strong></p>` : ''}
+                </div>
+              </div>
+            ` : ''}
+            
+            <div class="flex items-center gap-4 mb-6">
+              <button onclick="toggleLike('${post._id}')" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                ❤️ <span id="likeCount">${post.likes?.length || 0}</span> thích
+              </button>
+              <span class="text-gray-500">👁️ ${post.views} lượt xem</span>
+              ${post.interested?.length ? `<span class="text-green-600 font-semibold">✅ ${post.interested.length} quan tâm</span>` : ''}
+            </div>
+            
+            ${post.status === 'active' && !isAuthor && ['find_match', 'tournament'].includes(post.type) ? `
+              <button onclick="showInterestForm('${post._id}')" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold mb-4">
+                ✋ Tôi quan tâm / Đăng ký tham gia
+              </button>
+            ` : ''}
+            
+            ${!isAuthor && checkAuth() ? `
+              <button onclick="showReportForm('${post._id}')" class="w-full bg-gray-100 text-gray-600 py-2 rounded-lg hover:bg-gray-200 transition text-sm mb-6">
+                🚨 Báo cáo bài đăng không phù hợp
+              </button>
+            ` : ''}
+            
+            <!-- Comments -->
+            <div class="border-t pt-6">
+              <h4 class="font-bold text-gray-800 mb-4">💬 Bình luận (${post.comments?.length || 0})</h4>
+              <div id="commentsList" class="space-y-4 mb-4">
+                ${post.comments?.map(c => `
+                  <div class="flex gap-3">
+                    <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-sm">
+                      ${c.user?.name?.charAt(0).toUpperCase() || '?'}
+                    </div>
+                    <div class="flex-1 bg-gray-100 rounded-lg p-3">
+                      <p class="font-semibold text-sm">${c.user?.name || 'Ẩn danh'}</p>
+                      <p class="text-gray-700">${c.content}</p>
+                    </div>
+                  </div>
+                `).join('') || '<p class="text-gray-500">Chưa có bình luận</p>'}
+              </div>
+              ${checkAuth() ? `
+                <div class="flex gap-2">
+                  <input type="text" id="commentInput" placeholder="Viết bình luận..." class="flex-1 px-4 py-2 border rounded-lg">
+                  <button onclick="addComment('${post._id}')" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Gửi</button>
+                </div>
+              ` : '<p class="text-gray-500 text-sm">Đăng nhập để bình luận</p>'}
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('detailModal').classList.remove('hidden');
+      } catch (error) {
+        showToast('Lỗi tải bài đăng', 'error');
+      }
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    async function toggleLike(postId) {
+      if (!checkAuth()) {
+        showToast('Vui lòng đăng nhập', 'error');
+        return;
+      }
+      try {
+        const response = await fetch(`${API_URL}/community/${postId}/like`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await response.json();
+        document.getElementById('likeCount').textContent = data.likes;
+      } catch (error) {
+        showToast('Lỗi', 'error');
+      }
+    }
+
+    async function addComment(postId) {
+      const input = document.getElementById('commentInput');
+      if (!input.value.trim()) return;
+      
+      try {
+        await fetch(`${API_URL}/community/${postId}/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ content: input.value })
+        });
+        showToast('Đã thêm bình luận');
+        openDetailModal(postId);
+      } catch (error) {
+        showToast('Lỗi', 'error');
+      }
+    }
+
+    function showInterestForm(postId) {
+      if (!checkAuth()) {
+        showToast('Vui lòng đăng nhập', 'error');
+        return;
+      }
+      const message = prompt('Nhập lời nhắn (tùy chọn):');
+      const phone = prompt('Số điện thoại liên hệ:');
+      if (phone) {
+        registerInterest(postId, message, phone);
+      }
+    }
+
+    async function registerInterest(postId, message, phone) {
+      try {
+        const response = await fetch(`${API_URL}/community/${postId}/interest`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ message, phone })
+        });
+        
+        if (response.ok) {
+          showToast('Đã đăng ký thành công! Chủ bài đăng sẽ liên hệ bạn.');
+          closeDetailModal();
+        } else {
+          const error = await response.json();
+          showToast(error.message, 'error');
+        }
+      } catch (error) {
+        showToast('Lỗi', 'error');
+      }
+    }
+
+    function showReportForm(postId) {
+      const reasons = [
+        '1. Spam / Quảng cáo',
+        '2. Nội dung không phù hợp',
+        '3. Thông tin giả mạo',
+        '4. Quấy rối / Xúc phạm',
+        '5. Lý do khác'
+      ];
+      const choice = prompt(`Chọn lý do báo cáo:\n${reasons.join('\n')}\n\nNhập số (1-5):`);
+      if (!choice) return;
+      
+      const reasonMap = { '1': 'spam', '2': 'inappropriate', '3': 'fake', '4': 'harassment', '5': 'other' };
+      const reason = reasonMap[choice];
+      if (!reason) {
+        showToast('Lý do không hợp lệ', 'error');
+        return;
+      }
+      
+      let description = '';
+      if (reason === 'other') {
+        description = prompt('Mô tả chi tiết lý do báo cáo:');
+        if (!description) return;
+      }
+      
+      reportPost(postId, reason, description);
+    }
+
+    async function reportPost(postId, reason, description) {
+      try {
+        const response = await fetch(`${API_URL}/community/${postId}/report`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ reason, description })
+        });
+        
+        if (response.ok) {
+          showToast('Cảm ơn bạn đã báo cáo! Chúng tôi sẽ xem xét.');
+          closeDetailModal();
+        } else {
+          const error = await response.json();
+          showToast(error.message, 'error');
+        }
+      } catch (error) {
+        showToast('Lỗi gửi báo cáo', 'error');
+      }
+    }
+
+    // Init - Check URL params for filter
+    const urlParams = new URLSearchParams(window.location.search);
+    const typeParam = urlParams.get('type');
+    if (typeParam && ['find_match', 'tournament', 'share'].includes(typeParam)) {
+      filterPosts(typeParam);
+    } else {
+      loadPosts();
+    }
+  </script>
+</body>
+</html>

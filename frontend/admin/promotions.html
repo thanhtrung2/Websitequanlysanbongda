@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý Khuyến mãi - Admin</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -25,6 +26,9 @@
         </a>
         <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
           <span class="mr-3">👥</span> Quản lý khách hàng
+        </a>
+        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">🏆</span> Quản lý cộng đồng
         </a>
         <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
           <span class="mr-3">💰</span> Quản lý tài chính
@@ -211,7 +215,15 @@
               → ${new Date(p.endDate).toLocaleDateString('vi-VN')}
             </td>
             <td class="px-6 py-4">
-              ${p.usageCount || 0}${p.usageLimit ? '/' + p.usageLimit : ''}
+              ${p.usageLimit ? `
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 bg-gray-200 rounded-full h-2 w-20">
+                    <div class="bg-${p.usageCount >= p.usageLimit ? 'red' : p.usageCount >= p.usageLimit * 0.8 ? 'yellow' : 'green'}-500 h-2 rounded-full" style="width: ${Math.min((p.usageCount / p.usageLimit) * 100, 100)}%"></div>
+                  </div>
+                  <span class="${p.usageCount >= p.usageLimit ? 'text-red-600 font-bold' : ''}">${p.usageCount || 0}/${p.usageLimit}</span>
+                </div>
+                ${p.usageCount >= p.usageLimit ? '<span class="text-xs text-red-500">Đã hết lượt!</span>' : ''}
+              ` : `<span class="text-gray-500">${p.usageCount || 0} (Không giới hạn)</span>`}
             </td>
             <td class="px-6 py-4">
               <span class="px-3 py-1 rounded-full text-xs font-semibold ${

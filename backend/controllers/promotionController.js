@@ -48,10 +48,37 @@ exports.validateCode = async (req, res) => {
       return res.status(404).json({ message: 'Mã khuyến mãi không tồn tại' });
     }
     
-    if (!promotion.isValid()) {
-      return res.status(400).json({ message: 'Mã khuyến mãi không hợp lệ hoặc đã hết hạn' });
+    const now = new Date();
+    
+    // Kiểm tra thời hạn
+    if (now < promotion.startDate) {
+      return res.status(400).json({ 
+        message: `Mã khuyến mãi chưa có hiệu lực. Bắt đầu từ ${new Date(promotion.startDate).toLocaleDateString('vi-VN')}`
+      });
     }
     
+    if (now > promotion.endDate) {
+      return res.status(400).json({ 
+        message: `Mã khuyến mãi đã hết hạn từ ${new Date(promotion.endDate).toLocaleDateString('vi-VN')}`
+      });
+    }
+    
+    // Kiểm tra trạng thái
+    if (promotion.status !== 'active') {
+      return res.status(400).json({ message: 'Mã khuyến mãi đã bị vô hiệu hóa' });
+    }
+    
+    // Kiểm tra giới hạn sử dụng
+    if (promotion.usageLimit !== null && promotion.usageCount >= promotion.usageLimit) {
+      return res.status(400).json({ 
+        message: `Mã khuyến mãi đã hết lượt sử dụng (${promotion.usageLimit}/${promotion.usageLimit} lượt đã dùng)`,
+        usageExhausted: true,
+        usageLimit: promotion.usageLimit,
+        usageCount: promotion.usageCount
+      });
+    }
+    
+    // Kiểm tra giá trị đơn hàng tối thiểu
     if (amount < promotion.minBookingAmount) {
       return res.status(400).json({ 
         message: `Giá trị đơn hàng tối thiểu: ${promotion.minBookingAmount.toLocaleString()}đ` 
@@ -60,6 +87,11 @@ exports.validateCode = async (req, res) => {
     
     const discount = promotion.calculateDiscount(amount);
     
+    // Tính số lượt còn lại
+    const remainingUsage = promotion.usageLimit !== null 
+      ? promotion.usageLimit - promotion.usageCount 
+      : null;
+    
     res.json({
       valid: true,
       promotion: {
@@ -67,10 +99,18 @@ exports.validateCode = async (req, res) => {
         name: promotion.name,
         code: promotion.code,
         type: promotion.type,
-        value: promotion.value
+        value: promotion.value,
+        description: promotion.description
       },
       discount,
-      finalAmount: amount - discount
+      finalAmount: amount - discount,
+      // Thông tin giới hạn sử dụng
+      usageInfo: {
+        usageLimit: promotion.usageLimit,
+        usageCount: promotion.usageCount,
+        remainingUsage: remainingUsage,
+        hasLimit: promotion.usageLimit !== null
+      }
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -137,6 +177,65 @@ exports.applyPromotion = async (req, res) => {
     
     promotion.usageCount += 1;
     await promotion.save();
+    
+    res.json(promotion);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Lấy promotion hiển thị trên banner trang chủ
+exports.getBannerPromotion = async (req, res) => {
+  try {
+    const now = new Date();
+    const promotion = await Promotion.findOne({
+      status: 'active',
+      showOnBanner: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now }
+    }).sort('-createdAt');
+    
+    if (!promotion) {
+      return res.json(null);
+    }
+    
+    res.json({
+      id: promotion._id,
+      name: promotion.name,
+      code: promotion.code,
+      description: promotion.description,
+      type: promotion.type,
+      value: promotion.value,
+      bannerColor: promotion.bannerColor,
+      endDate: promotion.endDate
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Toggle hiển thị banner
+exports.toggleBanner = async (req, res) => {
+  try {
+    const { showOnBanner, bannerColor } = req.body;
+    
+    // Nếu bật banner cho promotion này, tắt các promotion khác
+    if (showOnBanner) {
+      await Promotion.updateMany(
+        { _id: { $ne: req.params.id } },
+        { showOnBanner: false }
+      );
+    }
+    
+    const promotion = await Promotion.findByIdAndUpdate(
+      req.params.id,
+      { showOnBanner, bannerColor: bannerColor || 'from-orange-500 via-red-500 to-pink-500' },
+      { new: true }
+    );
+    
+    if (!promotion) {
+      return res.status(404).json({ message: 'Không tìm thấy khuyến mãi' });
+    }
     
     res.json(promotion);
   } catch (error) {

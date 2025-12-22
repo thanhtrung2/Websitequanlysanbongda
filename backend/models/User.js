@@ -38,6 +38,32 @@ const userSchema = new mongoose.Schema({
     enum: ['customer', 'admin', 'staff'],
     default: 'customer'
   },
+  // Quản lý vi phạm
+  violationCount: {
+    type: Number,
+    default: 0
+  },
+  isBlocked: {
+    type: Boolean,
+    default: false
+  },
+  blockedReason: String,
+  blockedAt: Date,
+  warnings: [{
+    reason: String,
+    postId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CommunityPost'
+    },
+    warnedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   createdAt: {
     type: Date,
     default: Date.now

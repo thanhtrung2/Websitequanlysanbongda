@@ -4,14 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý Sân - Admin</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
+
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-green-800 text-white">
+    <aside class="w-64 bg-green-800 text-white flex-shrink-0">
       <div class="p-6">
         <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+        <p class="text-sm text-green-200">Thành Trung M10</p>
       </div>
       <nav class="mt-6">
         <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
@@ -25,6 +30,24 @@
         </a>
         <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
           <span class="mr-3">👥</span> Quản lý khách hàng
+        </a>
+        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">🏆</span> Quản lý cộng đồng
+        </a>
+        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">💰</span> Quản lý tài chính
+        </a>
+        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📦</span> Quản lý kho
+        </a>
+        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">🎁</span> Quản lý khuyến mãi
+        </a>
+        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">👔</span> Quản lý nhân viên
+        </a>
+        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
+          <span class="mr-3">📈</span> Báo cáo & Thống kê
         </a>
         <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
           <span class="mr-3">🏠</span> Về trang chủ
@@ -153,10 +176,96 @@
     </div>
   </div>
 
+  <style>
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    .toast-enter { animation: slideIn 0.3s ease-out; }
+    .toast-exit { animation: slideOut 0.3s ease-out; }
+  </style>
+
   <script>
     const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
     let allFields = [];
+
+    // ========== TOAST NOTIFICATION SYSTEM ==========
+    function showToast(message, type = 'success', duration = 3000) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ'
+      };
+      
+      const colors = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        warning: 'bg-yellow-500',
+        info: 'bg-blue-500'
+      };
+      
+      toast.className = `toast-enter flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl text-white min-w-[300px] max-w-[400px] ${colors[type]}`;
+      toast.innerHTML = `
+        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl font-bold">
+          ${icons[type]}
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold">${message}</p>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white text-xl">&times;</button>
+      `;
+      
+      container.appendChild(toast);
+      
+      // Auto remove
+      setTimeout(() => {
+        toast.classList.remove('toast-enter');
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    // Confirm dialog đẹp
+    function showConfirm(title, message, onConfirm) {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[99]';
+      modal.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-[slideIn_0.3s_ease-out]">
+          <div class="p-6 text-center">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-3xl">🗑️</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
+            <p class="text-gray-600">${message}</p>
+          </div>
+          <div class="flex border-t">
+            <button onclick="this.closest('.fixed').remove()" 
+              class="flex-1 py-4 text-gray-600 hover:bg-gray-100 font-semibold transition">
+              Hủy
+            </button>
+            <button id="confirmBtn" 
+              class="flex-1 py-4 bg-red-500 text-white hover:bg-red-600 font-semibold transition">
+              Xác nhận
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      modal.querySelector('#confirmBtn').onclick = () => {
+        modal.remove();
+        onConfirm();
+      };
+    }
 
     function logout() {
       localStorage.clear();
@@ -286,14 +395,14 @@
       preview.innerHTML = '';
       
       if (this.files.length > 5) {
-        alert('Chỉ được chọn tối đa 5 ảnh!');
+        showToast('Chỉ được chọn tối đa 5 ảnh!', 'warning');
         this.value = '';
         return;
       }
       
       for (let file of this.files) {
         if (file.size > 5 * 1024 * 1024) {
-          alert(`Ảnh "${file.name}" vượt quá 5MB!`);
+          showToast(`Ảnh "${file.name}" vượt quá 5MB!`, 'warning');
           continue;
         }
         
@@ -341,7 +450,7 @@
       const input = document.getElementById('imageInput');
       
       if (!input.files || input.files.length === 0) {
-        alert('Vui lòng chọn ảnh');
+        showToast('Vui lòng chọn ảnh', 'warning');
         return;
       }
 
@@ -359,8 +468,7 @@
 
         const data = await response.json();
         if (response.ok) {
-          alert('Upload ảnh thành công!');
-          // Cập nhật lại field trong allFields
+          showToast('Upload ảnh thành công!', 'success');
           const fieldIndex = allFields.findIndex(f => f._id === id);
           if (fieldIndex !== -1) {
             allFields[fieldIndex].images = data.images;
@@ -368,39 +476,41 @@
           loadFieldImages(id);
           displayFields(allFields);
           input.value = '';
+          document.getElementById('previewImages').innerHTML = '';
         } else {
-          alert('Lỗi: ' + data.message);
+          showToast('Lỗi: ' + data.message, 'error');
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Lỗi upload ảnh');
+        showToast('Lỗi upload ảnh', 'error');
       }
     }
 
     async function deleteImage(fieldId, imageIndex) {
-      if (!confirm('Xóa ảnh này?')) return;
+      showConfirm('Xóa ảnh', 'Bạn có chắc muốn xóa ảnh này?', async () => {
+        try {
+          const response = await fetch(`${API_URL}/fields/${fieldId}/images/${imageIndex}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
 
-      try {
-        const response = await fetch(`${API_URL}/fields/${fieldId}/images/${imageIndex}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          const fieldIndex = allFields.findIndex(f => f._id === fieldId);
-          if (fieldIndex !== -1) {
-            allFields[fieldIndex].images = data.images;
+          const data = await response.json();
+          if (response.ok) {
+            showToast('Đã xóa ảnh', 'success');
+            const fieldIndex = allFields.findIndex(f => f._id === fieldId);
+            if (fieldIndex !== -1) {
+              allFields[fieldIndex].images = data.images;
+            }
+            loadFieldImages(fieldId);
+            displayFields(allFields);
+          } else {
+            showToast('Lỗi: ' + data.message, 'error');
           }
-          loadFieldImages(fieldId);
-          displayFields(allFields);
-        } else {
-          alert('Lỗi: ' + data.message);
+        } catch (error) {
+          console.error('Error:', error);
+          showToast('Lỗi xóa ảnh', 'error');
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Lỗi xóa ảnh');
-      }
+      });
     }
 
     document.getElementById('fieldForm').addEventListener('submit', async (e) => {
@@ -434,39 +544,39 @@
         });
 
         if (response.ok) {
-          alert(id ? 'Cập nhật thành công!' : 'Thêm sân thành công!');
+          showToast(id ? 'Cập nhật sân thành công!' : 'Thêm sân mới thành công!', 'success');
           closeModal();
           loadFields();
         } else {
           const error = await response.json();
-          alert('Lỗi: ' + error.message);
+          showToast('Lỗi: ' + error.message, 'error');
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Lỗi kết nối server');
+        showToast('Lỗi kết nối server', 'error');
       }
     });
 
     async function deleteField(id, name) {
-      if (!confirm(`Xóa sân "${name}"?`)) return;
+      showConfirm('Xóa sân bóng', `Bạn có chắc muốn xóa sân "${name}"? Hành động này không thể hoàn tác.`, async () => {
+        try {
+          const response = await fetch(`${API_URL}/fields/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
 
-      try {
-        const response = await fetch(`${API_URL}/fields/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          alert('Xóa thành công!');
-          loadFields();
-        } else {
-          const error = await response.json();
-          alert('Lỗi: ' + error.message);
+          if (response.ok) {
+            showToast('Đã xóa sân thành công!', 'success');
+            loadFields();
+          } else {
+            const error = await response.json();
+            showToast('Lỗi: ' + error.message, 'error');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          showToast('Lỗi kết nối server', 'error');
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Lỗi kết nối server');
-      }
+      });
     }
 
     loadFields();

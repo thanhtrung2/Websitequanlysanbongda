@@ -4,18 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thông tin cá nhân</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
-  <nav class="bg-green-600 text-white shadow-lg">
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
     <div class="container mx-auto px-4 py-4">
       <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">⚽ Quản lý Sân Bóng</h1>
-        <div class="flex items-center space-x-4">
-          <a href="../index.html" class="hover:text-green-200">Trang chủ</a>
-          <a href="../san-bong.html" class="hover:text-green-200">Sân bóng</a>
-          <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">
-            Đăng xuất
+        <a href="../index.html" class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
+            <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
+          </div>
+        </a>
+        <div class="flex items-center space-x-6">
+          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
+          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
+          <a href="about.html" class="hover:text-green-200 transition font-semibold">Giới thiệu</a>
+          <a href="contact.html" class="hover:text-green-200 transition font-semibold">Liên hệ</a>
+          <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition">
+            🚪 Đăng xuất
           </button>
         </div>
       </div>

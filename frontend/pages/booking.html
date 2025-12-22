@@ -4,16 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đặt sân</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
-  <nav class="bg-green-600 text-white shadow-lg">
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
     <div class="container mx-auto px-4 py-4">
       <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">⚽ Quản lý Sân Bóng</h1>
-        <div class="flex items-center space-x-4">
-          <a href="../index.html" class="hover:text-green-200">Trang chủ</a>
-          <a href="fields.html" class="hover:text-green-200">Sân bóng</a>
+        <a href="../index.html" class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
+            <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
+          </div>
+        </a>
+        <div class="flex items-center space-x-6">
+          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
+          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
+          <a href="about.html" class="hover:text-green-200 transition font-semibold">Giới thiệu</a>
+          <a href="contact.html" class="hover:text-green-200 transition font-semibold">Liên hệ</a>
+          <div id="userMenu"></div>
         </div>
       </div>
     </div>
@@ -73,7 +83,24 @@
 
       <!-- Time Slots -->
       <div class="mb-6">
-        <label class="block text-gray-700 font-semibold mb-4">Chọn khung giờ:</label>
+        <label class="block text-gray-700 font-semibold mb-2">Chọn khung giờ:</label>
+        
+        <!-- Chú thích màu sắc -->
+        <div class="flex flex-wrap gap-4 mb-4 text-sm">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 border-2 border-gray-300 rounded"></div>
+            <span class="text-gray-600">Còn trống</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 border-2 border-green-500 bg-green-100 rounded"></div>
+            <span class="text-gray-600">Đang chọn</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 border-2 border-red-300 bg-red-50 rounded"></div>
+            <span class="text-gray-600">Đã có người đặt</span>
+          </div>
+        </div>
+        
         <div id="timeSlots" class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <!-- Time slots will be loaded here -->
         </div>
@@ -193,7 +220,7 @@
           </button>
         </div>
         
-        <div class="flex gap-3">
+        <div class="flex gap-3 mb-3">
           <button onclick="goToProfile()" 
             class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold">
             Xem lịch đặt
@@ -203,6 +230,12 @@
             Đặt sân khác
           </button>
         </div>
+        
+        <!-- Nút quay lại trang chủ -->
+        <button onclick="goToHome()" 
+          class="w-full bg-gray-100 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition font-semibold border">
+          🏠 Quay lại trang chủ
+        </button>
       </div>
     </div>
   </div>
@@ -430,15 +463,33 @@
     }
 
     // Render time slots
-    function renderTimeSlots() {
+    function renderTimeSlots(bookedSlots = []) {
       const container = document.getElementById('timeSlots');
-      container.innerHTML = timeSlots.map(slot => `
-        <button onclick="selectTimeSlot('${slot}')" 
-          data-slot="${slot}"
-          class="time-slot px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition text-center font-semibold">
-          ${slot}
-        </button>
-      `).join('');
+      container.innerHTML = timeSlots.map(slot => {
+        const isBooked = bookedSlots.includes(slot);
+        
+        if (isBooked) {
+          return `
+            <div data-slot="${slot}"
+              class="time-slot-booked px-4 py-3 border-2 border-red-300 bg-red-50 rounded-lg text-center cursor-not-allowed relative">
+              <div class="font-semibold text-red-400 line-through">${slot}</div>
+              <div class="text-xs text-red-500 font-bold mt-1">🔒 Đã đặt</div>
+              <div class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                <span class="text-white text-xs">✕</span>
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <button onclick="selectTimeSlot('${slot}')" 
+              data-slot="${slot}"
+              class="time-slot px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition text-center font-semibold relative">
+              <div>${slot}</div>
+              <div class="text-xs text-green-600 mt-1">✓ Còn trống</div>
+            </button>
+          `;
+        }
+      }).join('');
     }
 
     // Select time slot
@@ -492,11 +543,45 @@
         
         if (response.ok && data.valid) {
           appliedPromo = data;
-          messageDiv.innerHTML = `<p class="text-green-600 text-sm font-semibold">✓ Áp dụng thành công! Giảm ${data.discount.toLocaleString('vi-VN')}đ</p>`;
+          
+          // Hiển thị thông tin giảm giá và số lượt còn lại
+          let usageMessage = '';
+          if (data.usageInfo && data.usageInfo.hasLimit) {
+            const remaining = data.usageInfo.remainingUsage;
+            if (remaining <= 5) {
+              usageMessage = `<p class="text-orange-500 text-xs mt-1">⚠️ Chỉ còn ${remaining} lượt sử dụng!</p>`;
+            } else {
+              usageMessage = `<p class="text-gray-500 text-xs mt-1">📊 Còn ${remaining}/${data.usageInfo.usageLimit} lượt</p>`;
+            }
+          }
+          
+          messageDiv.innerHTML = `
+            <div class="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
+              <p class="text-green-600 font-semibold">✓ Áp dụng thành công!</p>
+              <p class="text-green-700 text-sm">${data.promotion.name}</p>
+              <p class="text-green-600 text-lg font-bold">Giảm ${data.discount.toLocaleString('vi-VN')}đ</p>
+              ${usageMessage}
+            </div>
+          `;
           updateSummary();
         } else {
           appliedPromo = null;
-          messageDiv.innerHTML = `<p class="text-red-500 text-sm">${data.message || 'Mã giảm giá không hợp lệ'}</p>`;
+          
+          // Hiển thị thông báo lỗi chi tiết
+          let errorHtml = `<p class="text-red-500 text-sm">${data.message || 'Mã giảm giá không hợp lệ'}</p>`;
+          
+          // Nếu hết lượt sử dụng, hiển thị thông báo đặc biệt
+          if (data.usageExhausted) {
+            errorHtml = `
+              <div class="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                <p class="text-red-600 font-semibold">❌ Mã khuyến mãi đã hết lượt!</p>
+                <p class="text-red-500 text-sm">Đã sử dụng: ${data.usageCount}/${data.usageLimit} lượt</p>
+                <p class="text-gray-500 text-xs mt-1">Vui lòng sử dụng mã khuyến mãi khác hoặc theo dõi các chương trình mới.</p>
+              </div>
+            `;
+          }
+          
+          messageDiv.innerHTML = errorHtml;
           updateSummary();
         }
       } catch (error) {
@@ -533,40 +618,72 @@
 
     // Load existing bookings
     async function loadExistingBookings() {
-      if (!selectedDate) return;
+      if (!selectedDate) {
+        renderTimeSlots([]);
+        return;
+      }
       
       try {
-        const response = await fetch(`${API_URL}/bookings?fieldId=${fieldId}&date=${selectedDate}`);
+        // Sử dụng API mới để lấy booking của sân theo ngày
+        const response = await fetch(`${API_URL}/bookings/field-bookings?fieldId=${fieldId}&date=${selectedDate}`);
         const bookings = await response.json();
         
         const container = document.getElementById('existingBookings');
         
+        // Tạo danh sách các slot đã đặt
+        const bookedSlots = bookings.map(b => `${b.startTime}-${b.endTime}`);
+        
+        // Render lại time slots với thông tin đã đặt
+        renderTimeSlots(bookedSlots);
+        
+        // Reset selection nếu slot đã chọn bị đặt
+        if (selectedTime && bookedSlots.includes(selectedTime)) {
+          selectedTime = null;
+          updateSummary();
+        }
+        
+        // Hiển thị danh sách đã đặt
         if (bookings.length === 0) {
-          container.innerHTML = '<p class="text-gray-500">Chưa có lịch đặt nào cho ngày này</p>';
-        } else {
-          container.innerHTML = bookings.map(booking => `
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <div>
-                <span class="font-semibold">${booking.startTime} - ${booking.endTime}</span>
-                <span class="text-gray-600 ml-2">(Đã đặt)</span>
-              </div>
-              <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm">Không khả dụng</span>
+          container.innerHTML = `
+            <div class="text-center py-4">
+              <span class="text-4xl">🎉</span>
+              <p class="text-green-600 font-semibold mt-2">Tất cả khung giờ đều trống!</p>
+              <p class="text-gray-500 text-sm">Hãy chọn giờ phù hợp với bạn</p>
             </div>
-          `).join('');
+          `;
+        } else {
+          const statusMap = {
+            'pending': { text: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-800' },
+            'confirmed': { text: 'Đã xác nhận', color: 'bg-green-100 text-green-800' },
+            'completed': { text: 'Hoàn thành', color: 'bg-blue-100 text-blue-800' }
+          };
           
-          // Disable booked slots
-          bookings.forEach(booking => {
-            const slot = `${booking.startTime}-${booking.endTime}`;
-            const btn = document.querySelector(`[data-slot="${slot}"]`);
-            if (btn) {
-              btn.disabled = true;
-              btn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-200');
-              btn.innerHTML += '<br><span class="text-xs text-red-600">Đã đặt</span>';
-            }
-          });
+          container.innerHTML = `
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-red-500">🔴</span>
+              <span class="font-semibold text-gray-700">${bookings.length} khung giờ đã được đặt:</span>
+            </div>
+            ${bookings.map(booking => {
+              const status = statusMap[booking.status] || { text: 'Đã đặt', color: 'bg-red-100 text-red-800' };
+              return `
+                <div class="flex justify-between items-center p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">⏰</span>
+                    <div>
+                      <span class="font-bold text-red-700">${booking.startTime} - ${booking.endTime}</span>
+                      <p class="text-xs text-gray-500">Không thể đặt khung giờ này</p>
+                    </div>
+                  </div>
+                  <span class="px-3 py-1 ${status.color} rounded-full text-xs font-semibold">${status.text}</span>
+                </div>
+              `;
+            }).join('')}
+          `;
         }
       } catch (error) {
         console.error('Error loading bookings:', error);
+        renderTimeSlots([]);
+        document.getElementById('existingBookings').innerHTML = '<p class="text-gray-500">Không thể tải lịch đặt</p>';
       }
     }
 
@@ -736,6 +853,10 @@
       window.location.href = 'profile.html';
     }
 
+    function goToHome() {
+      window.location.href = '../index.html';
+    }
+
     function continueBooking() {
       window.location.href = 'fields.html';
     }
@@ -759,7 +880,7 @@
       const billText = `
 ========================================
        HÓA ĐƠN ĐẶT SÂN BÓNG
-       Sân Bóng Trà Vinh
+       Thành Trung M10
 ========================================
 
 Mã đặt sân: ${lastBookingData.bookingId}
@@ -792,7 +913,7 @@ Lưu ý: Vui lòng mang theo hóa đơn này khi đến sân.
 Cảm ơn quý khách đã sử dụng dịch vụ!
 Hotline: 0123-456-789
 
-© 2024 Sân Bóng Trà Vinh
+© 2024 Thành Trung M10
 ========================================
       `;
       
