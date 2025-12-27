@@ -19,12 +19,26 @@
             <p class="text-xs text-green-100">Cộng đồng bóng đá</p>
           </div>
         </a>
-        <div class="flex items-center space-x-6">
-          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
-          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
-          <a href="community.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Cộng đồng</a>
-          <a href="shop.html" class="hover:text-green-200 transition font-semibold">Cửa hàng</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="../index.html" class="text-white/80 hover:text-white transition font-medium">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white/80 hover:text-white transition font-medium">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition font-medium">Cửa hàng</a>
+          <a href="community.html" class="text-white font-semibold">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition font-medium">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition font-medium">Liên hệ</a>
           <div id="userMenu"></div>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">☰</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
+        <div class="flex flex-col gap-3">
+          <a href="../index.html" class="text-white/80 hover:text-white transition">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white/80 hover:text-white transition">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition">Cửa hàng</a>
+          <a href="community.html" class="text-white font-semibold">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t border-white/20"></div>
         </div>
       </div>
     </div>
@@ -187,6 +201,70 @@
     </div>
   </div>
 
+  <!-- Report Modal -->
+  <div id="reportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+      <div class="p-6 border-b bg-red-600 text-white rounded-t-2xl">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xl font-bold">🚨 Báo cáo bài đăng</h3>
+          <button onclick="closeReportModal()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+        </div>
+      </div>
+      <div class="p-6">
+        <p class="text-gray-600 mb-4">Vui lòng chọn lý do báo cáo:</p>
+        <div class="space-y-3 mb-4">
+          <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="reportReason" value="spam" class="w-4 h-4 text-red-600">
+            <div>
+              <p class="font-semibold">🚫 Spam / Quảng cáo</p>
+              <p class="text-sm text-gray-500">Nội dung quảng cáo, spam không liên quan</p>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="reportReason" value="inappropriate" class="w-4 h-4 text-red-600">
+            <div>
+              <p class="font-semibold">🔞 Nội dung không phù hợp</p>
+              <p class="text-sm text-gray-500">Ngôn từ tục tĩu, bạo lực, khiêu dâm</p>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="reportReason" value="fake" class="w-4 h-4 text-red-600">
+            <div>
+              <p class="font-semibold">❌ Thông tin giả mạo</p>
+              <p class="text-sm text-gray-500">Thông tin sai sự thật, lừa đảo</p>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="reportReason" value="harassment" class="w-4 h-4 text-red-600">
+            <div>
+              <p class="font-semibold">😠 Quấy rối / Xúc phạm</p>
+              <p class="text-sm text-gray-500">Công kích cá nhân, phân biệt đối xử</p>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="reportReason" value="other" class="w-4 h-4 text-red-600">
+            <div>
+              <p class="font-semibold">📝 Lý do khác</p>
+              <p class="text-sm text-gray-500">Mô tả chi tiết bên dưới</p>
+            </div>
+          </label>
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-semibold mb-2">Mô tả thêm (tùy chọn):</label>
+          <textarea id="reportDescription" rows="3" class="w-full px-4 py-2 border rounded-lg" placeholder="Mô tả chi tiết vấn đề..."></textarea>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeReportModal()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 font-semibold">
+            Hủy
+          </button>
+          <button onclick="submitReport()" class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-semibold">
+            Gửi báo cáo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
 
@@ -246,15 +324,21 @@
     function displayPosts(posts) {
       const container = document.getElementById('postsContainer');
       container.classList.remove('hidden');
+      const isLoggedIn = checkAuth();
+      const currentUserId = getUser()?._id;
+      
+      console.log('Display posts:', { isLoggedIn, currentUserId, postsCount: posts.length });
       
       container.innerHTML = posts.map(post => {
         const type = typeInfo[post.type] || { icon: '📝', name: 'Bài đăng', color: 'bg-gray-100 text-gray-800' };
         const date = new Date(post.createdAt).toLocaleDateString('vi-VN');
         const hasMatchInfo = post.matchInfo && post.matchInfo.date;
+        const isAuthor = currentUserId === post.author?._id;
+        const showReportBtn = isLoggedIn && !isAuthor;
         
         return `
-          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer" onclick="openDetailModal('${post._id}')">
-            <div class="p-6">
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div class="p-6 cursor-pointer" onclick="openDetailModal('${post._id}')">
               <div class="flex items-start justify-between mb-4">
                 <div class="flex items-center gap-3">
                   <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-xl">
@@ -291,6 +375,19 @@
                 ${post.interested?.length ? `<span class="text-green-600 font-semibold">✅ ${post.interested.length} quan tâm</span>` : ''}
               </div>
             </div>
+            
+            <!-- Action buttons -->
+            <div class="px-6 pb-4 flex items-center justify-between border-t pt-3">
+              <button onclick="event.stopPropagation(); openDetailModal('${post._id}')" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
+                Xem chi tiết →
+              </button>
+              ${showReportBtn ? `
+                <button onclick="event.stopPropagation(); showReportForm('${post._id}')" class="text-red-500 hover:text-red-700 text-sm flex items-center gap-1">
+                  🚨 Báo cáo
+                </button>
+              ` : ''}
+            </div>
+            
             ${post.status === 'closed' ? `
               <div class="bg-gray-200 text-gray-600 text-center py-2 text-sm font-semibold">
                 ✅ Đã đóng
@@ -565,31 +662,36 @@
       }
     }
 
+    let currentReportPostId = null;
+
     function showReportForm(postId) {
-      const reasons = [
-        '1. Spam / Quảng cáo',
-        '2. Nội dung không phù hợp',
-        '3. Thông tin giả mạo',
-        '4. Quấy rối / Xúc phạm',
-        '5. Lý do khác'
-      ];
-      const choice = prompt(`Chọn lý do báo cáo:\n${reasons.join('\n')}\n\nNhập số (1-5):`);
-      if (!choice) return;
-      
-      const reasonMap = { '1': 'spam', '2': 'inappropriate', '3': 'fake', '4': 'harassment', '5': 'other' };
-      const reason = reasonMap[choice];
-      if (!reason) {
-        showToast('Lý do không hợp lệ', 'error');
+      currentReportPostId = postId;
+      document.querySelectorAll('input[name="reportReason"]').forEach(r => r.checked = false);
+      document.getElementById('reportDescription').value = '';
+      document.getElementById('reportModal').classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.add('hidden');
+      currentReportPostId = null;
+    }
+
+    async function submitReport() {
+      const reasonInput = document.querySelector('input[name="reportReason"]:checked');
+      if (!reasonInput) {
+        showToast('Vui lòng chọn lý do báo cáo', 'error');
         return;
       }
       
-      let description = '';
-      if (reason === 'other') {
-        description = prompt('Mô tả chi tiết lý do báo cáo:');
-        if (!description) return;
+      const reason = reasonInput.value;
+      const description = document.getElementById('reportDescription').value.trim();
+      
+      if (reason === 'other' && !description) {
+        showToast('Vui lòng mô tả chi tiết lý do', 'error');
+        return;
       }
       
-      reportPost(postId, reason, description);
+      await reportPost(currentReportPostId, reason, description);
     }
 
     async function reportPost(postId, reason, description) {
@@ -604,7 +706,8 @@
         });
         
         if (response.ok) {
-          showToast('Cảm ơn bạn đã báo cáo! Chúng tôi sẽ xem xét.');
+          showToast('Cảm ơn bạn đã báo cáo! Chúng tôi sẽ xem xét.', 'success');
+          closeReportModal();
           closeDetailModal();
         } else {
           const error = await response.json();

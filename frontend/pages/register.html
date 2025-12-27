@@ -3,61 +3,161 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng ký</title>
+  <title>Đăng ký - Thành Trung M10</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(-5deg); }
+    }
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .float-animation { animation: float 4s ease-in-out infinite; }
+    .gradient-bg {
+      background: linear-gradient(-45deg, #22c55e, #16a34a, #059669, #10b981);
+      background-size: 400% 400%;
+      animation: gradient-shift 15s ease infinite;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .input-focus:focus {
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
-  <div class="min-h-screen flex items-center justify-center py-8">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-      <h2 class="text-3xl font-bold text-center mb-6 text-green-600">Đăng ký</h2>
-      
-      <!-- Google Login Button -->
-      <div id="googleBtn" class="mb-4"></div>
-      
-      <div class="relative my-6">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-300"></div>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+  <!-- Background decorations -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-10 right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-10 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 right-1/3 w-40 h-40 bg-yellow-300/20 rounded-full blur-2xl"></div>
+  </div>
+  
+  <!-- Floating soccer balls -->
+  <div class="absolute top-20 left-16 text-7xl opacity-20 float-animation" style="animation-delay: 0s;">⚽</div>
+  <div class="absolute bottom-16 right-12 text-5xl opacity-15 float-animation" style="animation-delay: 1.5s;">⚽</div>
+  <div class="absolute top-1/4 right-1/4 text-4xl opacity-10 float-animation" style="animation-delay: 3s;">⚽</div>
+
+  <div class="glass-card rounded-3xl shadow-2xl w-full max-w-md p-8 relative z-10 my-8">
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <div class="relative inline-block">
+        <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl transform hover:scale-105 transition-transform">
+          <span class="text-4xl">🎉</span>
         </div>
-        <div class="relative flex justify-center text-sm">
-          <span class="px-2 bg-white text-gray-500">Hoặc đăng ký bằng email</span>
+      </div>
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
+        Đăng ký tài khoản
+      </h1>
+      <p class="text-gray-500 mt-2">Tham gia cộng đồng Thành Trung M10</p>
+    </div>
+
+    <!-- Alert -->
+    <div id="alert" class="hidden mb-4 p-4 rounded-xl"></div>
+
+    <!-- Google Login Button -->
+    <div id="googleBtn" class="mb-4 flex justify-center"></div>
+    
+    <!-- Divider -->
+    <div class="relative my-5">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-200"></div>
+      </div>
+      <div class="relative flex justify-center">
+        <span class="px-4 bg-white text-gray-400 text-sm rounded-full">hoặc</span>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="registerForm" class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+          <span>👤</span> Họ và tên
+        </label>
+        <input type="text" id="name" required placeholder="Nguyễn Văn A"
+          class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300 input-focus">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+          <span>📧</span> Email
+        </label>
+        <input type="email" id="email" required placeholder="email@example.com"
+          class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300 input-focus">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+          <span>📱</span> Số điện thoại
+        </label>
+        <input type="tel" id="phone" required placeholder="0123 456 789"
+          class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300 input-focus">
+      </div>
+      
+      <div>
+        <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+          <span>🔑</span> Mật khẩu
+        </label>
+        <div class="relative">
+          <input type="password" id="password" required placeholder="Tối thiểu 6 ký tự"
+            class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300 input-focus pr-12">
+          <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+            <span id="eyeIcon">👁️</span>
+          </button>
         </div>
       </div>
 
-      <form id="registerForm">
-        <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Họ tên</label>
-          <input type="text" id="name" required
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Email</label>
-          <input type="email" id="email" required
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 mb-2">Số điện thoại</label>
-          <input type="tel" id="phone" required
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-        <div class="mb-6">
-          <label class="block text-gray-700 mb-2">Mật khẩu</label>
-          <input type="password" id="password" required
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-        <button type="submit"
-          class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-          Đăng ký
-        </button>
-      </form>
-      <p class="text-center mt-4 text-gray-600">
-        Đã có tài khoản? <a href="login.html" class="text-green-600 hover:underline">Đăng nhập</a>
+      <button type="submit" id="submitBtn"
+        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-6">
+        <span>✨</span>
+        <span>Tạo tài khoản</span>
+      </button>
+    </form>
+
+    <!-- Benefits -->
+    <div class="mt-6 p-4 bg-green-50 rounded-xl">
+      <p class="text-green-800 font-semibold text-sm mb-2">🎁 Ưu đãi khi đăng ký:</p>
+      <ul class="text-green-700 text-sm space-y-1">
+        <li>✓ Giảm 20% cho lần đặt sân đầu tiên</li>
+        <li>✓ Tích điểm đổi quà hấp dẫn</li>
+        <li>✓ Nhận thông báo khuyến mãi sớm nhất</li>
+      </ul>
+    </div>
+
+    <!-- Links -->
+    <div class="mt-6 text-center space-y-3">
+      <p class="text-gray-600">
+        Đã có tài khoản? 
+        <a href="login.html" class="text-green-600 hover:text-green-700 font-semibold hover:underline transition">Đăng nhập</a>
       </p>
+      <a href="../index.html" class="inline-flex items-center gap-2 text-gray-500 hover:text-green-600 transition text-sm">
+        <span>←</span> Về trang chủ
+      </a>
     </div>
   </div>
-  
+
   <script src="../js/auth.js"></script>
   <script src="../js/google-auth.js"></script>
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.textContent = '🙈';
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.textContent = '👁️';
+      }
+    }
+  </script>
 </body>
 </html>

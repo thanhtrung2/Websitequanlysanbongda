@@ -1,16 +1,16 @@
 /**
- * Hệ thống lọc nội dung không phù hợp
+ * HỆ THỐNG LỌC NỘI DUNG KHÔNG PHÙ HỢP
  * Bao gồm: từ ngữ tục tĩu, spam, quảng cáo, thông tin nhạy cảm
  */
 
-// Danh sách từ cấm (có thể mở rộng)
+// Danh sách từ cấm (có thể mở rộng thêm)
 const bannedWords = [
   // Từ tục tĩu tiếng Việt (viết tắt để tránh hiển thị trực tiếp)
   'đ.m', 'đ.má', 'đ.mẹ', 'đ.cha', 'đ.bố', 'v.l', 'v.lồn', 'c.c', 'c.ặc', 'l.n', 'l.ồn',
   'đ.ĩ', 'đ.ụ', 'đ.éo', 'c.ứt', 'd.m', 'dm', 'vcl', 'vl', 'cc', 'cl', 'clgt',
   'ngu', 'đần', 'khốn', 'chó', 'súc vật', 'con mẹ', 'thằng chó', 'con chó',
   'mày', 'tao', 'bố mày', 'mẹ mày', 'cha mày',
-  // Spam patterns
+  // Mẫu spam
   'kiếm tiền online', 'làm giàu nhanh', 'thu nhập khủng', 'việc nhẹ lương cao',
   'đầu tư forex', 'đầu tư crypto', 'cá độ', 'cá cược', 'casino', 'slot game',
   // Nội dung người lớn
@@ -19,7 +19,7 @@ const bannedWords = [
   'trúng thưởng', 'nhận quà', 'click link', 'chuyển khoản ngay'
 ];
 
-// Patterns regex cho spam
+// Các mẫu regex để phát hiện spam
 const spamPatterns = [
   /\b(https?:\/\/[^\s]+){3,}/gi, // Nhiều link liên tiếp
   /(.)\1{5,}/g, // Ký tự lặp lại nhiều lần (aaaaaaa)
@@ -28,13 +28,18 @@ const spamPatterns = [
   /zalo|telegram|viber/gi, // Yêu cầu liên hệ qua app khác
 ];
 
-// Kiểm tra nội dung có chứa từ cấm
+/**
+ * Kiểm tra nội dung có chứa từ cấm không
+ * @param {string} text - Nội dung cần kiểm tra
+ * @returns {object} - { hasBanned: boolean, words: array }
+ */
 function containsBannedWords(text) {
   if (!text) return { hasBanned: false, words: [] };
   
+  // Chuyển về chữ thường và bỏ dấu để so sánh
   const lowerText = text.toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, ''); // Bỏ dấu để so sánh
+    .replace(/[\u0300-\u036f]/g, '');
   
   const foundWords = [];
   
@@ -54,7 +59,11 @@ function containsBannedWords(text) {
   };
 }
 
-// Kiểm tra spam patterns
+/**
+ * Kiểm tra các mẫu spam
+ * @param {string} text - Nội dung cần kiểm tra
+ * @returns {object} - { isSpam: boolean, reasons: array }
+ */
 function checkSpamPatterns(text) {
   if (!text) return { isSpam: false, reasons: [] };
   
@@ -85,31 +94,37 @@ function checkSpamPatterns(text) {
   };
 }
 
-// Tính điểm rủi ro của nội dung (0-100)
+/**
+ * Tính điểm rủi ro của nội dung (0-100)
+ * Điểm càng cao = nội dung càng có vấn đề
+ * @param {string} title - Tiêu đề bài đăng
+ * @param {string} content - Nội dung bài đăng
+ * @returns {number} - Điểm rủi ro từ 0-100
+ */
 function calculateRiskScore(title, content) {
   let score = 0;
   const fullText = `${title} ${content}`;
   
-  // Kiểm tra từ cấm
+  // Kiểm tra từ cấm (+40 điểm cơ bản, +10 mỗi từ)
   const bannedCheck = containsBannedWords(fullText);
   if (bannedCheck.hasBanned) {
     score += 40 + (bannedCheck.words.length * 10);
   }
   
-  // Kiểm tra spam
+  // Kiểm tra spam (+30 điểm)
   const spamCheck = checkSpamPatterns(fullText);
   if (spamCheck.isSpam) {
     score += 30;
   }
   
-  // Kiểm tra viết hoa quá nhiều
+  // Kiểm tra viết hoa quá nhiều (+15 điểm)
   const upperCount = (fullText.match(/[A-Z]/g) || []).length;
   const letterCount = (fullText.match(/[a-zA-Z]/g) || []).length;
   if (letterCount > 0 && upperCount / letterCount > 0.5) {
     score += 15;
   }
   
-  // Kiểm tra có số điện thoại không (có thể là spam)
+  // Kiểm tra có nhiều số điện thoại không (+10 điểm)
   const phonePattern = /0\d{9,10}/g;
   const phones = fullText.match(phonePattern) || [];
   if (phones.length > 2) {
@@ -119,19 +134,31 @@ function calculateRiskScore(title, content) {
   return Math.min(score, 100);
 }
 
-// Hàm chính để kiểm duyệt nội dung
+/**
+ * HÀM CHÍNH - Kiểm duyệt nội dung tự động
+ * @param {string} title - Tiêu đề
+ * @param {string} content - Nội dung
+ * @returns {object} - Kết quả kiểm duyệt
+ *   - status: 'approved' | 'pending' | 'rejected'
+ *   - reason: Lý do (nếu có)
+ *   - riskScore: Điểm rủi ro
+ *   - details: Chi tiết phát hiện
+ */
 function moderateContent(title, content) {
   const bannedCheck = containsBannedWords(`${title} ${content}`);
   const spamCheck = checkSpamPatterns(`${title} ${content}`);
   const riskScore = calculateRiskScore(title, content);
   
-  let status = 'approved';
+  let status = 'approved'; // Mặc định: duyệt
   let reason = null;
   
+  // Điểm >= 70: Từ chối ngay
   if (riskScore >= 70) {
     status = 'rejected';
     reason = 'Nội dung vi phạm nghiêm trọng quy định cộng đồng';
-  } else if (riskScore >= 40) {
+  } 
+  // Điểm 40-69: Chờ admin duyệt
+  else if (riskScore >= 40) {
     status = 'pending';
     reason = 'Nội dung cần được kiểm duyệt';
   }
@@ -149,7 +176,11 @@ function moderateContent(title, content) {
   };
 }
 
-// Làm sạch nội dung (thay từ cấm bằng ***)
+/**
+ * Làm sạch nội dung - thay từ cấm bằng ***
+ * @param {string} text - Nội dung gốc
+ * @returns {string} - Nội dung đã làm sạch
+ */
 function sanitizeContent(text) {
   if (!text) return text;
   
@@ -164,10 +195,10 @@ function sanitizeContent(text) {
 }
 
 module.exports = {
-  containsBannedWords,
-  checkSpamPatterns,
-  calculateRiskScore,
-  moderateContent,
-  sanitizeContent,
-  bannedWords
+  containsBannedWords,    // Kiểm tra từ cấm
+  checkSpamPatterns,      // Kiểm tra spam
+  calculateRiskScore,     // Tính điểm rủi ro
+  moderateContent,        // Kiểm duyệt nội dung (hàm chính)
+  sanitizeContent,        // Làm sạch nội dung
+  bannedWords             // Danh sách từ cấm
 };

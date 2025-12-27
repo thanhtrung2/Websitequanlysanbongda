@@ -9,23 +9,11 @@ exports.createBooking = async (req, res) => {
     const existingBooking = await Booking.findOne({
       field: field,
       date: new Date(date),
-      status: { $nin: ['cancelled'] }, // Không tính các booking đã hủy
+      status: { $nin: ['cancelled'] },
       $or: [
-        // Trường hợp 1: Giờ bắt đầu mới nằm trong khoảng booking cũ
-        {
-          startTime: { $lte: startTime },
-          endTime: { $gt: startTime }
-        },
-        // Trường hợp 2: Giờ kết thúc mới nằm trong khoảng booking cũ
-        {
-          startTime: { $lt: endTime },
-          endTime: { $gte: endTime }
-        },
-        // Trường hợp 3: Booking mới bao trùm booking cũ
-        {
-          startTime: { $gte: startTime },
-          endTime: { $lte: endTime }
-        }
+        { startTime: { $lte: startTime }, endTime: { $gt: startTime } },
+        { startTime: { $lt: endTime }, endTime: { $gte: endTime } },
+        { startTime: { $gte: startTime }, endTime: { $lte: endTime } }
       ]
     });
 
@@ -39,14 +27,9 @@ exports.createBooking = async (req, res) => {
     if (promoCode) {
       const promotion = await Promotion.findOne({ code: promoCode.toUpperCase() });
       if (promotion) {
-        // Kiểm tra lại xem còn lượt không trước khi tăng
         if (promotion.usageLimit !== null && promotion.usageCount >= promotion.usageLimit) {
-          return res.status(400).json({ 
-            message: 'Mã khuyến mãi đã hết lượt sử dụng!'
-          });
+          return res.status(400).json({ message: 'Mã khuyến mãi đã hết lượt sử dụng!' });
         }
-        
-        // Tăng số lượt sử dụng
         promotion.usageCount = (promotion.usageCount || 0) + 1;
         await promotion.save();
       }
@@ -102,7 +85,7 @@ exports.updateBookingStatus = async (req, res) => {
   }
 };
 
-// Lấy các booking của một sân trong ngày (để hiển thị lịch đã đặt)
+// Lấy các booking của một sân trong ngày
 exports.getFieldBookings = async (req, res) => {
   try {
     const { fieldId, date } = req.query;

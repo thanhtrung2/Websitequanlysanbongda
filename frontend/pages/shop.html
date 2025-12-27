@@ -19,12 +19,26 @@
             <p class="text-xs text-green-100">Cửa hàng thể thao</p>
           </div>
         </a>
-        <div class="flex items-center space-x-6">
-          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
-          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
-          <a href="shop.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Cửa hàng</a>
-          <a href="contact.html" class="hover:text-green-200 transition font-semibold">Liên hệ</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="../index.html" class="text-white/80 hover:text-white transition font-medium">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white/80 hover:text-white transition font-medium">Sân bóng</a>
+          <a href="shop.html" class="text-white font-semibold">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition font-medium">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition font-medium">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition font-medium">Liên hệ</a>
           <div id="userMenu"></div>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">☰</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
+        <div class="flex flex-col gap-3">
+          <a href="../index.html" class="text-white/80 hover:text-white transition">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white/80 hover:text-white transition">Sân bóng</a>
+          <a href="shop.html" class="text-white font-semibold">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t border-white/20"></div>
         </div>
       </div>
     </div>
@@ -107,10 +121,12 @@
           <span class="text-lg font-semibold">Tổng cộng:</span>
           <span id="cartTotal" class="text-2xl font-bold text-green-600">0đ</span>
         </div>
-        <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition">
+        <button onclick="goToPayment()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl font-bold hover:from-green-600 hover:to-green-700 transition flex items-center justify-center gap-2">
+          <span>💳</span> Thanh toán ngay
+        </button>
+        <button onclick="checkout()" class="w-full mt-2 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition">
           📞 Liên hệ đặt hàng
         </button>
-        <p class="text-center text-gray-500 text-sm mt-2">Nhân viên sẽ liên hệ xác nhận đơn hàng</p>
       </div>
     </div>
   </div>
@@ -386,12 +402,44 @@
       
       // Có thể mở Zalo/Messenger hoặc hiển thị thông tin liên hệ
       alert(`📞 Liên hệ đặt hàng:\n\nHotline: 0123 456 789\nZalo: 0123 456 789\n\nĐơn hàng của bạn:\n${items}\n\nTổng tiền: ${total.toLocaleString()}đ`);
+    }
+
+    // Go to payment page
+    function goToPayment() {
+      if (cart.length === 0) {
+        showToast('Giỏ hàng trống!', 'error');
+        return;
+      }
+
+      if (!checkAuth()) {
+        showToast('Vui lòng đăng nhập để thanh toán', 'error');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1500);
+        return;
+      }
       
-      // Clear cart sau khi đặt
-      // cart = [];
-      // saveCart();
-      // closeCart();
-      // applyFilters();
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const items = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
+      
+      // Lưu thông tin giỏ hàng vào localStorage để trang thanh toán sử dụng
+      localStorage.setItem('shopCart', JSON.stringify({
+        items: cart,
+        itemsText: items,
+        total: total
+      }));
+
+      // Chuyển đến trang thanh toán với thông tin
+      const params = new URLSearchParams({
+        type: 'shop',
+        field: 'Đơn hàng cửa hàng',
+        date: new Date().toLocaleDateString('vi-VN'),
+        time: items.substring(0, 50) + (items.length > 50 ? '...' : ''),
+        price: total,
+        discount: 0
+      });
+      
+      window.location.href = `payment.html?${params.toString()}`;
     }
 
     // Init

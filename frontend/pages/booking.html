@@ -18,12 +18,26 @@
             <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
           </div>
         </a>
-        <div class="flex items-center space-x-6">
-          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
-          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
-          <a href="about.html" class="hover:text-green-200 transition font-semibold">Giới thiệu</a>
-          <a href="contact.html" class="hover:text-green-200 transition font-semibold">Liên hệ</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="../index.html" class="text-white/80 hover:text-white transition font-medium">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white font-semibold">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition font-medium">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition font-medium">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition font-medium">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition font-medium">Liên hệ</a>
           <div id="userMenu"></div>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">☰</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
+        <div class="flex flex-col gap-3">
+          <a href="../index.html" class="text-white/80 hover:text-white transition">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white font-semibold">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t border-white/20"></div>
         </div>
       </div>
     </div>
@@ -203,11 +217,17 @@
           <span class="text-5xl">✓</span>
         </div>
         <h3 class="text-2xl font-bold text-green-600 mb-2">Đặt sân thành công!</h3>
-        <p class="text-gray-600 mb-4">Đơn đặt sân của bạn đã được ghi nhận. Vui lòng chờ xác nhận từ quản lý.</p>
+        <p class="text-gray-600 mb-4">Đơn đặt sân của bạn đã được ghi nhận.</p>
         
         <div id="bookingInfo" class="bg-gray-50 rounded-lg p-4 mb-4 text-left text-sm">
           <!-- Booking info will be inserted here -->
         </div>
+
+        <!-- Nút thanh toán ngay -->
+        <button onclick="goToPayment()" 
+          class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg hover:from-green-600 hover:to-green-700 transition font-bold text-lg mb-3 flex items-center justify-center gap-2">
+          <span>💳</span> Thanh toán ngay
+        </button>
 
         <div class="grid grid-cols-2 gap-3 mb-3">
           <button onclick="printBill()" 
@@ -222,11 +242,11 @@
         
         <div class="flex gap-3 mb-3">
           <button onclick="goToProfile()" 
-            class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold">
+            class="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-semibold">
             Xem lịch đặt
           </button>
           <button onclick="continueBooking()" 
-            class="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
+            class="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-semibold">
             Đặt sân khác
           </button>
         </div>
@@ -280,8 +300,9 @@
     }
   </style>
 
+  <script src="../js/main.js"></script>
   <script>
-    const API_URL = 'http://localhost:3000/api';
+    // API_URL đã được khai báo trong main.js
     const urlParams = new URLSearchParams(window.location.search);
     const fieldId = urlParams.get('fieldId');
     
@@ -364,13 +385,11 @@
 
     // Setup slideshow
     function setupSlideshow(images) {
-      // Filter valid images (local uploads first)
+      // Filter valid images - chỉ lấy ảnh local, bỏ qua placeholder
       fieldImages = [];
       if (images && images.length > 0) {
-        // Prioritize local images
-        const localImages = images.filter(img => img.startsWith('/uploads'));
-        const otherImages = images.filter(img => !img.startsWith('/uploads'));
-        fieldImages = [...localImages, ...otherImages];
+        // Chỉ lấy ảnh từ /uploads, bỏ qua ảnh từ via.placeholder.com
+        fieldImages = images.filter(img => img.startsWith('/uploads'));
       }
       
       if (fieldImages.length === 0) {
@@ -847,6 +866,19 @@
       `;
       
       document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    function goToPayment() {
+      if (!lastBookingData) return;
+      const params = new URLSearchParams({
+        bookingId: lastBookingData.bookingId || '',
+        field: currentField?.name || 'Sân bóng',
+        date: new Date(selectedDate).toLocaleDateString('vi-VN'),
+        time: selectedTime,
+        price: finalPrice,
+        discount: appliedPromo ? appliedPromo.discount : 0
+      });
+      window.location.href = `payment.html?${params.toString()}`;
     }
 
     function goToProfile() {

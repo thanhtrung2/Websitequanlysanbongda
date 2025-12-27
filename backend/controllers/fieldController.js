@@ -80,9 +80,6 @@ exports.deleteField = async (req, res) => {
 // Upload ảnh cho sân
 exports.uploadFieldImages = async (req, res) => {
   try {
-    console.log('Upload request for field:', req.params.id);
-    console.log('Files received:', req.files ? req.files.length : 0);
-    
     const field = await Field.findById(req.params.id);
     if (!field) {
       return res.status(404).json({ message: 'Không tìm thấy sân' });
@@ -92,21 +89,15 @@ exports.uploadFieldImages = async (req, res) => {
       return res.status(400).json({ message: 'Vui lòng chọn ảnh để upload' });
     }
 
-    // Tạo đường dẫn ảnh
     const imagePaths = req.files.map(file => '/uploads/fields/' + file.filename);
-    console.log('Image paths:', imagePaths);
-    
-    // Thêm vào mảng images
     field.images = [...(field.images || []), ...imagePaths];
     await field.save();
 
-    console.log('Upload success, total images:', field.images.length);
     res.json({ 
       message: 'Upload ảnh thành công',
       images: field.images 
     });
   } catch (error) {
-    console.error('Upload error:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -132,7 +123,6 @@ exports.deleteFieldImage = async (req, res) => {
       fs.unlinkSync(imgPath);
     }
 
-    // Xóa khỏi mảng
     field.images.splice(index, 1);
     await field.save();
 

@@ -8,14 +8,36 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
-  <nav class="bg-green-600 text-white shadow-lg">
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
     <div class="container mx-auto px-4 py-4">
       <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">⚽ Quản lý Sân Bóng</h1>
-        <div id="navLinks" class="flex items-center space-x-4">
-          <a href="../index.html" class="hover:text-green-200">Trang chủ</a>
-          <a href="fields.html" class="hover:text-green-200">Sân bóng</a>
+        <a href="../index.html" class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
+            <p class="text-xs text-green-100">Danh sách sân bóng</p>
+          </div>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="../index.html" class="text-white/80 hover:text-white transition font-medium">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white font-semibold">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition font-medium">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition font-medium">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition font-medium">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition font-medium">Liên hệ</a>
           <div id="userMenu"></div>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">☰</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
+        <div class="flex flex-col gap-3">
+          <a href="../index.html" class="text-white/80 hover:text-white transition">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white font-semibold">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition">Giới thiệu</a>
+          <a href="contact.html" class="text-white/80 hover:text-white transition">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t border-white/20"></div>
         </div>
       </div>
     </div>
@@ -32,44 +54,9 @@
     <div id="fieldsList" class="grid md:grid-cols-3 gap-6"></div>
   </div>
 
+  <script src="../js/main.js"></script>
   <script>
-    const API_URL = 'http://localhost:3000/api';
-    
-    // Helper functions
-    function checkAuth() {
-      return !!localStorage.getItem('token');
-    }
-    
-    function getUser() {
-      const userStr = localStorage.getItem('user');
-      return userStr ? JSON.parse(userStr) : null;
-    }
-
-    // Update navigation menu
-    function updateNavMenu() {
-      const userMenu = document.getElementById('userMenu');
-      if (checkAuth()) {
-        const user = getUser();
-        userMenu.innerHTML = `
-          <a href="profile.html" class="hover:text-green-200">👤 ${user?.name || 'Tài khoản'}</a>
-          <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">
-            Đăng xuất
-          </button>
-        `;
-      } else {
-        userMenu.innerHTML = `
-          <a href="login.html" class="hover:text-green-200">Đăng nhập</a>
-          <a href="register.html" class="bg-white text-green-600 px-4 py-2 rounded hover:bg-green-50">
-            Đăng ký
-          </a>
-        `;
-      }
-    }
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = '../index.html';
-    }
+    // API_URL, checkAuth, getUser, logout đã được khai báo trong main.js
     
     async function loadFields() {
       console.log('=== Starting loadFields ===');
@@ -164,12 +151,10 @@
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
         console.log('DOM loaded, calling loadFields...');
-        updateNavMenu();
         loadFields();
       });
     } else {
       console.log('DOM already loaded, calling loadFields immediately...');
-      updateNavMenu();
       loadFields();
     }
   </script>

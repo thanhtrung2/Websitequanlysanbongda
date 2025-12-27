@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh toán - Thành Trung M10</title>
+  <link rel="stylesheet" href="../css/tailwind-fallback.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.6); }
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .spin-slow { animation: spin-slow 2s linear infinite; }
+    .payment-method {
+      transition: all 0.3s ease;
+    }
+    .payment-method:hover {
+      transform: translateY(-2px);
+    }
+    .payment-method.selected {
+      border-color: #22c55e;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <a href="../index.html" class="flex items-center space-x-3">
+          <span class="text-4xl">⚽</span>
+          <div>
+            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
+            <p class="text-xs text-green-100">Thanh toán đặt sân</p>
+          </div>
+        </a>
+        <a href="profile.html" class="text-white/80 hover:text-white transition">
+          ← Quay lại
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Progress Steps -->
+    <div class="flex items-center justify-center mb-8">
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">✓</div>
+        <span class="ml-2 text-green-600 font-semibold">Chọn sân</span>
+      </div>
+      <div class="w-16 h-1 bg-green-600 mx-2"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">✓</div>
+        <span class="ml-2 text-green-600 font-semibold">Xác nhận</span>
+      </div>
+      <div class="w-16 h-1 bg-green-600 mx-2"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold pulse-glow">3</div>
+        <span class="ml-2 text-green-600 font-semibold">Thanh toán</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Order Summary -->
+      <div class="md:col-span-1">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-4">
+          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <span>📋</span> Đơn hàng
+          </h3>
+          
+          <div id="orderDetails" class="space-y-3 mb-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Sân:</span>
+              <span id="fieldName" class="font-semibold">Sân 5A</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Ngày:</span>
+              <span id="bookingDate" class="font-semibold">25/12/2024</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Giờ:</span>
+              <span id="bookingTime" class="font-semibold">18:00 - 19:00</span>
+            </div>
+          </div>
+
+          <div class="border-t pt-4">
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-600">Giá sân:</span>
+              <span id="basePrice">200,000đ</span>
+            </div>
+            <div id="discountRow" class="flex justify-between mb-2 text-green-600 hidden">
+              <span>Giảm giá:</span>
+              <span id="discountAmount">-40,000đ</span>
+            </div>
+            <div class="flex justify-between text-xl font-bold pt-2 border-t">
+              <span>Tổng cộng:</span>
+              <span id="totalAmount" class="text-green-600">200,000đ</span>
+            </div>
+          </div>
+
+          <!-- Countdown Timer -->
+          <div class="mt-4 p-3 bg-orange-50 rounded-xl text-center">
+            <p class="text-orange-600 text-sm">⏰ Thời gian giữ đơn</p>
+            <p id="countdown" class="text-2xl font-bold text-orange-600">10:00</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="md:col-span-2">
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+            <span>💳</span> Chọn phương thức thanh toán
+          </h3>
+
+          <div class="space-y-4" id="paymentMethods">
+            <!-- Momo -->
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('momo')">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-pink-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
+                  M
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg">Ví MoMo</h4>
+                  <p class="text-gray-500 text-sm">Thanh toán nhanh chóng qua ví MoMo</p>
+                </div>
+                <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center" id="radio-momo">
+                </div>
+              </div>
+            </div>
+
+            <!-- ZaloPay -->
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('zalopay')">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
+                  Z
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg">ZaloPay</h4>
+                  <p class="text-gray-500 text-sm">Thanh toán qua ví điện tử ZaloPay</p>
+                </div>
+                <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center" id="radio-zalopay">
+                </div>
+              </div>
+            </div>
+
+            <!-- VNPay -->
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('vnpay')">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-red-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
+                  VN
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg">VNPay</h4>
+                  <p class="text-gray-500 text-sm">Thanh toán qua cổng VNPay - QR Code</p>
+                </div>
+                <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center" id="radio-vnpay">
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Transfer -->
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('bank')">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-green-600 rounded-xl flex items-center justify-center text-white text-2xl">
+                  🏦
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg">Chuyển khoản ngân hàng</h4>
+                  <p class="text-gray-500 text-sm">Chuyển khoản trực tiếp qua tài khoản ngân hàng</p>
+                </div>
+                <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center" id="radio-bank">
+                </div>
+              </div>
+            </div>
+
+            <!-- Cash -->
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('cash')">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-2xl">
+                  💵
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg">Thanh toán tại sân</h4>
+                  <p class="text-gray-500 text-sm">Thanh toán tiền mặt khi đến sân</p>
+                </div>
+                <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center" id="radio-cash">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bank Info (hidden by default) -->
+          <div id="bankInfo" class="hidden mt-6 p-4 bg-blue-50 rounded-xl">
+            <h4 class="font-bold text-blue-800 mb-3">📋 Thông tin chuyển khoản</h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Ngân hàng:</span>
+                <span class="font-semibold">Vietcombank</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Số tài khoản:</span>
+                <span class="font-semibold font-mono">1234567890</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Chủ tài khoản:</span>
+                <span class="font-semibold">NGUYEN VAN A</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Nội dung CK:</span>
+                <span class="font-semibold text-green-600" id="transferContent">TT [Mã đơn]</span>
+              </div>
+            </div>
+            <button onclick="copyBankInfo()" class="mt-3 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition text-sm">
+              📋 Sao chép thông tin
+            </button>
+          </div>
+
+          <!-- Pay Button -->
+          <button id="payBtn" onclick="processPayment()" disabled
+            class="w-full mt-6 bg-gray-300 text-gray-500 py-4 rounded-xl font-bold text-lg cursor-not-allowed transition-all">
+            Vui lòng chọn phương thức thanh toán
+          </button>
+
+          <!-- Security Info -->
+          <div class="mt-4 flex items-center justify-center gap-4 text-gray-400 text-sm">
+            <span>🔒 Bảo mật SSL</span>
+            <span>•</span>
+            <span>✓ An toàn 100%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing Modal -->
+  <div id="processingModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+      <div class="w-20 h-20 mx-auto mb-4 relative">
+        <div class="absolute inset-0 border-4 border-green-200 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-green-600 rounded-full border-t-transparent spin-slow"></div>
+      </div>
+      <h3 class="text-xl font-bold mb-2">Đang xử lý thanh toán</h3>
+      <p class="text-gray-500" id="processingText">Vui lòng không đóng trang này...</p>
+    </div>
+  </div>
+
+  <!-- Success Modal with Invoice -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-2xl w-full mx-auto my-8">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-2xl text-center">
+        <div class="w-20 h-20 bg-white/20 rounded-full mx-auto mb-3 flex items-center justify-center">
+          <span class="text-5xl">✅</span>
+        </div>
+        <h3 class="text-2xl font-bold">Thanh toán thành công!</h3>
+        <p class="text-green-100 mt-1">Cảm ơn bạn đã sử dụng dịch vụ</p>
+      </div>
+      
+      <!-- Invoice Content -->
+      <div id="invoiceContent" class="p-6">
+        <!-- Invoice Header -->
+        <div class="text-center border-b pb-4 mb-4">
+          <div class="flex items-center justify-center gap-2 mb-2">
+            <span class="text-3xl">⚽</span>
+            <h2 class="text-2xl font-bold text-green-600">Thành Trung M10</h2>
+          </div>
+          <p class="text-gray-500 text-sm">Hệ thống đặt sân bóng đá</p>
+          <p class="text-gray-500 text-sm">Địa chỉ: Trà Vinh, Việt Nam</p>
+          <p class="text-gray-500 text-sm">Hotline: 0123 456 789</p>
+        </div>
+
+        <!-- Invoice Title -->
+        <div class="text-center mb-6">
+          <h3 class="text-xl font-bold text-gray-800">HÓA ĐƠN THANH TOÁN</h3>
+          <p class="text-gray-500 text-sm">Invoice / Receipt</p>
+        </div>
+
+        <!-- Invoice Info -->
+        <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+          <div>
+            <p class="text-gray-500">Mã hóa đơn:</p>
+            <p class="font-bold text-green-600" id="invoiceCode">INV-000000</p>
+          </div>
+          <div class="text-right">
+            <p class="text-gray-500">Ngày xuất:</p>
+            <p class="font-bold" id="invoiceDate">25/12/2024</p>
+          </div>
+          <div>
+            <p class="text-gray-500">Khách hàng:</p>
+            <p class="font-bold" id="customerName">Khách hàng</p>
+          </div>
+          <div class="text-right">
+            <p class="text-gray-500">Phương thức TT:</p>
+            <p class="font-bold" id="paymentMethodText">MoMo</p>
+          </div>
+        </div>
+
+        <!-- Order Details Table -->
+        <div class="border rounded-xl overflow-hidden mb-6">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="text-left p-3 font-semibold">Mô tả</th>
+                <th class="text-center p-3 font-semibold">SL</th>
+                <th class="text-right p-3 font-semibold">Đơn giá</th>
+                <th class="text-right p-3 font-semibold">Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t">
+                <td class="p-3">
+                  <p class="font-semibold" id="invoiceFieldName">Sân 5A</p>
+                  <p class="text-gray-500 text-xs" id="invoiceDateTime">25/12/2024 | 18:00 - 19:00</p>
+                </td>
+                <td class="text-center p-3">1</td>
+                <td class="text-right p-3" id="invoiceUnitPrice">200,000đ</td>
+                <td class="text-right p-3 font-semibold" id="invoiceSubtotal">200,000đ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Totals -->
+        <div class="bg-gray-50 rounded-xl p-4 mb-6">
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Tạm tính:</span>
+            <span id="invoiceSubtotalText">200,000đ</span>
+          </div>
+          <div id="invoiceDiscountRow" class="flex justify-between mb-2 text-green-600 hidden">
+            <span>Giảm giá:</span>
+            <span id="invoiceDiscountText">-40,000đ</span>
+          </div>
+          <div class="flex justify-between pt-2 border-t border-gray-200">
+            <span class="text-lg font-bold">Tổng thanh toán:</span>
+            <span class="text-xl font-bold text-green-600" id="invoiceTotalText">200,000đ</span>
+          </div>
+        </div>
+
+        <!-- Payment Status -->
+        <div class="flex items-center justify-center gap-2 p-3 bg-green-50 rounded-xl mb-6">
+          <span class="text-2xl">✅</span>
+          <div>
+            <p class="font-bold text-green-700">ĐÃ THANH TOÁN</p>
+            <p class="text-green-600 text-sm" id="paidAtText">Lúc 18:30 - 25/12/2024</p>
+          </div>
+        </div>
+
+        <!-- QR Code for verification -->
+        <div class="text-center mb-6">
+          <div class="inline-block p-3 bg-gray-100 rounded-xl">
+            <div class="w-24 h-24 bg-white rounded-lg flex items-center justify-center text-4xl mx-auto">
+              📱
+            </div>
+            <p class="text-xs text-gray-500 mt-2">Quét để xác minh</p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-500 text-xs border-t pt-4">
+          <p>Cảm ơn quý khách đã sử dụng dịch vụ!</p>
+          <p>Vui lòng đến sân đúng giờ. Liên hệ hotline nếu cần hỗ trợ.</p>
+          <p class="mt-2">© 2024 Thành Trung M10 - Tất cả quyền được bảo lưu</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="p-6 bg-gray-50 rounded-b-2xl space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="printInvoice()" class="bg-blue-500 text-white py-3 rounded-xl font-semibold hover:bg-blue-600 transition flex items-center justify-center gap-2">
+            <span>🖨️</span> In hóa đơn
+          </button>
+          <button onclick="downloadInvoice()" class="bg-purple-500 text-white py-3 rounded-xl font-semibold hover:bg-purple-600 transition flex items-center justify-center gap-2">
+            <span>📥</span> Tải PDF
+          </button>
+        </div>
+        <a href="profile.html" class="block w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition text-center">
+          📅 Xem lịch đặt sân
+        </a>
+        <a href="../index.html" class="block w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition text-center">
+          🏠 Về trang chủ
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Modal -->
+  <div id="qrModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+      <h3 class="text-xl font-bold mb-4" id="qrTitle">Quét mã QR để thanh toán</h3>
+      <div class="bg-gray-100 rounded-xl p-4 mb-4">
+        <div id="qrCode" class="w-48 h-48 mx-auto bg-white rounded-lg flex items-center justify-center text-6xl">
+          📱
+        </div>
+      </div>
+      <p class="text-gray-500 text-sm mb-4">Mở ứng dụng <span id="appName">MoMo</span> và quét mã QR</p>
+      <p class="text-2xl font-bold text-green-600 mb-4" id="qrAmount">200,000đ</p>
+      <div class="flex gap-3">
+        <button onclick="closeQRModal()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition">
+          Hủy
+        </button>
+        <button onclick="confirmQRPayment()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition">
+          Đã thanh toán
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedPayment = null;
+    let countdownInterval = null;
+    let timeLeft = 600; // 10 minutes
+
+    // Get booking info from URL params or localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookingId = urlParams.get('bookingId');
+    const orderType = urlParams.get('type') || 'booking'; // 'booking' or 'shop'
+
+    // Get shop cart if it's a shop order
+    let shopCart = null;
+    if (orderType === 'shop') {
+      shopCart = JSON.parse(localStorage.getItem('shopCart') || 'null');
+    }
+
+    // Order data
+    const orderData = {
+      type: orderType,
+      fieldName: urlParams.get('field') || 'Sân 5A',
+      date: urlParams.get('date') || new Date().toLocaleDateString('vi-VN'),
+      time: urlParams.get('time') || '18:00 - 19:00',
+      basePrice: parseInt(urlParams.get('price')) || 200000,
+      discount: parseInt(urlParams.get('discount')) || 0,
+      shopItems: shopCart ? shopCart.items : null
+    };
+
+    // Display order info
+    if (orderType === 'shop' && shopCart) {
+      document.getElementById('fieldName').textContent = '🛒 Đơn hàng cửa hàng';
+      document.getElementById('bookingDate').textContent = orderData.date;
+      document.getElementById('bookingTime').textContent = shopCart.itemsText.substring(0, 40) + (shopCart.itemsText.length > 40 ? '...' : '');
+    } else {
+      document.getElementById('fieldName').textContent = orderData.fieldName;
+      document.getElementById('bookingDate').textContent = orderData.date;
+      document.getElementById('bookingTime').textContent = orderData.time;
+    }
+    document.getElementById('basePrice').textContent = orderData.basePrice.toLocaleString('vi-VN') + 'đ';
+    
+    const total = orderData.basePrice - orderData.discount;
+    document.getElementById('totalAmount').textContent = total.toLocaleString('vi-VN') + 'đ';
+
+    if (orderData.discount > 0) {
+      document.getElementById('discountRow').classList.remove('hidden');
+      document.getElementById('discountAmount').textContent = '-' + orderData.discount.toLocaleString('vi-VN') + 'đ';
+    }
+
+    // Countdown timer
+    function startCountdown() {
+      countdownInterval = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('countdown').textContent = 
+          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          alert('Hết thời gian giữ đơn! Vui lòng đặt lại.');
+          window.location.href = orderType === 'shop' ? 'shop.html' : 'fields.html';
+        }
+      }, 1000);
+    }
+    startCountdown();
+
+    // Select payment method
+    function selectPayment(method) {
+      selectedPayment = method;
+      
+      // Reset all
+      document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
+      });
+      document.querySelectorAll('[id^="radio-"]').forEach(el => {
+        el.innerHTML = '';
+        el.classList.remove('bg-green-500', 'border-green-500');
+        el.classList.add('border-gray-300');
+      });
+
+      // Select current
+      event.currentTarget.classList.add('selected');
+      const radio = document.getElementById(`radio-${method}`);
+      radio.innerHTML = '<div class="w-3 h-3 bg-green-500 rounded-full"></div>';
+      radio.classList.remove('border-gray-300');
+      radio.classList.add('border-green-500');
+
+      // Show/hide bank info
+      document.getElementById('bankInfo').classList.toggle('hidden', method !== 'bank');
+
+      // Update button
+      const btn = document.getElementById('payBtn');
+      btn.disabled = false;
+      btn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+      btn.classList.add('bg-green-600', 'text-white', 'hover:bg-green-700', 'cursor-pointer');
+      
+      const methodNames = {
+        momo: 'Thanh toán qua MoMo',
+        zalopay: 'Thanh toán qua ZaloPay',
+        vnpay: 'Thanh toán qua VNPay',
+        bank: 'Xác nhận đã chuyển khoản',
+        cash: 'Xác nhận đặt sân'
+      };
+      btn.textContent = methodNames[method];
+    }
+
+    // Process payment
+    function processPayment() {
+      if (!selectedPayment) return;
+
+      if (selectedPayment === 'cash') {
+        // Direct confirm for cash payment
+        showProcessing();
+        setTimeout(() => {
+          hideProcessing();
+          showSuccess();
+        }, 2000);
+      } else if (selectedPayment === 'bank') {
+        // Confirm bank transfer
+        if (confirm('Bạn đã chuyển khoản thành công?')) {
+          showProcessing();
+          setTimeout(() => {
+            hideProcessing();
+            showSuccess();
+          }, 2000);
+        }
+      } else {
+        // Show QR for e-wallets
+        showQRModal(selectedPayment);
+      }
+    }
+
+    // QR Modal
+    function showQRModal(method) {
+      const names = { momo: 'MoMo', zalopay: 'ZaloPay', vnpay: 'VNPay' };
+      document.getElementById('qrTitle').textContent = `Quét mã QR ${names[method]}`;
+      document.getElementById('appName').textContent = names[method];
+      document.getElementById('qrAmount').textContent = (orderData.basePrice - orderData.discount).toLocaleString('vi-VN') + 'đ';
+      document.getElementById('qrModal').classList.remove('hidden');
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').classList.add('hidden');
+    }
+
+    function confirmQRPayment() {
+      closeQRModal();
+      showProcessing();
+      setTimeout(() => {
+        hideProcessing();
+        showSuccess();
+      }, 3000);
+    }
+
+    // Processing modal
+    function showProcessing() {
+      document.getElementById('processingModal').classList.remove('hidden');
+    }
+
+    function hideProcessing() {
+      document.getElementById('processingModal').classList.add('hidden');
+    }
+
+    // Success modal with invoice
+    function showSuccess() {
+      clearInterval(countdownInterval);
+      
+      // Generate invoice data
+      const invoiceCode = 'INV-' + Date.now().toString().slice(-6);
+      const now = new Date();
+      const paidAt = now.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'}) + ' - ' + now.toLocaleDateString('vi-VN');
+      
+      // Get user info
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      // Payment method names
+      const methodNames = {
+        momo: 'Ví MoMo',
+        zalopay: 'ZaloPay', 
+        vnpay: 'VNPay',
+        bank: 'Chuyển khoản',
+        cash: 'Tiền mặt'
+      };
+
+      // Update invoice
+      document.getElementById('invoiceCode').textContent = invoiceCode;
+      document.getElementById('invoiceDate').textContent = now.toLocaleDateString('vi-VN');
+      document.getElementById('customerName').textContent = user.name || 'Khách hàng';
+      document.getElementById('paymentMethodText').textContent = methodNames[selectedPayment] || 'Khác';
+      
+      // Handle shop orders differently
+      if (orderType === 'shop' && orderData.shopItems) {
+        document.getElementById('invoiceFieldName').textContent = '🛒 Đơn hàng cửa hàng';
+        document.getElementById('invoiceDateTime').textContent = orderData.shopItems.map(i => `${i.name} x${i.quantity}`).join(', ');
+      } else {
+        document.getElementById('invoiceFieldName').textContent = orderData.fieldName;
+        document.getElementById('invoiceDateTime').textContent = orderData.date + ' | ' + orderData.time;
+      }
+      
+      document.getElementById('invoiceUnitPrice').textContent = orderData.basePrice.toLocaleString('vi-VN') + 'đ';
+      document.getElementById('invoiceSubtotal').textContent = orderData.basePrice.toLocaleString('vi-VN') + 'đ';
+      document.getElementById('invoiceSubtotalText').textContent = orderData.basePrice.toLocaleString('vi-VN') + 'đ';
+      
+      const total = orderData.basePrice - orderData.discount;
+      document.getElementById('invoiceTotalText').textContent = total.toLocaleString('vi-VN') + 'đ';
+      document.getElementById('paidAtText').textContent = 'Lúc ' + paidAt;
+
+      if (orderData.discount > 0) {
+        document.getElementById('invoiceDiscountRow').classList.remove('hidden');
+        document.getElementById('invoiceDiscountText').textContent = '-' + orderData.discount.toLocaleString('vi-VN') + 'đ';
+      }
+
+      // Store invoice data for printing/downloading
+      window.invoiceData = {
+        type: orderType,
+        code: invoiceCode,
+        date: now.toLocaleDateString('vi-VN'),
+        customer: user.name || 'Khách hàng',
+        phone: user.phone || '',
+        field: orderType === 'shop' ? 'Đơn hàng cửa hàng' : orderData.fieldName,
+        bookingDate: orderData.date,
+        bookingTime: orderType === 'shop' && orderData.shopItems 
+          ? orderData.shopItems.map(i => `${i.name} x${i.quantity}`).join(', ')
+          : orderData.time,
+        shopItems: orderData.shopItems,
+        basePrice: orderData.basePrice,
+        discount: orderData.discount,
+        total: total,
+        paymentMethod: methodNames[selectedPayment],
+        paidAt: paidAt
+      };
+
+      // Clear shop cart after successful payment
+      if (orderType === 'shop') {
+        localStorage.removeItem('shopCart');
+        localStorage.removeItem('cart');
+      }
+
+      document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    // Print invoice
+    function printInvoice() {
+      const invoiceContent = document.getElementById('invoiceContent').innerHTML;
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Hóa đơn - ${window.invoiceData.code}</title>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <style>
+            @media print {
+              body { padding: 20px; }
+              @page { margin: 1cm; }
+            }
+          </style>
+        </head>
+        <body class="bg-white p-8 max-w-2xl mx-auto">
+          ${invoiceContent}
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    }
+
+    // Download invoice as text/HTML
+    function downloadInvoice() {
+      const data = window.invoiceData;
+      
+      // Build items detail for shop orders
+      let itemsDetail = '';
+      if (data.type === 'shop' && data.shopItems) {
+        itemsDetail = data.shopItems.map(item => 
+          `  - ${item.name} x${item.quantity}: ${(item.price * item.quantity).toLocaleString('vi-VN')}đ`
+        ).join('\n');
+      } else {
+        itemsDetail = `  - ${data.field}\n    Ngày: ${data.bookingDate}\n    Giờ: ${data.bookingTime}`;
+      }
+
+      const content = `
+═══════════════════════════════════════════════════
+              THÀNH TRUNG M10
+         Hệ thống đặt sân bóng đá
+    Địa chỉ: Trà Vinh, Việt Nam
+    Hotline: 0123 456 789
+═══════════════════════════════════════════════════
+
+            HÓA ĐƠN THANH TOÁN
+            Invoice / Receipt
+
+───────────────────────────────────────────────────
+Mã hóa đơn: ${data.code}
+Ngày xuất: ${data.date}
+Khách hàng: ${data.customer}
+Phương thức TT: ${data.paymentMethod}
+Loại đơn: ${data.type === 'shop' ? 'Mua hàng cửa hàng' : 'Đặt sân bóng'}
+───────────────────────────────────────────────────
+
+CHI TIẾT ĐƠN HÀNG:
+───────────────────────────────────────────────────
+${itemsDetail}
+
+───────────────────────────────────────────────────
+Tạm tính:        ${data.basePrice.toLocaleString('vi-VN')}đ
+${data.discount > 0 ? `Giảm giá:       -${data.discount.toLocaleString('vi-VN')}đ\n` : ''}───────────────────────────────────────────────────
+TỔNG THANH TOÁN: ${data.total.toLocaleString('vi-VN')}đ
+───────────────────────────────────────────────────
+
+✅ ĐÃ THANH TOÁN
+Thời gian: ${data.paidAt}
+
+═══════════════════════════════════════════════════
+    Cảm ơn quý khách đã sử dụng dịch vụ!
+${data.type === 'shop' ? '  Vui lòng đến nhận hàng tại sân.' : '  Vui lòng đến sân đúng giờ.'}
+       Liên hệ hotline nếu cần hỗ trợ.
+═══════════════════════════════════════════════════
+      © 2024 Thành Trung M10
+═══════════════════════════════════════════════════
+      `;
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `HoaDon_${data.code}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Copy bank info
+    function copyBankInfo() {
+      const info = `Ngân hàng: Vietcombank\nSố TK: 1234567890\nChủ TK: NGUYEN VAN A\nNội dung: TT ${bookingId || 'BOOKING'}`;
+      navigator.clipboard.writeText(info).then(() => {
+        alert('Đã sao chép thông tin chuyển khoản!');
+      });
+    }
+  </script>
+</body>
+</html>

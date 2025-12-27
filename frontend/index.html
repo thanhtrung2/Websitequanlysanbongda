@@ -143,14 +143,26 @@
             <p class="text-xs text-gray-500">Đặt sân online 24/7</p>
           </div>
         </a>
-        <div class="hidden md:flex items-center gap-8">
-          <a href="index.html" class="text-green-600 font-semibold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-green-600">Trang chủ</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="index.html" class="text-green-600 font-semibold">Trang chủ</a>
           <a href="san-bong.html" class="text-gray-600 hover:text-green-600 transition font-medium">Sân bóng</a>
           <a href="pages/shop.html" class="text-gray-600 hover:text-green-600 transition font-medium">Cửa hàng</a>
           <a href="pages/community.html" class="text-gray-600 hover:text-green-600 transition font-medium">Cộng đồng</a>
           <a href="pages/about.html" class="text-gray-600 hover:text-green-600 transition font-medium">Giới thiệu</a>
           <a href="pages/contact.html" class="text-gray-600 hover:text-green-600 transition font-medium">Liên hệ</a>
           <div id="userMenu"></div>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-gray-700 text-2xl">☰</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t pt-4">
+        <div class="flex flex-col gap-3">
+          <a href="index.html" class="text-green-600 font-semibold">Trang chủ</a>
+          <a href="san-bong.html" class="text-gray-600 hover:text-green-600 transition">Sân bóng</a>
+          <a href="pages/shop.html" class="text-gray-600 hover:text-green-600 transition">Cửa hàng</a>
+          <a href="pages/community.html" class="text-gray-600 hover:text-green-600 transition">Cộng đồng</a>
+          <a href="pages/about.html" class="text-gray-600 hover:text-green-600 transition">Giới thiệu</a>
+          <a href="pages/contact.html" class="text-gray-600 hover:text-green-600 transition">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t"></div>
         </div>
       </div>
     </div>

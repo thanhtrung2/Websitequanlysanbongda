@@ -11,20 +11,33 @@
   <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
     <div class="container mx-auto px-4 py-4">
       <div class="flex justify-between items-center">
-        <div class="flex items-center space-x-3">
+        <a href="../index.html" class="flex items-center space-x-3">
           <span class="text-4xl">⚽</span>
           <div>
             <h1 class="text-2xl font-bold">Thành Trung M10</h1>
             <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
           </div>
-        </div>
-        <div id="navLinks" class="flex items-center space-x-6">
-          <a href="../index.html" class="hover:text-green-200 transition font-semibold">Trang chủ</a>
-          <a href="../san-bong.html" class="hover:text-green-200 transition font-semibold">Sân bóng</a>
-          <a href="about.html" class="hover:text-green-200 transition font-semibold">Giới thiệu</a>
-          <a href="contact.html" class="hover:text-green-200 transition font-semibold border-b-2 border-white">Liên hệ</a>
-          <a href="advisory.html" class="hover:text-green-200 transition font-semibold">Tư vấn</a>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="../index.html" class="text-white/80 hover:text-white transition font-medium">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white/80 hover:text-white transition font-medium">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition font-medium">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition font-medium">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition font-medium">Giới thiệu</a>
+          <a href="contact.html" class="text-white font-semibold">Liên hệ</a>
           <div id="userMenu"></div>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">☰</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
+        <div class="flex flex-col gap-3">
+          <a href="../index.html" class="text-white/80 hover:text-white transition">Trang chủ</a>
+          <a href="../san-bong.html" class="text-white/80 hover:text-white transition">Sân bóng</a>
+          <a href="shop.html" class="text-white/80 hover:text-white transition">Cửa hàng</a>
+          <a href="community.html" class="text-white/80 hover:text-white transition">Cộng đồng</a>
+          <a href="about.html" class="text-white/80 hover:text-white transition">Giới thiệu</a>
+          <a href="contact.html" class="text-white font-semibold">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t border-white/20"></div>
         </div>
       </div>
     </div>
