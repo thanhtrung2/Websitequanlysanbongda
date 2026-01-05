@@ -1037,6 +1037,84 @@ JWT_EXPIRE=7d
 
 ---
 
+## 📊 Sơ đồ Use Case
+
+### Sơ đồ Use Case - Người dùng (User)
+
+```
+                         ┌────────────────────────────────┐
+                         │   HỆ THỐNG QUẢN LÝ SÂN BÓNG   │
+                         │                                │
+                         │  (Đăng ký)    (Đăng nhập)      │
+                         │                                │
+    ┌──────┐             │  (Xem sân)    (Đặt sân)        │
+    │ USER │─────────────│                                │
+    └──────┘             │  (Thanh toán) (Lịch sử đặt)    │
+                         │                                │
+                         │  (Mua phụ kiện) (Cộng đồng)    │
+                         │                                │
+                         │  (Profile)    (Thông báo)      │
+                         └────────────────────────────────┘
+```
+
+### Mô tả Use Case - Người dùng
+
+**Xác thực:** Người dùng đăng ký tài khoản mới hoặc đăng nhập bằng email/mật khẩu. Hệ thống mã hóa mật khẩu bằng bcrypt và cấp token JWT để xác thực các request tiếp theo.
+
+**Quản lý sân bóng:** Người dùng xem danh sách sân với thông tin loại sân (5, 7, 11 người), giá thuê, tiện ích. Có thể lọc và tìm kiếm sân theo nhu cầu.
+
+**Đặt sân & Thanh toán:** Chọn sân, ngày, khung giờ để đặt lịch. Hệ thống kiểm tra khung giờ trống, tính tiền và hỗ trợ thanh toán qua MoMo, ZaloPay, VNPay, chuyển khoản hoặc tiền mặt.
+
+**Lịch sử & Hủy đặt:** Xem các đơn đặt sân đã thực hiện với trạng thái đơn và thanh toán. Có thể hủy đơn chưa diễn ra.
+
+**Mua sắm:** Duyệt và mua phụ kiện bóng đá (giày, áo, bóng) từ cửa hàng trực tuyến, quản lý giỏ hàng.
+
+**Cộng đồng:** Đăng bài tìm đội, tìm người chơi, tương tác bằng like và bình luận.
+
+**Cá nhân:** Cập nhật thông tin profile, nhận thông báo về đơn đặt sân và khuyến mãi.
+
+---
+
+### Sơ đồ Use Case - Quản trị viên (Admin)
+
+```
+                         ┌────────────────────────────────┐
+                         │      HỆ THỐNG QUẢN TRỊ         │
+                         │                                │
+                         │  (Đăng nhập)  (Quản lý sân)    │
+                         │                                │
+    ┌───────┐            │  (Quản lý đặt sân)             │
+    │ ADMIN │────────────│                                │
+    └───────┘            │  (Khách hàng) (Nhân viên)      │
+                         │                                │
+                         │  (Kho hàng)   (Cộng đồng)      │
+                         │                                │
+                         │  (Khuyến mãi) (Thống kê)       │
+                         └────────────────────────────────┘
+```
+
+### Mô tả Use Case - Quản trị viên
+
+**Xác thực:** Admin đăng nhập với tài khoản có quyền quản trị để truy cập trang admin.
+
+**Quản lý sân bóng:** Xem danh sách sân, thêm sân mới, cập nhật thông tin (tên, giá, tiện ích, hình ảnh) và xóa sân không hoạt động.
+
+**Quản lý đặt sân:** Xem tất cả đơn đặt sân, duyệt/xác nhận đơn mới hoặc từ chối đơn không hợp lệ. Hệ thống tự động thông báo cho khách hàng.
+
+**Quản lý khách hàng:** Xem danh sách tài khoản khách hàng với lịch sử đặt sân, có thể khóa tài khoản vi phạm.
+
+**Quản lý nhân viên:** Thêm, sửa, xóa thông tin nhân viên làm việc tại sân bóng.
+
+**Quản lý kho hàng:** Theo dõi tồn kho phụ kiện, cập nhật số lượng khi nhập/xuất hàng.
+
+**Quản lý cộng đồng:** Giám sát bài viết, kiểm duyệt nội dung và xóa bài vi phạm.
+
+**Quản lý khuyến mãi:** Tạo, sửa, xóa chương trình khuyến mãi với mã giảm giá và thời hạn.
+
+**Thống kê & Báo cáo:** Xem biểu đồ doanh thu theo ngày/tháng/năm, xuất báo cáo ra file Excel/PDF.
+
+---
+
 ## 👨‍💻 Tác giả
 
 **Thành Trung M10**

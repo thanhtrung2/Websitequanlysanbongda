@@ -35,6 +35,16 @@ exports.getFieldById = async (req, res) => {
 
 exports.createField = async (req, res) => {
   try {
+    // Xử lý subFields - loại bỏ _id để MongoDB tự tạo
+    if (req.body.subFields) {
+      req.body.subFields = req.body.subFields.map(sf => ({
+        name: sf.name,
+        type: sf.type || '5vs5',
+        pricePerHour: sf.pricePerHour || null,
+        status: sf.status || 'active'
+      }));
+    }
+    
     const field = await Field.create(req.body);
     res.status(201).json(field);
   } catch (error) {
@@ -44,6 +54,23 @@ exports.createField = async (req, res) => {
 
 exports.updateField = async (req, res) => {
   try {
+    // Xử lý subFields - loại bỏ _id rỗng để MongoDB tự tạo
+    if (req.body.subFields) {
+      req.body.subFields = req.body.subFields.map(sf => {
+        const subField = {
+          name: sf.name,
+          type: sf.type || '5vs5',
+          pricePerHour: sf.pricePerHour || null,
+          status: sf.status || 'active'
+        };
+        // Chỉ giữ _id nếu có và hợp lệ
+        if (sf._id && sf._id.length === 24) {
+          subField._id = sf._id;
+        }
+        return subField;
+      });
+    }
+    
     const field = await Field.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!field) {
       return res.status(404).json({ message: 'Không tìm thấy sân' });

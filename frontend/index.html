@@ -37,6 +37,22 @@
     }
     .bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
     
+    /* Slideshow */
+    @keyframes slideIn {
+      from { opacity: 0; transform: scale(1.1); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .slide-active { animation: slideIn 0.8s ease-out; }
+    
+    /* Sports Pattern Background */
+    .sports-bg {
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2322c55e' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
     /* Sidebar Ads */
     .ad-sidebar {
       position: fixed;
@@ -58,6 +74,17 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+    }
+    
+    /* Hero Slideshow */
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .hero-slide.active {
+      opacity: 1;
     }
   </style>
 </head>
@@ -168,50 +195,74 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="pt-24 pb-16 bg-gradient-to-br from-green-50 via-white to-emerald-50 relative overflow-hidden">
-    <!-- Background decorations -->
-    <div class="absolute top-20 left-10 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-    <div class="absolute bottom-10 right-10 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+  <!-- Hero Section with Slideshow -->
+  <section class="pt-20 relative min-h-[600px] md:min-h-[700px] overflow-hidden">
+    <!-- Slideshow Background -->
+    <div id="heroSlideshow" class="absolute inset-0">
+      <!-- Slide 1 - Sân bóng -->
+      <div class="hero-slide active">
+        <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-green-800/80 to-transparent z-10"></div>
+        <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1920" alt="Sân bóng" class="w-full h-full object-cover">
+      </div>
+      <!-- Slide 2 - Đá bóng -->
+      <div class="hero-slide">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-800/80 to-transparent z-10"></div>
+        <img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1920" alt="Đá bóng" class="w-full h-full object-cover">
+      </div>
+      <!-- Slide 3 - Thể thao -->
+      <div class="hero-slide">
+        <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/90 via-emerald-800/80 to-transparent z-10"></div>
+        <img src="https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=1920" alt="Thể thao" class="w-full h-full object-cover">
+      </div>
+      <!-- Slide 4 - Sân cỏ -->
+      <div class="hero-slide">
+        <div class="absolute inset-0 bg-gradient-to-r from-teal-900/90 via-teal-800/80 to-transparent z-10"></div>
+        <img src="https://images.unsplash.com/photo-1459865264687-595d652de67e?w=1920" alt="Sân cỏ" class="w-full h-full object-cover">
+      </div>
+    </div>
     
-    <div class="container mx-auto px-4 relative">
-      <div class="max-w-6xl mx-auto">
+    <!-- Sports Pattern Overlay -->
+    <div class="absolute inset-0 z-10 opacity-30" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50 50m-40 0a40 40 0 1 0 80 0a40 40 0 1 0-80 0\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'0.5\' opacity=\'0.1\'/%3E%3Cpath d=\'M50 10 L50 90 M10 50 L90 50\' stroke=\'%23ffffff\' stroke-width=\'0.3\' opacity=\'0.1\'/%3E%3C/svg%3E');"></div>
+    
+    <!-- Content -->
+    <div class="container mx-auto px-4 relative z-20 h-full flex items-center py-16">
+      <div class="max-w-6xl mx-auto w-full">
         <div class="grid md:grid-cols-2 gap-12 items-center">
           <!-- Left Content -->
-          <div class="fade-in">
-            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 px-5 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
+          <div class="fade-in text-white">
+            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-5 py-2 rounded-full text-sm font-semibold mb-6">
               <span class="animate-pulse">🎉</span> Khuyến mãi 20% cho khách hàng mới
             </div>
-            <h2 class="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+            <h2 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">
               Đặt sân bóng<br>
-              <span class="gradient-text">chỉ 30 giây</span>
+              <span class="text-green-400">chỉ 30 giây</span>
             </h2>
-            <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p class="text-xl text-gray-200 mb-8 leading-relaxed">
               Hệ thống đặt sân hiện đại nhất Trà Vinh. Xem lịch trống real-time, đặt sân 24/7, thanh toán dễ dàng.
             </p>
             <div class="flex flex-col sm:flex-row gap-4">
-              <a href="san-bong.html" class="group bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl text-center flex items-center justify-center gap-2">
-                Xem sân ngay 
+              <a href="san-bong.html" class="group bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl text-center flex items-center justify-center gap-2">
+                ⚽ Xem sân ngay 
                 <span class="group-hover:translate-x-1 transition-transform">→</span>
               </a>
-              <a href="pages/register.html" id="heroBtn" class="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-semibold hover:border-green-600 hover:text-green-600 hover:bg-green-50 transition-all text-center">
+              <a href="pages/register.html" id="heroBtn" class="border-2 border-white/50 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/20 transition-all text-center backdrop-blur-sm">
                 <span class="hero-btn-text">Đăng ký miễn phí</span>
               </a>
             </div>
             
             <!-- Trust badges -->
-            <div class="flex items-center gap-6 mt-8 pt-8 border-t border-gray-200">
+            <div class="flex items-center gap-6 mt-8 pt-8 border-t border-white/20">
               <div class="flex items-center gap-2">
                 <span class="text-2xl">✅</span>
-                <span class="text-sm text-gray-600">Đặt sân nhanh</span>
+                <span class="text-sm text-gray-200">Đặt sân nhanh</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-2xl">🔒</span>
-                <span class="text-sm text-gray-600">Thanh toán an toàn</span>
+                <span class="text-sm text-gray-200">Thanh toán an toàn</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-2xl">💯</span>
-                <span class="text-sm text-gray-600">Uy tín 100%</span>
+                <span class="text-sm text-gray-200">Uy tín 100%</span>
               </div>
             </div>
           </div>
@@ -219,13 +270,11 @@
           <!-- Right Visual -->
           <div class="hidden md:block">
             <div class="relative">
-              <div class="bg-gradient-to-br from-green-500 via-green-600 to-emerald-700 rounded-3xl p-8 shadow-2xl transform hover:scale-[1.02] transition-transform">
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 mb-6">
-                  <div class="text-center text-white">
-                    <div class="text-8xl mb-4 float">⚽</div>
-                    <h3 class="text-3xl font-bold mb-2">8 Sân Bóng</h3>
-                    <p class="text-green-100 text-lg">Chất lượng cao • Giá tốt</p>
-                  </div>
+              <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20">
+                <div class="text-center text-white mb-6">
+                  <div class="text-8xl mb-4 float">⚽</div>
+                  <h3 class="text-3xl font-bold mb-2">8 Sân Bóng</h3>
+                  <p class="text-green-200 text-lg">Chất lượng cao • Giá tốt</p>
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                   <a href="san-bong.html" class="bg-white/20 backdrop-blur rounded-xl p-4 text-center text-white hover:bg-white/30 transition cursor-pointer transform hover:scale-105">
@@ -256,6 +305,22 @@
         </div>
       </div>
     </div>
+    
+    <!-- Slideshow Indicators -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+      <button onclick="goToSlide(0)" class="slide-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="0"></button>
+      <button onclick="goToSlide(1)" class="slide-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="1"></button>
+      <button onclick="goToSlide(2)" class="slide-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="2"></button>
+      <button onclick="goToSlide(3)" class="slide-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="3"></button>
+    </div>
+    
+    <!-- Slideshow Arrows -->
+    <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-white/30 transition">
+      ❮
+    </button>
+    <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-white/30 transition">
+      ❯
+    </button>
   </section>
 
   <!-- Promo Banner - Load từ API -->
@@ -489,7 +554,7 @@
   <footer class="bg-gray-900 text-white py-16">
     <div class="container mx-auto px-4">
       <div class="max-w-6xl mx-auto">
-        <div class="grid md:grid-cols-4 gap-8 mb-12">
+        <div class="grid md:grid-cols-3 gap-8 mb-12">
           <div>
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
@@ -523,14 +588,6 @@
               <li class="flex items-center gap-2">⏰ 6:00 - 22:00 hàng ngày</li>
             </ul>
           </div>
-          <div>
-            <h5 class="font-bold mb-4 text-lg">Đăng ký nhận tin</h5>
-            <p class="text-gray-400 text-sm mb-4">Nhận thông tin khuyến mãi mới nhất</p>
-            <div class="flex gap-2">
-              <input type="email" placeholder="Email của bạn" class="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm focus:outline-none focus:border-green-500">
-              <button class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition">→</button>
-            </div>
-          </div>
         </div>
         <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p class="text-gray-400 text-sm">&copy; 2024 Thành Trung M10. All rights reserved.</p>
@@ -547,6 +604,65 @@
   <script src="js/main.js"></script>
   <script>
     // API_URL đã được khai báo trong main.js
+    
+    // ========== HERO SLIDESHOW ==========
+    let currentSlideIndex = 0;
+    let slideInterval = null;
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.slide-dot');
+    
+    function showSlide(index) {
+      // Wrap around
+      if (index >= slides.length) index = 0;
+      if (index < 0) index = slides.length - 1;
+      currentSlideIndex = index;
+      
+      // Update slides
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) slide.classList.add('active');
+      });
+      
+      // Update dots
+      dots.forEach((dot, i) => {
+        dot.classList.remove('bg-white');
+        dot.classList.add('bg-white/50');
+        if (i === index) {
+          dot.classList.remove('bg-white/50');
+          dot.classList.add('bg-white');
+        }
+      });
+    }
+    
+    function nextSlide() {
+      showSlide(currentSlideIndex + 1);
+      resetSlideInterval();
+    }
+    
+    function prevSlide() {
+      showSlide(currentSlideIndex - 1);
+      resetSlideInterval();
+    }
+    
+    function goToSlide(index) {
+      showSlide(index);
+      resetSlideInterval();
+    }
+    
+    function startSlideshow() {
+      slideInterval = setInterval(() => {
+        showSlide(currentSlideIndex + 1);
+      }, 5000); // Chuyển slide mỗi 5 giây
+    }
+    
+    function resetSlideInterval() {
+      if (slideInterval) clearInterval(slideInterval);
+      startSlideshow();
+    }
+    
+    // Khởi động slideshow
+    showSlide(0);
+    startSlideshow();
     
     // Load banner promotion từ API
     async function loadBannerPromotion() {

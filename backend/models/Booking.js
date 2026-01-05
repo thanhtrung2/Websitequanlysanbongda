@@ -11,6 +11,15 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Field',
     required: true
   },
+  // Sân con được chọn (sân 1, sân 2...)
+  subField: {
+    id: {
+      type: mongoose.Schema.Types.ObjectId
+    },
+    name: {
+      type: String
+    }
+  },
   date: {
     type: Date,
     required: true

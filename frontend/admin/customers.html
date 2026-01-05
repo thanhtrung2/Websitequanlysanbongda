@@ -1,4 +1,4 @@
-*<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -6,129 +6,93 @@
   <title>Quản lý Khách hàng - Admin</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
+    .sidebar-link.active { background: rgba(255,255,255,0.15); border-left: 3px solid #fbbf24; }
+    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <!-- Toast Container -->
-  <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
-
-  <!-- Customer Detail Modal -->
-  <div id="customerModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-      <div id="customerModalContent"></div>
-    </div>
-  </div>
-
+<body class="bg-slate-50">
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-green-800 text-white">
-      <div class="p-6">
-        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+    <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
+      <div class="p-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl">⚽</div>
+          <div><h1 class="font-bold text-lg">Thành Trung M10</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
+        </div>
       </div>
-      <nav class="mt-6">
-        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📊</span> Dashboard
-        </a>
-        <a href="fields.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">⚽</span> Quản lý sân
-        </a>
-        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📅</span> Quản lý lịch đặt
-        </a>
-        <a href="customers.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
-          <span class="mr-3">👥</span> Quản lý khách hàng
-        </a>
-        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🏆</span> Quản lý cộng đồng
-        </a>
-        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">💰</span> Quản lý tài chính
-        </a>
-        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📦</span> Quản lý kho
-        </a>
-        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🎁</span> Quản lý khuyến mãi
-        </a>
-        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👔</span> Quản lý nhân viên
-        </a>
-        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📈</span> Báo cáo & Thống kê
-        </a>
-        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
-          <span class="mr-3">🏠</span> Về trang chủ
-        </a>
-        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
-          <span class="mr-3">🚪</span> Đăng xuất
-        </a>
+      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <a href="index.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📊</span> Dashboard</a>
+        <a href="fields.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>⚽</span> Quản lý sân</a>
+        <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📅</span> Lịch đặt sân</a>
+        <a href="customers.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><span>👥</span> Khách hàng</a>
+        <a href="community.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🏆</span> Cộng đồng</a>
+        <div class="pt-2 mt-2 border-t border-white/10"><p class="px-4 py-2 text-xs text-slate-500 uppercase">Quản lý</p></div>
+        <a href="revenue.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>💰</span> Tài chính</a>
+        <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📦</span> Kho hàng</a>
+        <a href="promotions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🎁</span> Khuyến mãi</a>
+        <a href="staff.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👔</span> Nhân viên</a>
+        <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📈</span> Báo cáo</a>
       </nav>
+      <div class="p-3 border-t border-white/10">
+        <a href="../index.html" class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-slate-400"><span>🏠</span> Về trang chủ</a>
+        <button onclick="logout()" class="w-full sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/20"><span>🚪</span> Đăng xuất</button>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-      <header class="bg-white shadow-sm">
-        <div class="px-8 py-4">
-          <h2 class="text-2xl font-bold text-gray-800">Quản lý Khách hàng</h2>
+      <header class="glass sticky top-0 z-10 border-b border-slate-200">
+        <div class="flex justify-between items-center px-6 py-4">
+          <div><h2 class="text-xl font-bold text-slate-800">Quản lý Khách hàng</h2><p class="text-sm text-slate-500">Danh sách khách hàng đã đăng ký</p></div>
+          <div class="relative">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm..." oninput="searchCustomers()" class="pl-10 pr-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-green-500 transition w-64">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+          </div>
         </div>
       </header>
 
-      <div class="p-8">
+      <div class="p-6">
         <!-- Stats -->
-        <div class="grid md:grid-cols-4 gap-6 mb-6">
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Tổng khách hàng</p>
-            <p class="text-3xl font-bold text-gray-800" id="totalCustomers">0</p>
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-2xl p-5 border border-slate-100">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">👥</div>
+              <div><p class="text-sm text-slate-500">Tổng khách hàng</p><p id="totalCustomers" class="text-2xl font-bold text-slate-800">0</p></div>
+            </div>
           </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Khách VIP</p>
-            <p class="text-3xl font-bold text-yellow-600" id="vipCustomers">0</p>
+          <div class="bg-white rounded-2xl p-5 border border-slate-100">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">✅</div>
+              <div><p class="text-sm text-slate-500">Đang hoạt động</p><p id="activeCustomers" class="text-2xl font-bold text-green-600">0</p></div>
+            </div>
           </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Đặt sân tháng này</p>
-            <p class="text-3xl font-bold text-green-600" id="monthlyBookings">0</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Doanh thu từ khách</p>
-            <p class="text-2xl font-bold text-blue-600" id="customerRevenue">0đ</p>
-          </div>
-        </div>
-
-        <!-- Search -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div class="flex gap-4">
-            <input type="text" id="searchCustomer" placeholder="Tìm kiếm khách hàng..." 
-              class="flex-1 px-4 py-2 border rounded-lg" onkeyup="searchCustomers()">
-            <select id="filterRole" onchange="filterCustomers()" class="px-4 py-2 border rounded-lg">
-              <option value="">Tất cả vai trò</option>
-              <option value="customer">Khách hàng</option>
-              <option value="admin">Admin</option>
-              <option value="staff">Nhân viên</option>
-            </select>
+          <div class="bg-white rounded-2xl p-5 border border-slate-100">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center text-2xl">⭐</div>
+              <div><p class="text-sm text-slate-500">Khách VIP</p><p id="vipCustomers" class="text-2xl font-bold text-yellow-600">0</p></div>
+            </div>
           </div>
         </div>
 
         <!-- Customers Table -->
-        <div class="bg-white rounded-lg shadow">
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Liên hệ</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vai trò</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày tham gia</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Số lần đặt</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tổng chi tiêu</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
-                </tr>
-              </thead>
-              <tbody id="customersTable" class="divide-y divide-gray-200">
-                <tr>
-                  <td colspan="7" class="px-6 py-4 text-center text-gray-500">Đang tải...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Khách hàng</th>
+                <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Email</th>
+                <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">SĐT</th>
+                <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Ngày đăng ký</th>
+                <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="customersTable" class="divide-y divide-slate-100">
+              <tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Đang tải...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </main>
@@ -138,282 +102,63 @@
     const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
     let allCustomers = [];
-    let allBookings = [];
-    let filteredCustomers = [];
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = '../index.html';
-    }
+    function logout() { localStorage.clear(); window.location.href = '../index.html'; }
 
-    async function loadData() {
+    async function loadCustomers() {
       try {
-        const [usersResponse, bookingsResponse] = await Promise.all([
-          fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } }),
-          fetch(`${API_URL}/bookings`, { headers: { 'Authorization': `Bearer ${token}` } })
-        ]);
-        
-        if (usersResponse.ok) {
-          allCustomers = await usersResponse.json();
+        const response = await fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (response.ok) {
+          const users = await response.json();
+          allCustomers = users.filter(u => u.role === 'customer');
+          updateStats();
+          displayCustomers(allCustomers);
         }
-        
-        if (bookingsResponse.ok) {
-          allBookings = await bookingsResponse.json();
-        }
-
-        filteredCustomers = allCustomers;
-        displayCustomers();
-        updateStats();
       } catch (error) {
-        console.error('Error:', error);
+        document.getElementById('customersTable').innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-red-500">Lỗi tải dữ liệu</td></tr>';
       }
-    }
-
-    function displayCustomers() {
-      const tbody = document.getElementById('customersTable');
-      
-      if (filteredCustomers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Không có dữ liệu</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = filteredCustomers.map(customer => {
-        const customerBookings = allBookings.filter(b => 
-          b.user && (b.user._id === customer._id || b.user.id === customer._id)
-        );
-        const totalSpent = customerBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
-        const bookingCount = customerBookings.length;
-        
-        const roleColors = {
-          'customer': 'bg-blue-100 text-blue-800',
-          'admin': 'bg-red-100 text-red-800',
-          'staff': 'bg-green-100 text-green-800'
-        };
-
-        const roleText = {
-          'customer': 'Khách hàng',
-          'admin': 'Admin',
-          'staff': 'Nhân viên'
-        };
-
-        return `
-          <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4">
-              <div class="flex items-center">
-                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                  ${customer.name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <div class="font-semibold">${customer.name}</div>
-                  <div class="text-sm text-gray-500">${customer.email}</div>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <div class="text-sm">${customer.phone || 'N/A'}</div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 rounded-full text-xs font-semibold ${roleColors[customer.role] || 'bg-gray-100 text-gray-800'}">
-                ${roleText[customer.role] || customer.role}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-sm">
-              ${customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('vi-VN') : 'N/A'}
-            </td>
-            <td class="px-6 py-4 font-semibold">${bookingCount}</td>
-            <td class="px-6 py-4 font-semibold text-green-600">${totalSpent.toLocaleString()}đ</td>
-            <td class="px-6 py-4">
-              <button onclick="viewCustomerDetail('${customer._id}')" 
-                class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
-                Chi tiết
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
     }
 
     function updateStats() {
-      const totalCustomers = allCustomers.filter(c => c.role === 'customer').length;
-      const vipCustomers = allCustomers.filter(c => {
-        const bookings = allBookings.filter(b => b.user && (b.user._id === c._id || b.user.id === c._id));
-        return bookings.length >= 5;
-      }).length;
-      
-      const thisMonth = new Date().getMonth();
-      const monthlyBookings = allBookings.filter(b => 
-        new Date(b.date).getMonth() === thisMonth
-      ).length;
-      
-      const totalRevenue = allBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
-
-      document.getElementById('totalCustomers').textContent = totalCustomers;
-      document.getElementById('vipCustomers').textContent = vipCustomers;
-      document.getElementById('monthlyBookings').textContent = monthlyBookings;
-      document.getElementById('customerRevenue').textContent = totalRevenue.toLocaleString() + 'đ';
+      document.getElementById('totalCustomers').textContent = allCustomers.length;
+      document.getElementById('activeCustomers').textContent = allCustomers.filter(c => c.status !== 'blocked').length;
+      document.getElementById('vipCustomers').textContent = Math.floor(allCustomers.length * 0.1);
     }
 
     function searchCustomers() {
-      const search = document.getElementById('searchCustomer').value.toLowerCase();
-      filteredCustomers = allCustomers.filter(customer => 
-        customer.name.toLowerCase().includes(search) ||
-        customer.email.toLowerCase().includes(search)
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = allCustomers.filter(c => 
+        c.name?.toLowerCase().includes(term) || 
+        c.email?.toLowerCase().includes(term) || 
+        c.phone?.includes(term)
       );
-      displayCustomers();
+      displayCustomers(filtered);
     }
 
-    function filterCustomers() {
-      const role = document.getElementById('filterRole').value;
-      const search = document.getElementById('searchCustomer').value.toLowerCase();
-      
-      filteredCustomers = allCustomers.filter(customer => {
-        const matchRole = !role || customer.role === role;
-        const matchSearch = !search || 
-          customer.name.toLowerCase().includes(search) ||
-          customer.email.toLowerCase().includes(search);
-        return matchRole && matchSearch;
-      });
-      
-      displayCustomers();
-    }
+    function displayCustomers(customers) {
+      const tbody = document.getElementById('customersTable');
+      if (customers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">Không có khách hàng</td></tr>';
+        return;
+      }
 
-    function viewCustomerDetail(id) {
-      const customer = allCustomers.find(c => c._id === id);
-      const bookings = allBookings.filter(b => b.user && (b.user._id === id || b.user.id === id));
-      const totalSpent = bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
-      
-      const roleText = { 'customer': 'Khách hàng', 'admin': 'Admin', 'staff': 'Nhân viên' };
-      const roleColors = { 'customer': 'bg-blue-100 text-blue-800', 'admin': 'bg-red-100 text-red-800', 'staff': 'bg-green-100 text-green-800' };
-      const statusText = { 'pending': 'Chờ xác nhận', 'confirmed': 'Đã xác nhận', 'completed': 'Hoàn thành', 'cancelled': 'Đã hủy' };
-      const statusColors = { 'pending': 'bg-yellow-100 text-yellow-800', 'confirmed': 'bg-green-100 text-green-800', 'completed': 'bg-blue-100 text-blue-800', 'cancelled': 'bg-red-100 text-red-800' };
-      
-      // Determine VIP status
-      const isVip = bookings.length >= 5;
-      
-      document.getElementById('customerModalContent').innerHTML = `
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 text-white">
-          <div class="flex justify-between items-start">
-            <div class="flex items-center gap-4">
-              <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-4xl font-bold">
-                ${customer.avatar ? `<img src="${customer.avatar}" class="w-full h-full rounded-full object-cover">` : customer.name.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <h3 class="text-2xl font-bold flex items-center gap-2">
-                  ${customer.name}
-                  ${isVip ? '<span class="text-yellow-300 text-lg">⭐ VIP</span>' : ''}
-                </h3>
-                <p class="text-green-100">${customer.email}</p>
-                <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/20">
-                  ${roleText[customer.role] || customer.role}
-                </span>
-              </div>
+      tbody.innerHTML = customers.map(c => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-5 py-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold">${(c.name || 'N')[0].toUpperCase()}</div>
+              <span class="font-medium text-slate-800">${c.name || 'N/A'}</span>
             </div>
-            <button onclick="closeCustomerModal()" class="text-white/80 hover:text-white text-3xl">&times;</button>
-          </div>
-        </div>
-        
-        <!-- Stats -->
-        <div class="grid grid-cols-3 gap-4 p-6 bg-gray-50">
-          <div class="text-center">
-            <p class="text-3xl font-bold text-green-600">${bookings.length}</p>
-            <p class="text-gray-500 text-sm">Lần đặt sân</p>
-          </div>
-          <div class="text-center">
-            <p class="text-3xl font-bold text-blue-600">${totalSpent.toLocaleString()}đ</p>
-            <p class="text-gray-500 text-sm">Tổng chi tiêu</p>
-          </div>
-          <div class="text-center">
-            <p class="text-3xl font-bold text-purple-600">${customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('vi-VN') : 'N/A'}</p>
-            <p class="text-gray-500 text-sm">Ngày tham gia</p>
-          </div>
-        </div>
-        
-        <!-- Contact Info -->
-        <div class="p-6 border-b">
-          <h4 class="font-bold text-gray-800 mb-3">📞 Thông tin liên hệ</h4>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <span class="text-2xl">📧</span>
-              <div>
-                <p class="text-xs text-gray-500">Email</p>
-                <p class="font-semibold">${customer.email}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <span class="text-2xl">📱</span>
-              <div>
-                <p class="text-xs text-gray-500">Số điện thoại</p>
-                <p class="font-semibold">${customer.phone || 'Chưa cập nhật'}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Recent Bookings -->
-        <div class="p-6 max-h-[300px] overflow-y-auto">
-          <h4 class="font-bold text-gray-800 mb-3">📅 Lịch sử đặt sân gần đây</h4>
-          ${bookings.length === 0 ? 
-            '<p class="text-gray-500 text-center py-4">Chưa có lịch đặt sân nào</p>' :
-            `<div class="space-y-3">
-              ${bookings.slice(0, 5).map(b => `
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-xl">⚽</div>
-                    <div>
-                      <p class="font-semibold">${b.field?.name || 'Sân bóng'}</p>
-                      <p class="text-sm text-gray-500">${new Date(b.date).toLocaleDateString('vi-VN')} • ${b.startTime}-${b.endTime}</p>
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-bold text-green-600">${(b.totalPrice || 0).toLocaleString()}đ</p>
-                    <span class="px-2 py-1 rounded-full text-xs ${statusColors[b.status] || 'bg-gray-100'}">${statusText[b.status] || b.status}</span>
-                  </div>
-                </div>
-              `).join('')}
-              ${bookings.length > 5 ? `<p class="text-center text-gray-500 text-sm">Và ${bookings.length - 5} lịch đặt khác...</p>` : ''}
-            </div>`
-          }
-        </div>
-        
-        <!-- Footer -->
-        <div class="p-4 bg-gray-50 flex justify-end gap-3">
-          <button onclick="closeCustomerModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold">
-            Đóng
-          </button>
-        </div>
-      `;
-      
-      document.getElementById('customerModal').classList.remove('hidden');
+          </td>
+          <td class="px-5 py-4 text-slate-600">${c.email || 'N/A'}</td>
+          <td class="px-5 py-4 text-slate-600">${c.phone || 'Chưa cập nhật'}</td>
+          <td class="px-5 py-4 text-slate-600">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('vi-VN') : 'N/A'}</td>
+          <td class="px-5 py-4"><span class="px-3 py-1 rounded-lg text-xs font-semibold ${c.status === 'blocked' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${c.status === 'blocked' ? 'Bị khóa' : 'Hoạt động'}</span></td>
+        </tr>
+      `).join('');
     }
 
-    function closeCustomerModal() {
-      document.getElementById('customerModal').classList.add('hidden');
-    }
-
-    // Toast notification
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      const colors = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500', info: 'bg-blue-500' };
-      const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
-      
-      toast.className = `flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl text-white min-w-[300px] ${colors[type]} animate-[slideIn_0.3s_ease-out]`;
-      toast.innerHTML = `
-        <span class="text-xl">${icons[type]}</span>
-        <span class="flex-1">${message}</span>
-        <button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white">&times;</button>
-      `;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-
-    // Close modal on outside click
-    document.getElementById('customerModal').addEventListener('click', function(e) {
-      if (e.target === this) closeCustomerModal();
-    });
-
-    loadData();
+    loadCustomers();
   </script>
 </body>
 </html>

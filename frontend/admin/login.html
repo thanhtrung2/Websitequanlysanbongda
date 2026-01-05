@@ -7,197 +7,81 @@
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
-      50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.8); }
-    }
-    @keyframes gradient-shift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .float-animation { animation: float 3s ease-in-out infinite; }
-    .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-    .gradient-bg {
-      background: linear-gradient(-45deg, #22c55e, #16a34a, #15803d, #166534);
-      background-size: 400% 400%;
-      animation: gradient-shift 15s ease infinite;
-    }
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-    }
+    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); }
   </style>
 </head>
-<body class="gradient-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-  <!-- Background decorations -->
-  <div class="absolute top-10 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-  <div class="absolute bottom-10 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-  <div class="absolute top-1/2 left-1/4 w-48 h-48 bg-yellow-300/20 rounded-full blur-2xl"></div>
+<body class="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 flex items-center justify-center p-4">
+  <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
   
-  <!-- Floating soccer balls -->
-  <div class="absolute top-20 right-20 text-6xl opacity-20 float-animation" style="animation-delay: 0s;">⚽</div>
-  <div class="absolute bottom-32 left-16 text-4xl opacity-20 float-animation" style="animation-delay: 1s;">⚽</div>
-  <div class="absolute top-1/3 right-1/4 text-5xl opacity-15 float-animation" style="animation-delay: 2s;">⚽</div>
-
-  <div class="glass-effect rounded-3xl shadow-2xl w-full max-w-md p-8 relative z-10">
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl pulse-glow">
-        <span class="text-5xl">🔐</span>
-      </div>
-      <h1 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent mb-2">
-        Đăng nhập Admin
-      </h1>
-      <p class="text-gray-500">Hệ thống quản trị Thành Trung M10</p>
+  <div class="glass rounded-3xl shadow-2xl max-w-md w-full overflow-hidden relative z-10">
+    <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-8 text-center text-white">
+      <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-4xl">⚽</div>
+      <h1 class="text-2xl font-bold">Thành Trung M10</h1>
+      <p class="text-green-100">Admin Panel</p>
     </div>
-
-    <!-- Alert -->
-    <div id="alert" class="hidden mb-4 p-4 rounded-xl"></div>
-
-    <!-- Form -->
-    <form id="adminLoginForm" class="space-y-5">
-      <!-- Email -->
+    
+    <form id="loginForm" class="p-8 space-y-5">
       <div>
-        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
-          <span class="text-lg">📧</span> Email
-        </label>
-        <input 
-          type="email" 
-          id="email" 
-          required 
-          placeholder="admin@thanhtrungm10.vn"
-          class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300">
+        <label class="block text-slate-700 font-semibold mb-2">Email</label>
+        <input type="email" id="email" required placeholder="admin@example.com" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition">
       </div>
-
-      <!-- Password -->
       <div>
-        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
-          <span class="text-lg">🔑</span> Mật khẩu
-        </label>
-        <div class="relative">
-          <input 
-            type="password" 
-            id="password" 
-            required 
-            placeholder="••••••••"
-            class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300">
-          <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-            <span id="eyeIcon">👁️</span>
-          </button>
-        </div>
+        <label class="block text-slate-700 font-semibold mb-2">Mật khẩu</label>
+        <input type="password" id="password" required placeholder="••••••••" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition">
       </div>
-
-      <!-- Submit Button -->
-      <button 
-        type="submit" 
-        id="submitBtn"
-        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-        <span>🚀</span>
-        <span>Đăng nhập</span>
+      <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3.5 rounded-xl font-bold hover:shadow-lg hover:shadow-green-300 transition">
+        Đăng nhập
       </button>
+      <p id="error" class="text-red-500 text-center text-sm hidden"></p>
     </form>
-
-    <!-- Divider -->
-    <div class="my-6 flex items-center">
-      <div class="flex-1 border-t border-gray-200"></div>
-      <span class="px-4 text-gray-400 text-sm">⚽</span>
-      <div class="flex-1 border-t border-gray-200"></div>
-    </div>
-
-    <!-- Links -->
-    <div class="text-center">
-      <a href="../index.html" class="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold transition-colors">
-        <span>←</span>
-        <span>Về trang chủ</span>
-      </a>
-    </div>
-
-    <!-- Footer -->
-    <div class="mt-8 pt-6 border-t border-gray-100 text-center">
-      <p class="text-gray-400 text-sm">© 2024 Thành Trung M10</p>
-      <p class="text-gray-400 text-xs mt-1">Hệ thống quản lý sân bóng</p>
+    
+    <div class="px-8 pb-8 text-center">
+      <a href="../index.html" class="text-slate-500 hover:text-green-600 text-sm">← Về trang chủ</a>
     </div>
   </div>
 
   <script>
     const API_URL = 'http://localhost:3000/api';
-
-    function togglePassword() {
-      const passwordInput = document.getElementById('password');
-      const eyeIcon = document.getElementById('eyeIcon');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.textContent = '🙈';
-      } else {
-        passwordInput.type = 'password';
-        eyeIcon.textContent = '👁️';
-      }
+    
+    // Check if already logged in as admin
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (token && user.role === 'admin') {
+      window.location.href = 'index.html';
     }
-
-    function showAlert(message, type = 'success') {
-      const alert = document.getElementById('alert');
-      const bgColor = type === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800';
-      const icon = type === 'success' ? '✅' : '❌';
-      alert.className = `mb-4 p-4 rounded-xl border-2 ${bgColor}`;
-      alert.innerHTML = `
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">${icon}</span>
-          <span class="font-semibold">${message}</span>
-        </div>
-      `;
-      alert.classList.remove('hidden');
-    }
-
-    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+    
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const submitBtn = document.getElementById('submitBtn');
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="animate-spin">⏳</span> <span>Đang đăng nhập...</span>';
-
+      const errorEl = document.getElementById('error');
+      
       try {
         const response = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
-
+        
         const data = await response.json();
-
+        
         if (response.ok) {
-          if (data.role !== 'admin') {
-            showAlert('Tài khoản này không có quyền admin!', 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>🚀</span> <span>Đăng nhập</span>';
+          if (data.user.role !== 'admin' && data.user.role !== 'staff') {
+            errorEl.textContent = 'Bạn không có quyền truy cập admin!';
+            errorEl.classList.remove('hidden');
             return;
           }
-
+          
           localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data));
-          
-          showAlert('Đăng nhập thành công! Đang chuyển hướng...', 'success');
-          submitBtn.innerHTML = '<span>✅</span> <span>Thành công!</span>';
-          
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 1500);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          window.location.href = 'index.html';
         } else {
-          showAlert(data.message || 'Email hoặc mật khẩu không đúng', 'error');
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<span>🚀</span> <span>Đăng nhập</span>';
+          errorEl.textContent = data.message || 'Đăng nhập thất bại';
+          errorEl.classList.remove('hidden');
         }
       } catch (error) {
-        showAlert('Lỗi kết nối server: ' + error.message, 'error');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>🚀</span> <span>Đăng nhập</span>';
+        errorEl.textContent = 'Lỗi kết nối server';
+        errorEl.classList.remove('hidden');
       }
     });
   </script>

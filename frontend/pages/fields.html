@@ -3,137 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Danh sách sân</title>
+  <title>Danh sách sân - Thành Trung M10</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+    .card-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .card-hover:hover { transform: translateY(-12px) scale(1.02); }
+    .search-glow:focus { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2), 0 0 30px rgba(34, 197, 94, 0.1); }
+    .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); }
+    .gradient-text { background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  </style>
 </head>
-<body class="bg-gray-50">
-  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
-    <div class="container mx-auto px-4 py-4">
+<body class="bg-gradient-to-br from-gray-50 via-white to-green-50 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="fixed w-full bg-white/95 backdrop-blur-md shadow-lg z-50">
+    <div class="container mx-auto px-4 py-3">
       <div class="flex justify-between items-center">
-        <a href="../index.html" class="flex items-center space-x-3">
-          <span class="text-4xl">⚽</span>
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-green-300 transition-all duration-300">
+            <span class="text-2xl">⚽</span>
+          </div>
           <div>
-            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
-            <p class="text-xs text-green-100">Danh sách sân bóng</p>
+            <h1 class="text-xl font-bold gradient-text">Thành Trung M10</h1>
+            <p class="text-xs text-gray-500">Đặt sân online 24/7</p>
           </div>
         </a>
         <div class="hidden md:flex items-center gap-6">
-          <a href="../index.html" class="text-white/80 hover:text-white transition font-medium">Trang chủ</a>
-          <a href="../san-bong.html" class="text-white font-semibold">Sân bóng</a>
-          <a href="shop.html" class="text-white/80 hover:text-white transition font-medium">Cửa hàng</a>
-          <a href="community.html" class="text-white/80 hover:text-white transition font-medium">Cộng đồng</a>
-          <a href="about.html" class="text-white/80 hover:text-white transition font-medium">Giới thiệu</a>
-          <a href="contact.html" class="text-white/80 hover:text-white transition font-medium">Liên hệ</a>
+          <a href="../index.html" class="text-gray-600 hover:text-green-600 transition font-medium">Trang chủ</a>
+          <a href="../san-bong.html" class="text-green-600 font-semibold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-green-500">Sân bóng</a>
+          <a href="shop.html" class="text-gray-600 hover:text-green-600 transition font-medium">Cửa hàng</a>
+          <a href="community.html" class="text-gray-600 hover:text-green-600 transition font-medium">Cộng đồng</a>
+          <a href="about.html" class="text-gray-600 hover:text-green-600 transition font-medium">Giới thiệu</a>
+          <a href="contact.html" class="text-gray-600 hover:text-green-600 transition font-medium">Liên hệ</a>
           <div id="userMenu"></div>
         </div>
-        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">☰</button>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-gray-700 text-2xl hover:text-green-600 transition">☰</button>
       </div>
-      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t pt-4">
         <div class="flex flex-col gap-3">
-          <a href="../index.html" class="text-white/80 hover:text-white transition">Trang chủ</a>
-          <a href="../san-bong.html" class="text-white font-semibold">Sân bóng</a>
-          <a href="shop.html" class="text-white/80 hover:text-white transition">Cửa hàng</a>
-          <a href="community.html" class="text-white/80 hover:text-white transition">Cộng đồng</a>
-          <a href="about.html" class="text-white/80 hover:text-white transition">Giới thiệu</a>
-          <a href="contact.html" class="text-white/80 hover:text-white transition">Liên hệ</a>
-          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t border-white/20"></div>
+          <a href="../index.html" class="text-gray-600 hover:text-green-600 transition">Trang chủ</a>
+          <a href="../san-bong.html" class="text-green-600 font-semibold">Sân bóng</a>
+          <a href="shop.html" class="text-gray-600 hover:text-green-600 transition">Cửa hàng</a>
+          <a href="community.html" class="text-gray-600 hover:text-green-600 transition">Cộng đồng</a>
+          <a href="about.html" class="text-gray-600 hover:text-green-600 transition">Giới thiệu</a>
+          <a href="contact.html" class="text-gray-600 hover:text-green-600 transition">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t"></div>
         </div>
       </div>
     </div>
   </nav>
 
-  <div class="container mx-auto px-4 py-8">
-    <h2 class="text-3xl font-bold mb-8">Danh sách sân bóng tại Trà Vinh</h2>
-    
-    <div id="loading" class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-      <p class="mt-4 text-gray-600">Đang tải danh sách sân...</p>
+  <!-- Hero Section -->
+  <section class="pt-24 pb-8 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-green-600 via-green-700 to-emerald-800"></div>
+    <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center text-white py-12">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">🏟️ Danh Sách Sân Bóng</h1>
+        <p class="text-xl text-green-100 max-w-2xl mx-auto">Khám phá và đặt sân bóng chất lượng cao tại Trà Vinh</p>
+      </div>
     </div>
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+  </section>
 
-    <div id="fieldsList" class="grid md:grid-cols-3 gap-6"></div>
-  </div>
+  <!-- Search Section -->
+  <section class="relative -mt-8 z-20 px-4">
+    <div class="container mx-auto max-w-4xl">
+      <div class="glass rounded-3xl shadow-2xl p-6 md:p-8 border border-white/50">
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+          <div class="flex-1 w-full relative">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl">🔍</div>
+            <input type="text" id="searchInput" 
+              placeholder="Tìm kiếm sân bóng theo tên hoặc địa chỉ..." 
+              class="w-full pl-14 pr-6 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-green-500 search-glow transition-all duration-300 bg-white/80"
+              oninput="searchFields()">
+          </div>
+          <div class="flex gap-2 flex-wrap justify-center">
+            <button onclick="filterByType('all')" class="filter-btn active px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-green-600 text-white shadow-lg" data-type="all">Tất cả</button>
+            <button onclick="filterByType('5vs5')" class="filter-btn px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-green-100" data-type="5vs5">⚽ Sân 5</button>
+            <button onclick="filterByType('7vs7')" class="filter-btn px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-green-100" data-type="7vs7">⚽ Sân 7</button>
+            <button onclick="filterByType('11vs11')" class="filter-btn px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-green-100" data-type="11vs11">⚽ Sân 11</button>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center justify-between text-sm flex-wrap gap-2">
+          <p id="filterResult" class="text-gray-600 font-medium"></p>
+          <div class="flex items-center gap-2 text-gray-500">
+            <span>Sắp xếp:</span>
+            <select id="sortSelect" onchange="sortFields()" class="border rounded-lg px-3 py-1 focus:outline-none focus:border-green-500">
+              <option value="name">Tên A-Z</option>
+              <option value="price-low">Giá thấp → cao</option>
+              <option value="price-high">Giá cao → thấp</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Fields Grid -->
+  <section class="py-12 px-4">
+    <div class="container mx-auto">
+      <div id="loading" class="text-center py-16">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-4">
+          <div class="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p class="text-gray-600 text-lg">Đang tải danh sách sân...</p>
+      </div>
+      <div id="fieldsList" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
   <script src="../js/main.js"></script>
+
   <script>
-    // API_URL, checkAuth, getUser, logout đã được khai báo trong main.js
+    let allFields = [];
+    let currentFilter = 'all';
     
     async function loadFields() {
-      console.log('=== Starting loadFields ===');
-      const loading = document.getElementById('loading');
+      try {
+        const response = await fetch(`${API_URL}/fields`);
+        allFields = await response.json();
+        allFields = allFields.filter(f => f.status === 'active');
+        document.getElementById('loading').style.display = 'none';
+        displayFields(allFields);
+        updateFilterResult(allFields.length);
+      } catch (error) {
+        document.getElementById('loading').innerHTML = `
+          <div class="text-center">
+            <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-5xl">😢</span></div>
+            <p class="text-red-600 font-bold mb-2">Lỗi tải dữ liệu</p>
+            <p class="text-gray-600">${error.message}</p>
+            <button onclick="location.reload()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded-xl">Thử lại</button>
+          </div>`;
+      }
+    }
+    
+    function filterByType(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.type === type) {
+          btn.classList.remove('bg-gray-100', 'text-gray-700');
+          btn.classList.add('bg-green-600', 'text-white', 'shadow-lg');
+        } else {
+          btn.classList.remove('bg-green-600', 'text-white', 'shadow-lg');
+          btn.classList.add('bg-gray-100', 'text-gray-700');
+        }
+      });
+      searchFields();
+    }
+    
+    function searchFields() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+      let filtered = allFields;
+      if (currentFilter !== 'all') filtered = filtered.filter(f => f.type === currentFilter);
+      if (searchTerm) {
+        filtered = filtered.filter(f => {
+          const name = f.name.toLowerCase();
+          const address = (f.location?.address || '').toLowerCase();
+          return name.includes(searchTerm) || address.includes(searchTerm);
+        });
+      }
+      displayFields(filtered);
+      updateFilterResult(filtered.length);
+    }
+    
+    function sortFields() { searchFields(); }
+    
+    function updateFilterResult(count) {
+      const typeNames = { 'all': '', '5vs5': 'sân 5 người', '7vs7': 'sân 7 người', '11vs11': 'sân 11 người' };
+      document.getElementById('filterResult').innerHTML = `<span class="text-green-600 font-bold">${count}</span> sân ${typeNames[currentFilter]} được tìm thấy`;
+    }
+    
+    function displayFields(fields) {
       const fieldsList = document.getElementById('fieldsList');
+      const sortBy = document.getElementById('sortSelect').value;
+      if (sortBy === 'price-low') fields.sort((a, b) => a.pricePerHour - b.pricePerHour);
+      else if (sortBy === 'price-high') fields.sort((a, b) => b.pricePerHour - a.pricePerHour);
+      else fields.sort((a, b) => a.name.localeCompare(b.name));
       
-      if (!loading || !fieldsList) {
-        console.error('Elements not found!');
+      if (fields.length === 0) {
+        fieldsList.innerHTML = `<div class="col-span-full text-center py-16"><div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-5xl">🏟️</span></div><p class="text-gray-600 font-semibold text-lg mb-2">Không tìm thấy sân nào</p><button onclick="document.getElementById('searchInput').value=''; filterByType('all');" class="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition">Xem tất cả sân</button></div>`;
         return;
       }
       
-      try {
-        console.log('Fetching from:', `${API_URL}/fields`);
-        const response = await fetch(`${API_URL}/fields`);
-        console.log('Response status:', response.status);
+      const typeLabels = { '5vs5': 'Sân 5', '7vs7': 'Sân 7', '11vs11': 'Sân 11' };
+      const typeColors = { '5vs5': 'bg-blue-500', '7vs7': 'bg-purple-500', '11vs11': 'bg-orange-500' };
+      
+      fieldsList.innerHTML = fields.map((field, index) => {
+        const hasImage = field.images && field.images.length > 0;
+        const imageUrl = hasImage ? field.images[0] : null;
+        const subFieldCount = field.subFields?.filter(sf => sf.status === 'active').length || 0;
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const fields = await response.json();
-        console.log('✓ Loaded', fields.length, 'fields:', fields);
-        
-        loading.style.display = 'none';
-        
-        if (fields.length === 0) {
-          fieldsList.innerHTML = '<p class="col-span-3 text-center text-gray-600">Chưa có sân bóng nào</p>';
-          return;
-        }
-        
-        const typeMap = {
-          '5vs5': 'Sân 5 người',
-          '7vs7': 'Sân 7 người',
-          '11vs11': 'Sân 11 người'
-        };
-        
-        fieldsList.innerHTML = fields.map(field => `
-          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
-            <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center relative">
-              <span class="text-6xl">⚽</span>
-              <div class="absolute top-2 right-2 bg-white px-3 py-1 rounded-full text-sm font-semibold text-green-600">
-                ${typeMap[field.type] || field.type}
+        return `
+          <div class="fade-in-up card-hover bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100" style="animation-delay: ${index * 0.1}s">
+            <div class="h-52 relative overflow-hidden group">
+              ${hasImage 
+                ? `<img src="${imageUrl}" alt="${field.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">`
+                : `<div class="w-full h-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center"><span class="text-7xl opacity-80">⚽</span></div>`}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              <div class="absolute top-3 left-3 ${typeColors[field.type]} text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">${typeLabels[field.type]}</div>
+              ${subFieldCount > 0 ? `<div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-gray-800 px-3 py-1 rounded-full text-sm font-semibold shadow">${subFieldCount} sân con</div>` : ''}
+              <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                <div class="text-white"><p class="text-2xl font-bold drop-shadow-lg">${field.pricePerHour.toLocaleString()}đ</p><p class="text-sm text-white/80">/giờ</p></div>
               </div>
             </div>
             <div class="p-5">
-              <h3 class="text-xl font-bold mb-2">${field.name}</h3>
-              <p class="text-gray-600 text-sm mb-2">📍 ${field.location?.address || 'Trà Vinh'}</p>
-              <p class="text-green-600 font-bold text-lg mb-4">${field.pricePerHour.toLocaleString('vi-VN')}đ/giờ</p>
-              ${field.amenities && field.amenities.length > 0 ? `
-                <div class="flex flex-wrap gap-1 mb-3">
-                  ${field.amenities.slice(0, 3).map(amenity => `
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">${amenity}</span>
-                  `).join('')}
-                </div>
-              ` : ''}
-              <button onclick="bookField('${field._id}')" 
-                class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold">
-                Đặt sân ngay
-              </button>
+              <h3 class="font-bold text-xl text-gray-800 mb-2 line-clamp-1">${field.name}</h3>
+              <p class="text-gray-500 text-sm mb-3 flex items-center gap-1"><span>📍</span> ${field.location?.address || 'Trà Vinh'}</p>
+              ${field.amenities?.length > 0 ? `<div class="flex flex-wrap gap-1.5 mb-4">${field.amenities.slice(0, 3).map(a => `<span class="text-xs bg-green-50 text-green-700 px-2.5 py-1 rounded-full border border-green-100">${a}</span>`).join('')}</div>` : '<div class="mb-4"></div>'}
+              <button onclick="bookField('${field._id}')" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3.5 rounded-xl hover:from-green-600 hover:to-green-700 font-bold transition-all duration-300 shadow-lg hover:shadow-green-300 transform hover:scale-[1.02]">⚽ Đặt sân ngay</button>
             </div>
-          </div>
-        `).join('');
-        
-        console.log('✓ Fields displayed successfully');
-        
-      } catch (error) {
-        console.error('✗ Error loading fields:', error);
-        loading.innerHTML = `
-          <div class="text-center">
-            <p class="text-red-600 font-bold mb-2">Lỗi tải dữ liệu</p>
-            <p class="text-gray-600">${error.message}</p>
-            <button onclick="location.reload()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">
-              Thử lại
-            </button>
-          </div>
-        `;
-      }
+          </div>`;
+      }).join('');
     }
     
     function bookField(fieldId) {
@@ -145,18 +233,7 @@
       window.location.href = `booking.html?fieldId=${fieldId}`;
     }
     
-    // Load immediately when script runs
-    console.log('Script loaded, waiting for DOM...');
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM loaded, calling loadFields...');
-        loadFields();
-      });
-    } else {
-      console.log('DOM already loaded, calling loadFields immediately...');
-      loadFields();
-    }
+    loadFields();
   </script>
 </body>
 </html>

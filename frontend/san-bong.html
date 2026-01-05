@@ -3,208 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thành Trung M10</title>
+  <title>Sân Bóng - Thành Trung M10</title>
   <link rel="stylesheet" href="css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+    .card-hover { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .card-hover:hover { transform: translateY(-12px) scale(1.02); }
+    .search-glow:focus { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2), 0 0 30px rgba(34, 197, 94, 0.1); }
+    .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); }
+    .gradient-text { background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gradient-to-br from-gray-50 via-white to-green-50 min-h-screen">
+
   <!-- Navigation -->
-  <nav class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-xl">
-    <div class="container mx-auto px-4 py-4">
+  <nav class="fixed w-full bg-white/95 backdrop-blur-md shadow-lg z-50">
+    <div class="container mx-auto px-4 py-3">
       <div class="flex justify-between items-center">
-        <a href="index.html" class="flex items-center space-x-3">
-          <span class="text-4xl">⚽</span>
+        <a href="index.html" class="flex items-center gap-3 group">
+          <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-green-300 transition-all duration-300">
+            <span class="text-2xl">⚽</span>
+          </div>
           <div>
-            <h1 class="text-2xl font-bold">Thành Trung M10</h1>
-            <p class="text-xs text-green-100">Đặt sân nhanh - Giá tốt</p>
+            <h1 class="text-xl font-bold gradient-text">Thành Trung M10</h1>
+            <p class="text-xs text-gray-500">Đặt sân online 24/7</p>
           </div>
         </a>
         <div class="hidden md:flex items-center gap-6">
-          <a href="index.html" class="text-white/80 hover:text-white transition font-medium">Trang chủ</a>
-          <a href="san-bong.html" class="text-white font-semibold">Sân bóng</a>
-          <a href="pages/shop.html" class="text-white/80 hover:text-white transition font-medium">Cửa hàng</a>
-          <a href="pages/community.html" class="text-white/80 hover:text-white transition font-medium">Cộng đồng</a>
-          <a href="pages/about.html" class="text-white/80 hover:text-white transition font-medium">Giới thiệu</a>
-          <a href="pages/contact.html" class="text-white/80 hover:text-white transition font-medium">Liên hệ</a>
+          <a href="index.html" class="text-gray-600 hover:text-green-600 transition font-medium">Trang chủ</a>
+          <a href="san-bong.html" class="text-green-600 font-semibold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-green-500">Sân bóng</a>
+          <a href="pages/shop.html" class="text-gray-600 hover:text-green-600 transition font-medium">Cửa hàng</a>
+          <a href="pages/community.html" class="text-gray-600 hover:text-green-600 transition font-medium">Cộng đồng</a>
+          <a href="pages/about.html" class="text-gray-600 hover:text-green-600 transition font-medium">Giới thiệu</a>
+          <a href="pages/contact.html" class="text-gray-600 hover:text-green-600 transition font-medium">Liên hệ</a>
           <div id="userMenu"></div>
         </div>
-        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">☰</button>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-gray-700 text-2xl hover:text-green-600 transition">☰</button>
       </div>
-      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-white/20 pt-4">
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t pt-4">
         <div class="flex flex-col gap-3">
-          <a href="index.html" class="text-white/80 hover:text-white transition">Trang chủ</a>
-          <a href="san-bong.html" class="text-white font-semibold">Sân bóng</a>
-          <a href="pages/shop.html" class="text-white/80 hover:text-white transition">Cửa hàng</a>
-          <a href="pages/community.html" class="text-white/80 hover:text-white transition">Cộng đồng</a>
-          <a href="pages/about.html" class="text-white/80 hover:text-white transition">Giới thiệu</a>
-          <a href="pages/contact.html" class="text-white/80 hover:text-white transition">Liên hệ</a>
-          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t border-white/20"></div>
+          <a href="index.html" class="text-gray-600 hover:text-green-600 transition">Trang chủ</a>
+          <a href="san-bong.html" class="text-green-600 font-semibold">Sân bóng</a>
+          <a href="pages/shop.html" class="text-gray-600 hover:text-green-600 transition">Cửa hàng</a>
+          <a href="pages/community.html" class="text-gray-600 hover:text-green-600 transition">Cộng đồng</a>
+          <a href="pages/about.html" class="text-gray-600 hover:text-green-600 transition">Giới thiệu</a>
+          <a href="pages/contact.html" class="text-gray-600 hover:text-green-600 transition">Liên hệ</a>
+          <div id="mobileUserMenu" class="flex flex-col gap-2 mt-2 pt-2 border-t"></div>
         </div>
       </div>
     </div>
   </nav>
 
-  <div class="container mx-auto px-4 py-8">
-    <h2 class="text-3xl font-bold mb-6">Danh sách sân bóng</h2>
-    
-    <!-- Bộ lọc loại sân -->
-    <div class="bg-white rounded-xl shadow-md p-4 mb-8">
-      <div class="flex flex-wrap items-center gap-4">
-        <span class="font-semibold text-gray-700">🏟️ Lọc theo loại sân:</span>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="filterByType('all')" id="filter-all" 
-            class="filter-btn px-4 py-2 rounded-full bg-green-600 text-white font-medium transition hover:bg-green-700">
-            Tất cả
-          </button>
-          <button onclick="filterByType('5vs5')" id="filter-5vs5" 
-            class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-medium transition hover:bg-green-100">
-            ⚽ Sân 5 người
-          </button>
-          <button onclick="filterByType('7vs7')" id="filter-7vs7" 
-            class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-medium transition hover:bg-green-100">
-            ⚽ Sân 7 người
-          </button>
-          <button onclick="filterByType('11vs11')" id="filter-11vs11" 
-            class="filter-btn px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-medium transition hover:bg-green-100">
-            ⚽ Sân 11 người
-          </button>
+  <!-- Hero Section -->
+  <section class="pt-24 pb-8 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-green-600 via-green-700 to-emerald-800"></div>
+    <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center text-white py-12">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">🏟️ Danh Sách Sân Bóng</h1>
+        <p class="text-xl text-green-100 max-w-2xl mx-auto">Khám phá và đặt sân bóng chất lượng cao tại Trà Vinh</p>
+      </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+  </section>
+
+  <!-- Search Section -->
+  <section class="relative -mt-8 z-20 px-4">
+    <div class="container mx-auto max-w-4xl">
+      <div class="glass rounded-3xl shadow-2xl p-6 md:p-8 border border-white/50">
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+          <!-- Search Input -->
+          <div class="flex-1 w-full relative">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl">🔍</div>
+            <input type="text" id="searchInput" 
+              placeholder="Tìm kiếm sân bóng theo tên hoặc địa chỉ..." 
+              class="w-full pl-14 pr-6 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-green-500 search-glow transition-all duration-300 bg-white/80"
+              oninput="searchFields()">
+          </div>
+          <!-- Filter Buttons -->
+          <div class="flex gap-2 flex-wrap justify-center">
+            <button onclick="filterByType('all')" class="filter-btn active px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-green-600 text-white shadow-lg" data-type="all">
+              Tất cả
+            </button>
+            <button onclick="filterByType('5vs5')" class="filter-btn px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-green-100" data-type="5vs5">
+              ⚽ Sân 5
+            </button>
+            <button onclick="filterByType('7vs7')" class="filter-btn px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-green-100" data-type="7vs7">
+              ⚽ Sân 7
+            </button>
+            <button onclick="filterByType('11vs11')" class="filter-btn px-5 py-3 rounded-xl font-semibold transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-green-100" data-type="11vs11">
+              ⚽ Sân 11
+            </button>
+          </div>
+        </div>
+        <!-- Results count -->
+        <div class="mt-4 flex items-center justify-between text-sm flex-wrap gap-2">
+          <p id="filterResult" class="text-gray-600 font-medium"></p>
+          <div class="flex items-center gap-2 text-gray-500">
+            <span>Sắp xếp:</span>
+            <select id="sortSelect" onchange="sortFields()" class="border rounded-lg px-3 py-1 focus:outline-none focus:border-green-500">
+              <option value="name">Tên A-Z</option>
+              <option value="price-low">Giá thấp → cao</option>
+              <option value="price-high">Giá cao → thấp</option>
+            </select>
+          </div>
         </div>
       </div>
-      <p id="filterResult" class="text-sm text-gray-500 mt-3"></p>
     </div>
-    
-    <!-- Loading -->
-    <div id="loading" class="text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-      <p class="mt-4 text-gray-600">Đang tải danh sách sân...</p>
+  </section>
+
+  <!-- Fields Grid -->
+  <section class="py-12 px-4">
+    <div class="container mx-auto">
+      <!-- Loading -->
+      <div id="loading" class="text-center py-16">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-4">
+          <div class="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p class="text-gray-600 text-lg">Đang tải danh sách sân...</p>
+      </div>
+      
+      <!-- Fields Grid -->
+      <div id="fields" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
     </div>
-    
-    <div id="fields" class="grid md:grid-cols-3 gap-6"></div>
-  </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer"></div>
 
   <script src="js/main.js"></script>
+
   <script>
     let allFields = [];
     let currentFilter = 'all';
-    
-    const typeMap = {
-      '5vs5': 'Sân 5 người',
-      '7vs7': 'Sân 7 người',
-      '11vs11': 'Sân 11 người'
-    };
     
     // Load fields
     fetch('http://localhost:3000/api/fields')
       .then(res => res.json())
       .then(fields => {
-        allFields = fields.filter(f => f.status === 'active'); // Chỉ hiển thị sân đang hoạt động
+        allFields = fields.filter(f => f.status === 'active');
         document.getElementById('loading').classList.add('hidden');
         displayFields(allFields);
-        updateFilterResult(allFields.length, 'all');
+        updateFilterResult(allFields.length);
       })
       .catch(err => {
         document.getElementById('loading').classList.add('hidden');
-        document.getElementById('fields').innerHTML = 
-          '<p class="text-red-600 col-span-3 text-center py-8">❌ Lỗi tải dữ liệu: ' + err.message + '</p>';
-      });
-    
-    // Lọc theo loại sân
-    function filterByType(type) {
-      currentFilter = type;
-      
-      // Cập nhật UI buttons
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('bg-green-600', 'text-white');
-        btn.classList.add('bg-gray-200', 'text-gray-700');
-      });
-      document.getElementById(`filter-${type}`).classList.remove('bg-gray-200', 'text-gray-700');
-      document.getElementById(`filter-${type}`).classList.add('bg-green-600', 'text-white');
-      
-      // Lọc và hiển thị
-      let filtered = allFields;
-      if (type !== 'all') {
-        filtered = allFields.filter(f => f.type === type);
-      }
-      
-      displayFields(filtered);
-      updateFilterResult(filtered.length, type);
-    }
-    
-    function updateFilterResult(count, type) {
-      const typeNames = {
-        'all': 'tất cả loại sân',
-        '5vs5': 'sân 5 người',
-        '7vs7': 'sân 7 người',
-        '11vs11': 'sân 11 người'
-      };
-      document.getElementById('filterResult').textContent = 
-        `Hiển thị ${count} sân (${typeNames[type]})`;
-    }
-    
-    function displayFields(fields) {
-      if (fields.length === 0) {
         document.getElementById('fields').innerHTML = `
-          <div class="col-span-3 text-center py-12">
-            <span class="text-6xl">🏟️</span>
-            <p class="text-gray-500 mt-4 text-lg">Không tìm thấy sân nào phù hợp</p>
-            <button onclick="filterByType('all')" class="mt-4 text-green-600 hover:underline">
-              Xem tất cả sân
+          <div class="col-span-full text-center py-16">
+            <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-5xl">😢</span>
+            </div>
+            <p class="text-red-600 font-semibold text-lg mb-2">Không thể tải dữ liệu</p>
+            <p class="text-gray-500">${err.message}</p>
+            <button onclick="location.reload()" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition">
+              Thử lại
             </button>
           </div>
         `;
+      });
+    
+    function filterByType(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.type === type) {
+          btn.classList.remove('bg-gray-100', 'text-gray-700');
+          btn.classList.add('bg-green-600', 'text-white', 'shadow-lg');
+        } else {
+          btn.classList.remove('bg-green-600', 'text-white', 'shadow-lg');
+          btn.classList.add('bg-gray-100', 'text-gray-700');
+        }
+      });
+      searchFields();
+    }
+    
+    function searchFields() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+      let filtered = allFields;
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(f => f.type === currentFilter);
+      }
+      if (searchTerm) {
+        filtered = filtered.filter(f => {
+          const name = f.name.toLowerCase();
+          const address = (f.location?.address || '').toLowerCase();
+          return name.includes(searchTerm) || address.includes(searchTerm);
+        });
+      }
+      displayFields(filtered);
+      updateFilterResult(filtered.length);
+    }
+    
+    function sortFields() { searchFields(); }
+    
+    function updateFilterResult(count) {
+      const typeNames = { 'all': 'tất cả', '5vs5': 'sân 5 người', '7vs7': 'sân 7 người', '11vs11': 'sân 11 người' };
+      document.getElementById('filterResult').innerHTML = `<span class="text-green-600 font-bold">${count}</span> sân ${currentFilter !== 'all' ? typeNames[currentFilter] : ''} được tìm thấy`;
+    }
+    
+    function displayFields(fields) {
+      const sortBy = document.getElementById('sortSelect').value;
+      if (sortBy === 'price-low') fields.sort((a, b) => a.pricePerHour - b.pricePerHour);
+      else if (sortBy === 'price-high') fields.sort((a, b) => b.pricePerHour - a.pricePerHour);
+      else fields.sort((a, b) => a.name.localeCompare(b.name));
+      
+      if (fields.length === 0) {
+        document.getElementById('fields').innerHTML = `
+          <div class="col-span-full text-center py-16">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><span class="text-5xl">🏟️</span></div>
+            <p class="text-gray-600 font-semibold text-lg mb-2">Không tìm thấy sân nào</p>
+            <button onclick="document.getElementById('searchInput').value=''; filterByType('all');" class="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition">Xem tất cả sân</button>
+          </div>`;
         return;
       }
       
-      document.getElementById('fields').innerHTML = fields.map(f => {
-        // Lọc bỏ ảnh placeholder không hợp lệ, chỉ lấy ảnh local
-        let validImages = [];
-        if (f.images && f.images.length > 0) {
-          validImages = f.images.filter(img => img.startsWith('/uploads'));
-        }
-        let displayImage = validImages.length > 0 ? validImages[0] : null;
-        const hasImage = !!displayImage;
-        
-        // Màu badge theo loại sân
-        const typeColors = {
-          '5vs5': 'bg-blue-500',
-          '7vs7': 'bg-purple-500',
-          '11vs11': 'bg-orange-500'
-        };
+      const typeLabels = { '5vs5': 'Sân 5', '7vs7': 'Sân 7', '11vs11': 'Sân 11' };
+      const typeColors = { '5vs5': 'bg-blue-500', '7vs7': 'bg-purple-500', '11vs11': 'bg-orange-500' };
+      
+      document.getElementById('fields').innerHTML = fields.map((f, index) => {
+        let validImages = f.images?.filter(img => img.startsWith('/uploads') || img.startsWith('http')) || [];
+        let displayImage = validImages[0] || null;
+        const subFieldCount = f.subFields?.filter(sf => sf.status === 'active').length || 0;
         
         return `
-          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1">
-            <div class="h-48 relative">
-              ${hasImage 
-                ? `<img src="${displayImage}" alt="${f.name}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-6xl\\'>⚽</div>'">`
-                : `<div class="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-6xl">⚽</div>`
-              }
-              <div class="absolute top-2 right-2 ${typeColors[f.type]} text-white px-3 py-1 rounded-full text-sm font-semibold shadow">
-                ${typeMap[f.type]}
+          <div class="fade-in-up card-hover bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100" style="animation-delay: ${index * 0.1}s">
+            <div class="h-52 relative overflow-hidden group">
+              ${displayImage 
+                ? `<img src="${displayImage}" alt="${f.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-7xl\\'>⚽</div>'">`
+                : `<div class="w-full h-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center"><span class="text-7xl opacity-80">⚽</span></div>`}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              <div class="absolute top-3 left-3 ${typeColors[f.type]} text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">${typeLabels[f.type]}</div>
+              ${subFieldCount > 0 ? `<div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-gray-800 px-3 py-1 rounded-full text-sm font-semibold shadow">${subFieldCount} sân con</div>` : ''}
+              <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                <div class="text-white"><p class="text-2xl font-bold drop-shadow-lg">${f.pricePerHour.toLocaleString()}đ</p><p class="text-sm text-white/80">/giờ</p></div>
+                ${validImages.length > 1 ? `<div class="bg-black/50 backdrop-blur text-white px-2 py-1 rounded-lg text-xs">📷 ${validImages.length}</div>` : ''}
               </div>
-              ${validImages.length > 1 ? `
-                <div class="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-                  📷 ${validImages.length} ảnh
-                </div>
-              ` : ''}
             </div>
-            <div class="p-4">
-              <h3 class="font-bold text-xl mb-2">${f.name}</h3>
-              <p class="text-gray-600 text-sm mb-2">📍 ${f.location?.address || 'Trà Vinh'}</p>
-              <p class="text-green-600 font-bold text-lg mb-3">${f.pricePerHour.toLocaleString()}đ/giờ</p>
-              ${f.amenities && f.amenities.length > 0 ? `
-                <div class="flex flex-wrap gap-1 mb-3">
-                  ${f.amenities.slice(0, 3).map(a => `
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">${a}</span>
-                  `).join('')}
-                  ${f.amenities.length > 3 ? `<span class="text-xs text-gray-500">+${f.amenities.length - 3}</span>` : ''}
-                </div>
-              ` : ''}
-              <a href="pages/booking.html?fieldId=${f._id}" class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg hover:from-green-600 hover:to-green-700 text-center font-semibold transition shadow-md">
-                ⚽ Đặt sân ngay
-              </a>
+            <div class="p-5">
+              <h3 class="font-bold text-xl text-gray-800 mb-2 line-clamp-1">${f.name}</h3>
+              <p class="text-gray-500 text-sm mb-3 flex items-center gap-1"><span>📍</span> ${f.location?.address || 'Trà Vinh'}</p>
+              ${f.amenities?.length > 0 ? `<div class="flex flex-wrap gap-1.5 mb-4">${f.amenities.slice(0, 3).map(a => `<span class="text-xs bg-green-50 text-green-700 px-2.5 py-1 rounded-full border border-green-100">${a}</span>`).join('')}${f.amenities.length > 3 ? `<span class="text-xs text-gray-400">+${f.amenities.length - 3}</span>` : ''}</div>` : '<div class="mb-4"></div>'}
+              <a href="pages/booking.html?fieldId=${f._id}" class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3.5 rounded-xl hover:from-green-600 hover:to-green-700 text-center font-bold transition-all duration-300 shadow-lg hover:shadow-green-300 transform hover:scale-[1.02]">⚽ Đặt sân ngay</a>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
     }
   </script>

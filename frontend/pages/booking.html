@@ -75,7 +75,6 @@
         <div>
           <h2 id="fieldName" class="text-3xl font-bold mb-4">Đang tải...</h2>
           <div class="space-y-3">
-            <p class="text-gray-700"><span class="font-semibold">Loại sân:</span> <span id="fieldType"></span></p>
             <p class="text-gray-700"><span class="font-semibold">Địa chỉ:</span> <span id="fieldAddress"></span></p>
             <p class="text-green-600 text-2xl font-bold"><span id="fieldPrice"></span>đ/giờ</p>
             <div id="fieldAmenities" class="flex flex-wrap gap-2"></div>
@@ -87,6 +86,15 @@
     <!-- Booking Calendar -->
     <div class="bg-white rounded-lg shadow-md p-6">
       <h3 class="text-2xl font-bold mb-6">Chọn ngày và giờ đặt sân</h3>
+      
+      <!-- Sub-field Selection (Sân con) -->
+      <div id="subFieldSection" class="hidden mb-6">
+        <label class="block text-gray-700 font-semibold mb-2">Chọn sân:</label>
+        <div id="subFieldList" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <!-- Sub-fields will be loaded here -->
+        </div>
+        <p class="text-sm text-gray-500 mt-2">💡 Mỗi sân con có lịch đặt riêng biệt</p>
+      </div>
       
       <!-- Date Picker -->
       <div class="mb-6">
@@ -309,6 +317,7 @@
     let currentField = null;
     let selectedDate = null;
     let selectedTime = null;
+    let selectedSubField = null; // Sân con được chọn
     let pricePerHour = 0;
     let appliedPromo = null;
     let finalPrice = 0;
@@ -361,7 +370,6 @@
         };
         
         document.getElementById('fieldName').textContent = currentField.name;
-        document.getElementById('fieldType').textContent = typeMap[currentField.type];
         document.getElementById('fieldAddress').textContent = currentField.location?.address || 'Trà Vinh';
         document.getElementById('fieldPrice').textContent = currentField.pricePerHour.toLocaleString('vi-VN');
         pricePerHour = currentField.pricePerHour;
@@ -375,12 +383,109 @@
         // Setup slideshow with field images
         setupSlideshow(currentField.images);
         
+        // Setup sub-fields (sân con)
+        setupSubFields(currentField.subFields);
+        
         renderTimeSlots();
       } catch (error) {
         console.error('Error loading field:', error);
         alert('Lỗi tải thông tin sân: ' + error.message);
         window.location.href = 'fields.html';
       }
+    }
+
+    // Setup sub-fields (sân con)
+    // Lưu trữ dữ liệu sân con để truy cập khi click
+    let subFieldsDataMap = {};
+    
+    function setupSubFields(subFields) {
+      const section = document.getElementById('subFieldSection');
+      const container = document.getElementById('subFieldList');
+      
+      const typeMap = {
+        '5vs5': 'Sân 5',
+        '7vs7': 'Sân 7',
+        '11vs11': 'Sân 11'
+      };
+      
+      // Nếu không có sân con, ẩn phần chọn sân
+      if (!subFields || subFields.length === 0) {
+        section.classList.add('hidden');
+        selectedSubField = null;
+        return;
+      }
+      
+      // Lọc sân con đang hoạt động
+      const activeSubFields = subFields.filter(sf => sf.status === 'active');
+      
+      if (activeSubFields.length === 0) {
+        section.classList.add('hidden');
+        selectedSubField = null;
+        return;
+      }
+      
+      section.classList.remove('hidden');
+      
+      // Lưu dữ liệu sân con vào map
+      subFieldsDataMap = {};
+      activeSubFields.forEach(sf => {
+        subFieldsDataMap[sf._id] = {
+          id: sf._id,
+          name: sf.name,
+          type: sf.type || currentField.type,
+          pricePerHour: sf.pricePerHour || pricePerHour
+        };
+      });
+      
+      // Render danh sách sân con với loại sân và giá
+      container.innerHTML = activeSubFields.map((sf, index) => {
+        const subFieldType = sf.type || currentField.type;
+        const subFieldPrice = sf.pricePerHour || pricePerHour;
+        
+        return `
+          <button onclick="selectSubFieldById('${sf._id}')" 
+            data-subfield="${sf._id}"
+            class="subfield-btn px-4 py-3 border-2 ${index === 0 ? 'border-green-500 bg-green-100' : 'border-gray-300'} rounded-lg hover:border-green-500 hover:bg-green-50 transition text-center font-semibold">
+            <div class="text-lg">⚽ ${sf.name}</div>
+            <div class="text-xs text-blue-600 font-bold">${typeMap[subFieldType]}</div>
+            <div class="text-sm text-green-600 font-bold mt-1">${subFieldPrice.toLocaleString('vi-VN')}đ/h</div>
+          </button>
+        `;
+      }).join('');
+      
+      // Tự động chọn sân đầu tiên
+      const firstSubField = activeSubFields[0];
+      selectedSubField = subFieldsDataMap[firstSubField._id];
+    }
+    
+    // Chọn sân con theo ID
+    function selectSubFieldById(id) {
+      const data = subFieldsDataMap[id];
+      if (!data) return;
+      
+      selectedSubField = {
+        id: data.id,
+        name: data.name,
+        type: data.type,
+        pricePerHour: data.pricePerHour
+      };
+      
+      // Update UI
+      document.querySelectorAll('.subfield-btn').forEach(btn => {
+        btn.classList.remove('border-green-500', 'bg-green-100');
+        btn.classList.add('border-gray-300');
+      });
+      
+      const btn = document.querySelector(`[data-subfield="${id}"]`);
+      if (btn) {
+        btn.classList.remove('border-gray-300');
+        btn.classList.add('border-green-500', 'bg-green-100');
+      }
+      
+      // Reset time selection và load lại bookings
+      selectedTime = null;
+      loadExistingBookings();
+      updateSummary();
     }
 
     // Setup slideshow
@@ -616,16 +721,23 @@
         document.getElementById('summaryDate').textContent = new Date(selectedDate).toLocaleDateString('vi-VN');
         document.getElementById('summaryTime').textContent = selectedTime;
         
+        // Lấy giá theo sân con nếu có, không thì dùng giá sân chính
+        const currentPrice = (selectedSubField && selectedSubField.pricePerHour) 
+          ? selectedSubField.pricePerHour 
+          : pricePerHour;
+        
         if (appliedPromo) {
-          finalPrice = appliedPromo.finalAmount;
+          // Tính lại giảm giá theo giá hiện tại
+          const discount = Math.min(appliedPromo.discount, currentPrice);
+          finalPrice = currentPrice - discount;
           document.getElementById('promoDetails').classList.remove('hidden');
-          document.getElementById('originalPrice').textContent = pricePerHour.toLocaleString('vi-VN');
-          document.getElementById('discountAmount').textContent = appliedPromo.discount.toLocaleString('vi-VN');
+          document.getElementById('originalPrice').textContent = currentPrice.toLocaleString('vi-VN');
+          document.getElementById('discountAmount').textContent = discount.toLocaleString('vi-VN');
           document.getElementById('summaryPrice').textContent = finalPrice.toLocaleString('vi-VN');
         } else {
-          finalPrice = pricePerHour;
+          finalPrice = currentPrice;
           document.getElementById('promoDetails').classList.add('hidden');
-          document.getElementById('summaryPrice').textContent = pricePerHour.toLocaleString('vi-VN');
+          document.getElementById('summaryPrice').textContent = currentPrice.toLocaleString('vi-VN');
         }
         
         document.getElementById('confirmBooking').disabled = false;
@@ -644,7 +756,14 @@
       
       try {
         // Sử dụng API mới để lấy booking của sân theo ngày
-        const response = await fetch(`${API_URL}/bookings/field-bookings?fieldId=${fieldId}&date=${selectedDate}`);
+        let url = `${API_URL}/bookings/field-bookings?fieldId=${fieldId}&date=${selectedDate}`;
+        
+        // Nếu có sân con, thêm subFieldId
+        if (selectedSubField && selectedSubField.id) {
+          url += `&subFieldId=${selectedSubField.id}`;
+        }
+        
+        const response = await fetch(url);
         const bookings = await response.json();
         
         const container = document.getElementById('existingBookings');
@@ -742,14 +861,32 @@
         return;
       }
 
+      // Lấy giá theo sân con nếu có
+      const currentPrice = (selectedSubField && selectedSubField.pricePerHour) 
+        ? selectedSubField.pricePerHour 
+        : pricePerHour;
+      
+      // Hiển thị loại sân của sân con
+      const typeMap = {
+        '5vs5': 'Sân 5',
+        '7vs7': 'Sân 7',
+        '11vs11': 'Sân 11'
+      };
+
       // Show confirmation modal with details
       const bookingDate = new Date(selectedDate);
+      const subFieldInfo = selectedSubField ? `<div class="flex justify-between">
+            <span class="text-gray-600">Sân con:</span>
+            <span class="font-semibold text-green-600">${selectedSubField.name} (${typeMap[selectedSubField.type] || ''})</span>
+          </div>` : '';
+      
       document.getElementById('confirmDetails').innerHTML = `
         <div class="space-y-2">
           <div class="flex justify-between">
             <span class="text-gray-600">Sân:</span>
             <span class="font-semibold">${currentField.name}</span>
           </div>
+          ${subFieldInfo}
           <div class="flex justify-between">
             <span class="text-gray-600">Ngày:</span>
             <span class="font-semibold">${bookingDate.toLocaleDateString('vi-VN')}</span>
@@ -760,7 +897,7 @@
           </div>
           <div class="flex justify-between border-t pt-2 mt-2">
             <span class="text-gray-600">Tổng tiền:</span>
-            <span class="font-bold text-green-600 text-lg">${pricePerHour.toLocaleString('vi-VN')}đ</span>
+            <span class="font-bold text-green-600 text-lg">${finalPrice.toLocaleString('vi-VN')}đ</span>
           </div>
         </div>
       `;
@@ -778,6 +915,10 @@
       
       const bookingData = {
         field: fieldId,
+        subField: selectedSubField ? {
+          id: selectedSubField.id,
+          name: selectedSubField.name
+        } : null,
         date: selectedDate,
         startTime,
         endTime,
@@ -825,9 +966,23 @@
       const bookingDate = new Date(selectedDate);
       const user = JSON.parse(localStorage.getItem('user'));
       
+      // Lấy giá và loại sân từ sân con nếu có
+      const currentPrice = (selectedSubField && selectedSubField.pricePerHour) 
+        ? selectedSubField.pricePerHour 
+        : pricePerHour;
+      const subFieldType = selectedSubField ? selectedSubField.type : currentField.type;
+      
+      const typeMap = {
+        '5vs5': 'Sân 5',
+        '7vs7': 'Sân 7',
+        '11vs11': 'Sân 11'
+      };
+      
       lastBookingData = {
         bookingId: 'BK' + Date.now(),
         fieldName: currentField.name,
+        subFieldName: selectedSubField ? selectedSubField.name : null,
+        subFieldType: selectedSubField ? typeMap[subFieldType] : null,
         fieldType: currentField.type,
         fieldAddress: currentField.location?.address || 'Trà Vinh',
         customerName: user.name,
@@ -835,9 +990,16 @@
         customerPhone: user.phone || 'N/A',
         date: bookingDate.toLocaleDateString('vi-VN'),
         time: selectedTime,
-        price: pricePerHour,
+        price: finalPrice,
         bookingDate: new Date().toLocaleString('vi-VN')
       };
+
+      const subFieldDisplay = lastBookingData.subFieldName 
+        ? `<div class="flex justify-between">
+            <span class="text-gray-600">Sân con:</span>
+            <span class="font-semibold text-green-600">${lastBookingData.subFieldName} (${lastBookingData.subFieldType})</span>
+          </div>` 
+        : '';
 
       // Display booking info
       document.getElementById('bookingInfo').innerHTML = `
@@ -850,6 +1012,7 @@
             <span class="text-gray-600">Sân:</span>
             <span class="font-semibold">${lastBookingData.fieldName}</span>
           </div>
+          ${subFieldDisplay}
           <div class="flex justify-between">
             <span class="text-gray-600">Ngày:</span>
             <span class="font-semibold">${lastBookingData.date}</span>
@@ -1040,12 +1203,15 @@ Hotline: 0123-456-789
         const bookingDate = new Date(booking.date);
         const isPast = bookingDate < new Date();
         const canCancel = booking.status === 'pending' || booking.status === 'confirmed';
+        const subFieldDisplay = booking.subField?.name 
+          ? `<span class="text-green-600 font-semibold">(${booking.subField.name})</span>` 
+          : '';
         
         return `
           <div class="border rounded-lg p-4 hover:shadow-md transition">
             <div class="flex justify-between items-start mb-3">
               <div class="flex-1">
-                <h4 class="font-bold text-lg text-gray-800">${booking.field?.name || 'Sân bóng'}</h4>
+                <h4 class="font-bold text-lg text-gray-800">${booking.field?.name || 'Sân bóng'} ${subFieldDisplay}</h4>
                 <p class="text-gray-600 text-sm">${booking.field?.location?.address || ''}</p>
               </div>
               <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[booking.status]}">
@@ -1089,10 +1255,11 @@ Hotline: 0123-456-789
       const booking = allUserBookings.find(b => b._id === bookingId);
       if (!booking) return;
       
+      const subFieldInfo = booking.subField?.name ? `\nSân con: ${booking.subField.name}` : '';
       const detail = `
 Thông tin đặt sân:
 
-Sân: ${booking.field?.name}
+Sân: ${booking.field?.name}${subFieldInfo}
 Địa chỉ: ${booking.field?.location?.address}
 Ngày: ${new Date(booking.date).toLocaleDateString('vi-VN')}
 Giờ: ${booking.startTime} - ${booking.endTime}
@@ -1136,5 +1303,5 @@ Ngày đặt: ${new Date(booking.createdAt).toLocaleString('vi-VN')}
     loadExistingBookings();
     loadUserBookingHistory();
   </script>
-</body>
+  <!-- Footer -->`n  <div id="footer"></div>`n</body>
 </html>

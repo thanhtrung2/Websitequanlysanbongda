@@ -7,397 +7,138 @@
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
+    .sidebar-link.active { background: rgba(255,255,255,0.15); border-left: 3px solid #fbbf24; }
+    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+  </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-50">
   <div class="flex h-screen">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-green-800 text-white">
-      <div class="p-6">
-        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+    <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
+      <div class="p-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl">⚽</div>
+          <div><h1 class="font-bold text-lg">Thành Trung M10</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
+        </div>
       </div>
-      <nav class="mt-6">
-        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📊</span> Dashboard
-        </a>
-        <a href="fields.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">⚽</span> Quản lý sân
-        </a>
-        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📅</span> Quản lý lịch đặt
-        </a>
-        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👥</span> Quản lý khách hàng
-        </a>
-        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🏆</span> Quản lý cộng đồng
-        </a>
-        <a href="revenue.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
-          <span class="mr-3">💰</span> Quản lý tài chính
-        </a>
-        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📦</span> Quản lý kho
-        </a>
-        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🎁</span> Quản lý khuyến mãi
-        </a>
-        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👔</span> Quản lý nhân viên
-        </a>
-        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📈</span> Báo cáo & Thống kê
-        </a>
-        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
-          <span class="mr-3">🏠</span> Về trang chủ
-        </a>
-        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
-          <span class="mr-3">🚪</span> Đăng xuất
-        </a>
+      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <a href="index.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📊</span> Dashboard</a>
+        <a href="fields.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>⚽</span> Quản lý sân</a>
+        <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📅</span> Lịch đặt sân</a>
+        <a href="customers.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👥</span> Khách hàng</a>
+        <a href="community.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🏆</span> Cộng đồng</a>
+        <div class="pt-2 mt-2 border-t border-white/10"><p class="px-4 py-2 text-xs text-slate-500 uppercase">Quản lý</p></div>
+        <a href="revenue.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><span>💰</span> Tài chính</a>
+        <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📦</span> Kho hàng</a>
+        <a href="promotions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🎁</span> Khuyến mãi</a>
+        <a href="staff.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👔</span> Nhân viên</a>
+        <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📈</span> Báo cáo</a>
       </nav>
+      <div class="p-3 border-t border-white/10">
+        <a href="../index.html" class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-slate-400"><span>🏠</span> Về trang chủ</a>
+        <button onclick="logout()" class="w-full sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/20"><span>🚪</span> Đăng xuất</button>
+      </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-      <header class="bg-white shadow-sm">
-        <div class="px-8 py-4">
-          <h2 class="text-2xl font-bold text-gray-800">Quản lý Tài chính</h2>
-        </div>
+      <header class="glass sticky top-0 z-10 border-b border-slate-200">
+        <div class="px-6 py-4"><h2 class="text-xl font-bold text-slate-800">Quản lý Tài chính</h2><p class="text-sm text-slate-500">Theo dõi doanh thu và giao dịch</p></div>
       </header>
-
-      <div class="p-8">
-        <!-- Time Filter -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div class="grid md:grid-cols-4 gap-4">
-            <div>
-              <label class="block text-gray-700 font-semibold mb-2">Từ ngày</label>
-              <input type="date" id="fromDate" onchange="updateCharts()" class="w-full px-4 py-2 border rounded-lg">
-            </div>
-            <div>
-              <label class="block text-gray-700 font-semibold mb-2">Đến ngày</label>
-              <input type="date" id="toDate" onchange="updateCharts()" class="w-full px-4 py-2 border rounded-lg">
-            </div>
-            <div>
-              <label class="block text-gray-700 font-semibold mb-2">Kỳ báo cáo</label>
-              <select id="reportPeriod" onchange="setQuickPeriod()" class="w-full px-4 py-2 border rounded-lg">
-                <option value="custom">Tùy chọn</option>
-                <option value="today">Hôm nay</option>
-                <option value="week">7 ngày qua</option>
-                <option value="month">Tháng này</option>
-                <option value="year">Năm này</option>
-              </select>
-            </div>
-            <div class="flex items-end">
-              <button onclick="exportReport()" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                📊 Xuất báo cáo
-              </button>
-            </div>
+      <div class="p-6">
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-5 text-white">
+            <p class="text-sm text-green-100">Doanh thu tháng</p>
+            <p id="monthRevenue" class="text-3xl font-bold">0đ</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-100">
+            <p class="text-sm text-slate-500">Doanh thu tuần</p>
+            <p id="weekRevenue" class="text-2xl font-bold text-slate-800">0đ</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-100">
+            <p class="text-sm text-slate-500">Hôm nay</p>
+            <p id="todayRevenue" class="text-2xl font-bold text-blue-600">0đ</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-100">
+            <p class="text-sm text-slate-500">Tổng giao dịch</p>
+            <p id="totalTransactions" class="text-2xl font-bold text-purple-600">0</p>
           </div>
         </div>
-
-        <!-- Revenue Stats -->
-        <div class="grid md:grid-cols-4 gap-6 mb-6">
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Doanh thu hôm nay</p>
-            <p class="text-3xl font-bold text-green-600" id="todayRevenue">0đ</p>
-            <p class="text-sm text-gray-400 mt-1" id="todayChange">+0%</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Doanh thu tháng</p>
-            <p class="text-3xl font-bold text-blue-600" id="monthRevenue">0đ</p>
-            <p class="text-sm text-gray-400 mt-1" id="monthChange">+0%</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Doanh thu năm</p>
-            <p class="text-3xl font-bold text-purple-600" id="yearRevenue">0đ</p>
-            <p class="text-sm text-gray-400 mt-1" id="yearChange">+0%</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Trung bình/ngày</p>
-            <p class="text-3xl font-bold text-orange-600" id="avgRevenue">0đ</p>
-            <p class="text-sm text-gray-400 mt-1">30 ngày qua</p>
-          </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-100 mb-6">
+          <h3 class="font-bold text-slate-800 mb-4">Biểu đồ doanh thu 7 ngày</h3>
+          <canvas id="revenueChart" height="100"></canvas>
         </div>
-
-        <!-- Charts -->
-        <div class="grid md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Doanh thu theo thời gian</h3>
-            <canvas id="revenueTimeChart"></canvas>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Doanh thu theo loại sân</h3>
-            <canvas id="revenueFieldChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Revenue by Field -->
-        <div class="bg-white rounded-lg shadow">
-          <div class="p-6 border-b">
-            <h3 class="text-lg font-bold text-gray-800">Doanh thu theo sân</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tên sân</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Loại</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Số lần đặt</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doanh thu</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">% Tổng</th>
-                </tr>
-              </thead>
-              <tbody id="fieldRevenueTable" class="divide-y divide-gray-200">
-                <tr>
-                  <td colspan="5" class="px-6 py-4 text-center text-gray-500">Đang tải...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+          <div class="p-5 border-b border-slate-100"><h3 class="font-bold text-slate-800">Giao dịch gần đây</h3></div>
+          <table class="w-full">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Khách hàng</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Loại</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Số tiền</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Thời gian</th>
+              </tr>
+            </thead>
+            <tbody id="transactionsTable" class="divide-y divide-slate-100"></tbody>
+          </table>
         </div>
       </div>
     </main>
   </div>
-
   <script>
     const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
-    let allBookings = [];
-    let allFields = [];
-    let revenueChart, fieldChart;
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = '../index.html';
-    }
-
-    async function loadData() {
+    function logout() { localStorage.clear(); window.location.href = '../index.html'; }
+    
+    async function loadRevenue() {
       try {
-        const [bookingsResponse, fieldsResponse] = await Promise.all([
-          fetch(`${API_URL}/bookings`, { headers: { 'Authorization': `Bearer ${token}` } }),
-          fetch(`${API_URL}/fields`)
-        ]);
+        const res = await fetch(`${API_URL}/bookings`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const bookings = await res.json();
+        const completed = bookings.filter(b => b.status !== 'cancelled');
         
-        allBookings = await bookingsResponse.json();
-        allFields = await fieldsResponse.json();
-
-        const today = new Date();
-        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-        document.getElementById('fromDate').value = firstDay.toISOString().split('T')[0];
-        document.getElementById('toDate').value = today.toISOString().split('T')[0];
-
-        updateStats();
-        updateCharts();
-        updateFieldRevenueTable();
-      } catch (error) {
-        console.error('Error:', error);
+        const today = new Date().toDateString();
+        const todayRev = completed.filter(b => new Date(b.date).toDateString() === today).reduce((s, b) => s + b.totalPrice, 0);
+        document.getElementById('todayRevenue').textContent = todayRev.toLocaleString() + 'đ';
+        
+        const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+        const weekRev = completed.filter(b => new Date(b.date) >= weekAgo).reduce((s, b) => s + b.totalPrice, 0);
+        document.getElementById('weekRevenue').textContent = weekRev.toLocaleString() + 'đ';
+        
+        const thisMonth = new Date().getMonth();
+        const monthRev = completed.filter(b => new Date(b.date).getMonth() === thisMonth).reduce((s, b) => s + b.totalPrice, 0);
+        document.getElementById('monthRevenue').textContent = monthRev.toLocaleString() + 'đ';
+        
+        document.getElementById('totalTransactions').textContent = completed.length;
+        
+        drawChart(completed);
+        displayTransactions(completed.slice(0, 10));
+      } catch (e) { console.error(e); }
+    }
+    
+    function drawChart(bookings) {
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+      const labels = [], data = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        labels.push(d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }));
+        data.push(bookings.filter(b => new Date(b.date).toDateString() === d.toDateString()).reduce((s, b) => s + b.totalPrice, 0) / 1000);
       }
+      new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Doanh thu (k)', data, backgroundColor: '#22c55e' }] }, options: { responsive: true, plugins: { legend: { display: false } } } });
     }
-
-    function updateStats() {
-      const today = new Date();
-      const thisMonth = today.getMonth();
-      const thisYear = today.getFullYear();
-
-      const todayBookings = allBookings.filter(b => 
-        new Date(b.date).toDateString() === today.toDateString() && b.status !== 'cancelled'
-      );
-      const todayRevenue = todayBookings.reduce((sum, b) => sum + b.totalPrice, 0);
-
-      const monthBookings = allBookings.filter(b => 
-        new Date(b.date).getMonth() === thisMonth && 
-        new Date(b.date).getFullYear() === thisYear &&
-        b.status !== 'cancelled'
-      );
-      const monthRevenue = monthBookings.reduce((sum, b) => sum + b.totalPrice, 0);
-
-      const yearBookings = allBookings.filter(b => 
-        new Date(b.date).getFullYear() === thisYear && b.status !== 'cancelled'
-      );
-      const yearRevenue = yearBookings.reduce((sum, b) => sum + b.totalPrice, 0);
-
-      const last30Days = allBookings.filter(b => {
-        const bookingDate = new Date(b.date);
-        const daysDiff = (today - bookingDate) / (1000 * 60 * 60 * 24);
-        return daysDiff <= 30 && b.status !== 'cancelled';
-      });
-      const avgRevenue = last30Days.reduce((sum, b) => sum + b.totalPrice, 0) / 30;
-
-      document.getElementById('todayRevenue').textContent = todayRevenue.toLocaleString() + 'đ';
-      document.getElementById('monthRevenue').textContent = monthRevenue.toLocaleString() + 'đ';
-      document.getElementById('yearRevenue').textContent = yearRevenue.toLocaleString() + 'đ';
-      document.getElementById('avgRevenue').textContent = Math.round(avgRevenue).toLocaleString() + 'đ';
+    
+    function displayTransactions(bookings) {
+      document.getElementById('transactionsTable').innerHTML = bookings.map(b => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-5 py-3 font-medium text-slate-800">${b.user?.name || 'N/A'}</td>
+          <td class="px-5 py-3 text-slate-600">Đặt sân</td>
+          <td class="px-5 py-3 font-semibold text-green-600">${b.totalPrice.toLocaleString()}đ</td>
+          <td class="px-5 py-3 text-slate-500">${new Date(b.date).toLocaleDateString('vi-VN')}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">Chưa có giao dịch</td></tr>';
     }
-
-    function updateCharts() {
-      const fromDate = new Date(document.getElementById('fromDate').value);
-      const toDate = new Date(document.getElementById('toDate').value);
-
-      const filteredBookings = allBookings.filter(b => {
-        const bookingDate = new Date(b.date);
-        return bookingDate >= fromDate && bookingDate <= toDate && b.status !== 'cancelled';
-      });
-
-      drawRevenueTimeChart(filteredBookings, fromDate, toDate);
-      drawRevenueFieldChart(filteredBookings);
-    }
-
-    function drawRevenueTimeChart(bookings, fromDate, toDate) {
-      const ctx = document.getElementById('revenueTimeChart').getContext('2d');
-      
-      if (revenueChart) revenueChart.destroy();
-
-      const revenueByDate = {};
-      const currentDate = new Date(fromDate);
-      
-      while (currentDate <= toDate) {
-        const dateStr = currentDate.toISOString().split('T')[0];
-        revenueByDate[dateStr] = 0;
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-
-      bookings.forEach(booking => {
-        const dateStr = booking.date.split('T')[0];
-        if (revenueByDate.hasOwnProperty(dateStr)) {
-          revenueByDate[dateStr] += booking.totalPrice;
-        }
-      });
-
-      const labels = Object.keys(revenueByDate).map(date => 
-        new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })
-      );
-      const data = Object.values(revenueByDate).map(revenue => revenue / 1000);
-
-      revenueChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Doanh thu (nghìn đồng)',
-            data,
-            borderColor: 'rgb(34, 197, 94)',
-            backgroundColor: 'rgba(34, 197, 94, 0.1)',
-            tension: 0.4,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    }
-
-    function drawRevenueFieldChart(bookings) {
-      const ctx = document.getElementById('revenueFieldChart').getContext('2d');
-      
-      if (fieldChart) fieldChart.destroy();
-
-      const revenueByType = { '5vs5': 0, '7vs7': 0, '11vs11': 0 };
-      
-      bookings.forEach(booking => {
-        if (booking.field && booking.field.type) {
-          revenueByType[booking.field.type] += booking.totalPrice;
-        }
-      });
-
-      fieldChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Sân 5 người', 'Sân 7 người', 'Sân 11 người'],
-          datasets: [{
-            data: [revenueByType['5vs5'], revenueByType['7vs7'], revenueByType['11vs11']],
-            backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'bottom' } }
-        }
-      });
-    }
-
-    function updateFieldRevenueTable() {
-      const tbody = document.getElementById('fieldRevenueTable');
-      
-      const fieldRevenue = {};
-      allFields.forEach(field => {
-        fieldRevenue[field._id] = { field, bookings: 0, revenue: 0 };
-      });
-
-      allBookings.forEach(booking => {
-        if (booking.field && booking.status !== 'cancelled') {
-          const fieldId = booking.field._id;
-          if (fieldRevenue[fieldId]) {
-            fieldRevenue[fieldId].bookings++;
-            fieldRevenue[fieldId].revenue += booking.totalPrice;
-          }
-        }
-      });
-
-      const totalRevenue = Object.values(fieldRevenue).reduce((sum, f) => sum + f.revenue, 0);
-      const sortedFields = Object.values(fieldRevenue).sort((a, b) => b.revenue - a.revenue);
-
-      const typeMap = { '5vs5': 'Sân 5', '7vs7': 'Sân 7', '11vs11': 'Sân 11' };
-
-      tbody.innerHTML = sortedFields.map(item => {
-        const percentage = totalRevenue > 0 ? (item.revenue / totalRevenue * 100).toFixed(1) : 0;
-        return `
-          <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4 font-semibold">${item.field.name}</td>
-            <td class="px-6 py-4">${typeMap[item.field.type] || item.field.type}</td>
-            <td class="px-6 py-4">${item.bookings}</td>
-            <td class="px-6 py-4 font-semibold text-green-600">${item.revenue.toLocaleString()}đ</td>
-            <td class="px-6 py-4">${percentage}%</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function setQuickPeriod() {
-      const period = document.getElementById('reportPeriod').value;
-      const today = new Date();
-      let fromDate, toDate;
-
-      switch (period) {
-        case 'today':
-          fromDate = toDate = today;
-          break;
-        case 'week':
-          fromDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-          toDate = today;
-          break;
-        case 'month':
-          fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
-          toDate = today;
-          break;
-        case 'year':
-          fromDate = new Date(today.getFullYear(), 0, 1);
-          toDate = today;
-          break;
-        default:
-          return;
-      }
-
-      document.getElementById('fromDate').value = fromDate.toISOString().split('T')[0];
-      document.getElementById('toDate').value = toDate.toISOString().split('T')[0];
-      updateCharts();
-    }
-
-    function exportReport() {
-      const fromDate = document.getElementById('fromDate').value;
-      const toDate = document.getElementById('toDate').value;
-      
-      const filteredBookings = allBookings.filter(b => {
-        const bookingDate = new Date(b.date);
-        return bookingDate >= new Date(fromDate) && bookingDate <= new Date(toDate) && b.status !== 'cancelled';
-      });
-
-      const totalRevenue = filteredBookings.reduce((sum, b) => sum + b.totalPrice, 0);
-      
-      alert(`Báo cáo doanh thu\n\nTừ: ${fromDate}\nĐến: ${toDate}\n\nTổng đặt sân: ${filteredBookings.length}\nTổng doanh thu: ${totalRevenue.toLocaleString()}đ`);
-    }
-
-    loadData();
+    
+    loadRevenue();
   </script>
 </body>
 </html>

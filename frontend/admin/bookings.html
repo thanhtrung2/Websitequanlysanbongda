@@ -6,132 +6,113 @@
   <title>Quản lý Đặt sân - Admin</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
+    .sidebar-link.active { background: rgba(255,255,255,0.15); border-left: 3px solid #fbbf24; }
+    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+  </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-50">
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-green-800 text-white">
-      <div class="p-6">
-        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+    <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
+      <div class="p-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl">⚽</div>
+          <div><h1 class="font-bold text-lg">Thành Trung M10</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
+        </div>
       </div>
-      <nav class="mt-6">
-        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📊</span> Dashboard
-        </a>
-        <a href="fields.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">⚽</span> Quản lý sân
-        </a>
-        <a href="bookings.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
-          <span class="mr-3">📅</span> Quản lý lịch đặt
-        </a>
-        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👥</span> Quản lý khách hàng
-        </a>
-        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🏆</span> Quản lý cộng đồng
-        </a>
-        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">💰</span> Quản lý tài chính
-        </a>
-        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📦</span> Quản lý kho
-        </a>
-        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🎁</span> Quản lý khuyến mãi
-        </a>
-        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👔</span> Quản lý nhân viên
-        </a>
-        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📈</span> Báo cáo & Thống kê
-        </a>
-        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
-          <span class="mr-3">🏠</span> Về trang chủ
-        </a>
-        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
-          <span class="mr-3">🚪</span> Đăng xuất
-        </a>
+      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <a href="index.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📊</span> Dashboard</a>
+        <a href="fields.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>⚽</span> Quản lý sân</a>
+        <a href="bookings.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><span>📅</span> Lịch đặt sân</a>
+        <a href="customers.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👥</span> Khách hàng</a>
+        <a href="community.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🏆</span> Cộng đồng</a>
+        <div class="pt-2 mt-2 border-t border-white/10"><p class="px-4 py-2 text-xs text-slate-500 uppercase">Quản lý</p></div>
+        <a href="revenue.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>💰</span> Tài chính</a>
+        <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📦</span> Kho hàng</a>
+        <a href="promotions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🎁</span> Khuyến mãi</a>
+        <a href="staff.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👔</span> Nhân viên</a>
+        <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📈</span> Báo cáo</a>
       </nav>
+      <div class="p-3 border-t border-white/10">
+        <a href="../index.html" class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-slate-400"><span>🏠</span> Về trang chủ</a>
+        <button onclick="logout()" class="w-full sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/20"><span>🚪</span> Đăng xuất</button>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-      <header class="bg-white shadow-sm">
-        <div class="px-8 py-4">
-          <h2 class="text-2xl font-bold text-gray-800">Quản lý Đặt sân</h2>
+      <header class="glass sticky top-0 z-10 border-b border-slate-200">
+        <div class="flex justify-between items-center px-6 py-4">
+          <div><h2 class="text-xl font-bold text-slate-800">Quản lý Đặt sân</h2><p class="text-sm text-slate-500">Xem và xử lý đơn đặt sân</p></div>
         </div>
       </header>
 
-      <div class="p-8">
-        <!-- Filters -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div class="grid md:grid-cols-4 gap-4">
-            <div>
-              <label class="block text-gray-700 font-semibold mb-2">Trạng thái</label>
-              <select id="filterStatus" onchange="filterBookings()" class="w-full px-4 py-2 border rounded-lg">
-                <option value="">Tất cả</option>
-                <option value="pending">Chờ xác nhận</option>
-                <option value="confirmed">Đã xác nhận</option>
-                <option value="cancelled">Đã hủy</option>
-                <option value="completed">Hoàn thành</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-gray-700 font-semibold mb-2">Từ ngày</label>
-              <input type="date" id="filterFromDate" onchange="filterBookings()" class="w-full px-4 py-2 border rounded-lg">
-            </div>
-            <div>
-              <label class="block text-gray-700 font-semibold mb-2">Đến ngày</label>
-              <input type="date" id="filterToDate" onchange="filterBookings()" class="w-full px-4 py-2 border rounded-lg">
-            </div>
-            <div class="flex items-end">
-              <button onclick="resetFilters()" class="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
-                Đặt lại
-              </button>
-            </div>
+      <div class="p-6">
+        <!-- Stats -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-2xl p-4 border border-slate-100">
+            <p class="text-sm text-slate-500">Tổng đơn</p>
+            <p id="totalBookings" class="text-2xl font-bold text-slate-800">0</p>
+          </div>
+          <div class="bg-yellow-50 rounded-2xl p-4 border border-yellow-100">
+            <p class="text-sm text-yellow-600">Chờ duyệt</p>
+            <p id="pendingBookings" class="text-2xl font-bold text-yellow-700">0</p>
+          </div>
+          <div class="bg-green-50 rounded-2xl p-4 border border-green-100">
+            <p class="text-sm text-green-600">Đã duyệt</p>
+            <p id="confirmedBookings" class="text-2xl font-bold text-green-700">0</p>
+          </div>
+          <div class="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+            <p class="text-sm text-blue-600">Hoàn thành</p>
+            <p id="completedBookings" class="text-2xl font-bold text-blue-700">0</p>
           </div>
         </div>
 
-        <!-- Stats -->
-        <div class="grid md:grid-cols-4 gap-6 mb-6">
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Tổng đặt sân</p>
-            <p class="text-3xl font-bold text-gray-800" id="totalBookings">0</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Chờ xác nhận</p>
-            <p class="text-3xl font-bold text-yellow-600" id="pendingBookings">0</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Đã xác nhận</p>
-            <p class="text-3xl font-bold text-green-600" id="confirmedBookings">0</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Tổng doanh thu</p>
-            <p class="text-2xl font-bold text-blue-600" id="totalRevenue">0đ</p>
+        <!-- Filters -->
+        <div class="bg-white rounded-2xl shadow-sm p-5 mb-6 border border-slate-100">
+          <div class="flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[200px]">
+              <label class="block text-slate-600 text-sm font-medium mb-2">Trạng thái</label>
+              <select id="filterStatus" onchange="filterBookings()" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-green-500 transition">
+                <option value="">Tất cả</option>
+                <option value="pending">Chờ xác nhận</option>
+                <option value="confirmed">Đã xác nhận</option>
+                <option value="completed">Hoàn thành</option>
+                <option value="cancelled">Đã hủy</option>
+              </select>
+            </div>
+            <div class="flex-1 min-w-[200px]">
+              <label class="block text-slate-600 text-sm font-medium mb-2">Từ ngày</label>
+              <input type="date" id="filterFromDate" onchange="filterBookings()" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-green-500 transition">
+            </div>
+            <div class="flex-1 min-w-[200px]">
+              <label class="block text-slate-600 text-sm font-medium mb-2">Đến ngày</label>
+              <input type="date" id="filterToDate" onchange="filterBookings()" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-green-500 transition">
+            </div>
+            <button onclick="resetFilters()" class="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition font-medium">Đặt lại</button>
           </div>
         </div>
 
         <!-- Bookings Table -->
-        <div class="bg-white rounded-lg shadow">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full">
-              <thead class="bg-gray-50">
+              <thead class="bg-slate-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sân</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày đá</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giờ đá</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giờ đặt</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giá</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
+                  <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Khách hàng</th>
+                  <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Sân</th>
+                  <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Ngày</th>
+                  <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Giờ</th>
+                  <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Giá</th>
+                  <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Trạng thái</th>
+                  <th class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Thao tác</th>
                 </tr>
               </thead>
-              <tbody id="bookingsTable" class="divide-y divide-gray-200">
-                <tr>
-                  <td colspan="7" class="px-6 py-4 text-center text-gray-500">Đang tải...</td>
-                </tr>
+              <tbody id="bookingsTable" class="divide-y divide-slate-100">
+                <tr><td colspan="7" class="px-5 py-8 text-center text-slate-400">Đang tải...</td></tr>
               </tbody>
             </table>
           </div>
@@ -140,299 +121,110 @@
     </main>
   </div>
 
-  <!-- Confirmation Modal -->
-  <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all">
-      <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span class="text-4xl">⚠️</span>
-        </div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">Xác nhận thay đổi</h3>
-        <p id="confirmMessage" class="text-gray-600"></p>
-      </div>
-      
-      <div class="flex gap-3">
-        <button id="confirmBtn" onclick="confirmStatusUpdate()" 
-          class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold">
-          Xác nhận
-        </button>
-        <button onclick="closeConfirmModal()" 
-          class="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
-          Hủy
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Notification Toast -->
-  <div id="notification" class="hidden"></div>
-
-  <style>
-    @keyframes slide-in {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    
-    .animate-slide-in {
-      animation: slide-in 0.3s ease-out;
-    }
-  </style>
-
   <script>
     const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
     let allBookings = [];
-    let filteredBookings = [];
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = '../index.html';
-    }
+    function logout() { localStorage.clear(); window.location.href = '../index.html'; }
 
     async function loadBookings() {
       try {
-        const response = await fetch(`${API_URL}/bookings`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        if (!response.ok) throw new Error('Failed to load bookings');
-        
+        const response = await fetch(`${API_URL}/bookings`, { headers: { 'Authorization': `Bearer ${token}` } });
         allBookings = await response.json();
-        filteredBookings = allBookings;
-        displayBookings();
         updateStats();
+        displayBookings(allBookings);
       } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('bookingsTable').innerHTML = 
-          '<tr><td colspan="8" class="px-6 py-4 text-center text-red-500">Lỗi tải dữ liệu</td></tr>';
+        document.getElementById('bookingsTable').innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-red-500">Lỗi tải dữ liệu</td></tr>';
       }
-    }
-
-    function displayBookings() {
-      const tbody = document.getElementById('bookingsTable');
-      
-      if (filteredBookings.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Không có dữ liệu</td></tr>';
-        return;
-      }
-
-      const statusColors = {
-        'pending': 'bg-yellow-100 text-yellow-800',
-        'confirmed': 'bg-green-100 text-green-800',
-        'cancelled': 'bg-red-100 text-red-800',
-        'completed': 'bg-blue-100 text-blue-800'
-      };
-
-      const statusText = {
-        'pending': 'Chờ xác nhận',
-        'confirmed': 'Đã xác nhận',
-        'cancelled': 'Đã hủy',
-        'completed': 'Hoàn thành'
-      };
-
-      tbody.innerHTML = filteredBookings.map(booking => {
-        // Calculate time ago
-        const createdDate = new Date(booking.createdAt);
-        const now = new Date();
-        const diffMs = now - createdDate;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
-        
-        let timeAgo = '';
-        if (diffMins < 1) {
-          timeAgo = 'Vừa xong';
-        } else if (diffMins < 60) {
-          timeAgo = `${diffMins} phút trước`;
-        } else if (diffHours < 24) {
-          timeAgo = `${diffHours} giờ trước`;
-        } else if (diffDays < 7) {
-          timeAgo = `${diffDays} ngày trước`;
-        } else {
-          timeAgo = createdDate.toLocaleDateString('vi-VN');
-        }
-        
-        return `
-        <tr class="hover:bg-gray-50">
-          <td class="px-6 py-4">
-            <div class="font-semibold">${booking.user?.name || 'N/A'}</div>
-            <div class="text-sm text-gray-500">${booking.user?.email || ''}</div>
-          </td>
-          <td class="px-6 py-4">${booking.field?.name || 'N/A'}</td>
-          <td class="px-6 py-4">${new Date(booking.date).toLocaleDateString('vi-VN')}</td>
-          <td class="px-6 py-4">
-            <span class="font-semibold">${booking.startTime} - ${booking.endTime}</span>
-          </td>
-          <td class="px-6 py-4">
-            <div class="text-sm">
-              <div class="font-medium text-gray-700">${timeAgo}</div>
-              <div class="text-xs text-gray-500">${createdDate.toLocaleString('vi-VN')}</div>
-            </div>
-          </td>
-          <td class="px-6 py-4 font-semibold text-green-600">${booking.totalPrice.toLocaleString()}đ</td>
-          <td class="px-6 py-4">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[booking.status]}">
-              ${statusText[booking.status]}
-            </span>
-          </td>
-          <td class="px-6 py-4">
-            <div class="flex gap-2">
-              ${booking.status === 'pending' ? `
-                <button onclick="updateStatus('${booking._id}', 'confirmed')" 
-                  class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">
-                  ✓ Duyệt
-                </button>
-                <button onclick="updateStatus('${booking._id}', 'cancelled')" 
-                  class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
-                  ✗ Hủy
-                </button>
-              ` : booking.status === 'confirmed' ? `
-                <button onclick="updateStatus('${booking._id}', 'completed')" 
-                  class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
-                  Hoàn thành
-                </button>
-              ` : `
-                <span class="text-gray-400 text-sm">Không có</span>
-              `}
-            </div>
-          </td>
-        </tr>
-      `;
-      }).join('');
     }
 
     function updateStats() {
       document.getElementById('totalBookings').textContent = allBookings.length;
-      document.getElementById('pendingBookings').textContent = 
-        allBookings.filter(b => b.status === 'pending').length;
-      document.getElementById('confirmedBookings').textContent = 
-        allBookings.filter(b => b.status === 'confirmed').length;
-      
-      const totalRevenue = allBookings
-        .filter(b => b.status !== 'cancelled')
-        .reduce((sum, b) => sum + b.totalPrice, 0);
-      document.getElementById('totalRevenue').textContent = totalRevenue.toLocaleString() + 'đ';
+      document.getElementById('pendingBookings').textContent = allBookings.filter(b => b.status === 'pending').length;
+      document.getElementById('confirmedBookings').textContent = allBookings.filter(b => b.status === 'confirmed').length;
+      document.getElementById('completedBookings').textContent = allBookings.filter(b => b.status === 'completed').length;
     }
 
     function filterBookings() {
       const status = document.getElementById('filterStatus').value;
       const fromDate = document.getElementById('filterFromDate').value;
       const toDate = document.getElementById('filterToDate').value;
-
-      filteredBookings = allBookings.filter(booking => {
-        if (status && booking.status !== status) return false;
-        if (fromDate && new Date(booking.date) < new Date(fromDate)) return false;
-        if (toDate && new Date(booking.date) > new Date(toDate)) return false;
-        return true;
-      });
-
-      displayBookings();
+      
+      let filtered = allBookings;
+      if (status) filtered = filtered.filter(b => b.status === status);
+      if (fromDate) filtered = filtered.filter(b => new Date(b.date) >= new Date(fromDate));
+      if (toDate) filtered = filtered.filter(b => new Date(b.date) <= new Date(toDate));
+      
+      displayBookings(filtered);
     }
 
     function resetFilters() {
       document.getElementById('filterStatus').value = '';
       document.getElementById('filterFromDate').value = '';
       document.getElementById('filterToDate').value = '';
-      filteredBookings = allBookings;
-      displayBookings();
+      displayBookings(allBookings);
     }
 
-    let pendingStatusUpdate = null;
+    function displayBookings(bookings) {
+      const tbody = document.getElementById('bookingsTable');
+      if (bookings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-8 text-center text-slate-400">Không có đơn đặt sân</td></tr>';
+        return;
+      }
+
+      const statusConfig = {
+        'pending': { text: 'Chờ duyệt', class: 'bg-yellow-100 text-yellow-700' },
+        'confirmed': { text: 'Đã duyệt', class: 'bg-green-100 text-green-700' },
+        'completed': { text: 'Hoàn thành', class: 'bg-blue-100 text-blue-700' },
+        'cancelled': { text: 'Đã hủy', class: 'bg-red-100 text-red-700' }
+      };
+
+      tbody.innerHTML = bookings.sort((a, b) => new Date(b.date) - new Date(a.date)).map(b => {
+        const config = statusConfig[b.status] || statusConfig['pending'];
+        const canConfirm = b.status === 'pending';
+        const canComplete = b.status === 'confirmed';
+        const canCancel = ['pending', 'confirmed'].includes(b.status);
+        
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-slate-200 rounded-full flex items-center justify-center text-sm font-bold">${(b.user?.name || 'N')[0]}</div>
+                <div>
+                  <p class="font-medium text-slate-800">${b.user?.name || 'N/A'}</p>
+                  <p class="text-xs text-slate-500">${b.user?.phone || ''}</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-4 text-slate-700">${b.field?.name || 'N/A'}</td>
+            <td class="px-5 py-4 text-slate-700">${new Date(b.date).toLocaleDateString('vi-VN')}</td>
+            <td class="px-5 py-4 text-slate-700">${b.startTime} - ${b.endTime}</td>
+            <td class="px-5 py-4 font-semibold text-green-600">${b.totalPrice.toLocaleString()}đ</td>
+            <td class="px-5 py-4"><span class="px-3 py-1 rounded-lg text-xs font-semibold ${config.class}">${config.text}</span></td>
+            <td class="px-5 py-4">
+              <div class="flex gap-1">
+                ${canConfirm ? `<button onclick="updateStatus('${b._id}', 'confirmed')" class="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-xs font-medium hover:bg-green-200">✓ Duyệt</button>` : ''}
+                ${canComplete ? `<button onclick="updateStatus('${b._id}', 'completed')" class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-200">✓ Xong</button>` : ''}
+                ${canCancel ? `<button onclick="updateStatus('${b._id}', 'cancelled')" class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200">✕ Hủy</button>` : ''}
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
 
     async function updateStatus(id, status) {
-      pendingStatusUpdate = { id, status };
+      const statusText = { 'confirmed': 'duyệt', 'completed': 'hoàn thành', 'cancelled': 'hủy' };
+      if (!confirm(`Xác nhận ${statusText[status]} đơn này?`)) return;
       
-      const statusText = {
-        'confirmed': 'duyệt',
-        'cancelled': 'hủy',
-        'completed': 'hoàn thành'
-      };
-      
-      const statusColors = {
-        'confirmed': 'green',
-        'cancelled': 'red',
-        'completed': 'blue'
-      };
-      
-      document.getElementById('confirmMessage').innerHTML = `
-        Bạn có chắc chắn muốn <strong class="text-${statusColors[status]}-600">${statusText[status]}</strong> đặt sân này?
-      `;
-      document.getElementById('confirmModal').classList.remove('hidden');
-    }
-
-    function closeConfirmModal() {
-      document.getElementById('confirmModal').classList.add('hidden');
-      pendingStatusUpdate = null;
-    }
-
-    async function confirmStatusUpdate() {
-      if (!pendingStatusUpdate) return;
-      
-      const { id, status } = pendingStatusUpdate;
-      
-      // Show loading
-      document.getElementById('confirmBtn').disabled = true;
-      document.getElementById('confirmBtn').innerHTML = '<span class="animate-spin">⏳</span> Đang xử lý...';
-
       try {
         const response = await fetch(`${API_URL}/bookings/${id}/status`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ status })
         });
-
-        if (response.ok) {
-          closeConfirmModal();
-          showSuccessNotification('Cập nhật trạng thái thành công!');
-          loadBookings();
-        } else {
-          const error = await response.json();
-          showErrorNotification('Lỗi: ' + error.message);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        showErrorNotification('Lỗi kết nối server');
-      } finally {
-        document.getElementById('confirmBtn').disabled = false;
-        document.getElementById('confirmBtn').innerHTML = 'Xác nhận';
-      }
-    }
-
-    function showSuccessNotification(message) {
-      const notification = document.getElementById('notification');
-      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-in';
-      notification.innerHTML = `
-        <span class="text-2xl">✓</span>
-        <span>${message}</span>
-      `;
-      notification.classList.remove('hidden');
-      
-      setTimeout(() => {
-        notification.classList.add('hidden');
-      }, 3000);
-    }
-
-    function showErrorNotification(message) {
-      const notification = document.getElementById('notification');
-      notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-in';
-      notification.innerHTML = `
-        <span class="text-2xl">✗</span>
-        <span>${message}</span>
-      `;
-      notification.classList.remove('hidden');
-      
-      setTimeout(() => {
-        notification.classList.add('hidden');
-      }, 3000);
+        if (response.ok) { alert('Cập nhật thành công!'); loadBookings(); }
+      } catch (error) { alert('Lỗi cập nhật'); }
     }
 
     loadBookings();

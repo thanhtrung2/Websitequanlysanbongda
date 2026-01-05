@@ -3,10 +3,10 @@ const Promotion = require('../models/Promotion');
 
 exports.createBooking = async (req, res) => {
   try {
-    const { field, date, startTime, endTime, promoCode } = req.body;
+    const { field, subField, date, startTime, endTime, promoCode } = req.body;
     
-    // Kiểm tra trùng lịch đặt sân
-    const existingBooking = await Booking.findOne({
+    // Kiểm tra trùng lịch đặt sân (theo sân con nếu có)
+    const query = {
       field: field,
       date: new Date(date),
       status: { $nin: ['cancelled'] },
@@ -15,11 +15,19 @@ exports.createBooking = async (req, res) => {
         { startTime: { $lt: endTime }, endTime: { $gte: endTime } },
         { startTime: { $gte: startTime }, endTime: { $lte: endTime } }
       ]
-    });
+    };
+    
+    // Nếu có sân con, chỉ kiểm tra trùng với sân con đó
+    if (subField && subField.id) {
+      query['subField.id'] = subField.id;
+    }
+    
+    const existingBooking = await Booking.findOne(query);
 
     if (existingBooking) {
+      const subFieldInfo = existingBooking.subField?.name ? ` (${existingBooking.subField.name})` : '';
       return res.status(400).json({ 
-        message: `Sân đã được đặt vào khung giờ ${existingBooking.startTime} - ${existingBooking.endTime}. Vui lòng chọn giờ khác!`
+        message: `Sân${subFieldInfo} đã được đặt vào khung giờ ${existingBooking.startTime} - ${existingBooking.endTime}. Vui lòng chọn giờ khác!`
       });
     }
 
@@ -88,17 +96,24 @@ exports.updateBookingStatus = async (req, res) => {
 // Lấy các booking của một sân trong ngày
 exports.getFieldBookings = async (req, res) => {
   try {
-    const { fieldId, date } = req.query;
+    const { fieldId, date, subFieldId } = req.query;
     
     if (!fieldId || !date) {
       return res.status(400).json({ message: 'Thiếu fieldId hoặc date' });
     }
 
-    const bookings = await Booking.find({
+    const query = {
       field: fieldId,
       date: new Date(date),
       status: { $nin: ['cancelled'] }
-    }).select('startTime endTime status');
+    };
+    
+    // Nếu có subFieldId, lọc theo sân con
+    if (subFieldId) {
+      query['subField.id'] = subFieldId;
+    }
+
+    const bookings = await Booking.find(query).select('startTime endTime status subField');
 
     res.json(bookings);
   } catch (error) {
@@ -109,9 +124,9 @@ exports.getFieldBookings = async (req, res) => {
 // Kiểm tra khung giờ có trống không
 exports.checkAvailability = async (req, res) => {
   try {
-    const { fieldId, date, startTime, endTime } = req.query;
+    const { fieldId, date, startTime, endTime, subFieldId } = req.query;
     
-    const existingBooking = await Booking.findOne({
+    const query = {
       field: fieldId,
       date: new Date(date),
       status: { $nin: ['cancelled'] },
@@ -120,11 +135,19 @@ exports.checkAvailability = async (req, res) => {
         { startTime: { $lt: endTime }, endTime: { $gte: endTime } },
         { startTime: { $gte: startTime }, endTime: { $lte: endTime } }
       ]
-    });
+    };
+    
+    // Nếu có subFieldId, chỉ kiểm tra sân con đó
+    if (subFieldId) {
+      query['subField.id'] = subFieldId;
+    }
+    
+    const existingBooking = await Booking.findOne(query);
 
     res.json({ 
       available: !existingBooking,
-      conflictWith: existingBooking ? `${existingBooking.startTime} - ${existingBooking.endTime}` : null
+      conflictWith: existingBooking ? `${existingBooking.startTime} - ${existingBooking.endTime}` : null,
+      subField: existingBooking?.subField?.name || null
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -6,558 +6,180 @@
   <title>Quản lý Cộng đồng - Admin</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
+    .sidebar-link.active { background: rgba(255,255,255,0.15); border-left: 3px solid #fbbf24; }
+    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
-
+<body class="bg-slate-50">
   <div class="flex h-screen">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-green-800 text-white flex-shrink-0">
-      <div class="p-6">
-        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
-        <p class="text-sm text-green-200">Thành Trung M10</p>
+    <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
+      <div class="p-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl">⚽</div>
+          <div><h1 class="font-bold text-lg">Thành Trung M10</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
+        </div>
       </div>
-      <nav class="mt-6">
-        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📊</span> Dashboard
-        </a>
-        <a href="fields.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">⚽</span> Quản lý sân
-        </a>
-        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📅</span> Quản lý lịch đặt
-        </a>
-        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👥</span> Quản lý khách hàng
-        </a>
-        <a href="community.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
-          <span class="mr-3">🏆</span> Quản lý cộng đồng
-        </a>
-        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">💰</span> Quản lý tài chính
-        </a>
-        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📦</span> Quản lý kho
-        </a>
-        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🎁</span> Quản lý khuyến mãi
-        </a>
-        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👔</span> Quản lý nhân viên
-        </a>
-        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📈</span> Báo cáo & Thống kê
-        </a>
-        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
-          <span class="mr-3">🏠</span> Về trang chủ
-        </a>
-        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
-          <span class="mr-3">🚪</span> Đăng xuất
-        </a>
+      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <a href="index.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📊</span> Dashboard</a>
+        <a href="fields.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>⚽</span> Quản lý sân</a>
+        <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📅</span> Lịch đặt sân</a>
+        <a href="customers.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👥</span> Khách hàng</a>
+        <a href="community.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><span>🏆</span> Cộng đồng</a>
+        <div class="pt-2 mt-2 border-t border-white/10"><p class="px-4 py-2 text-xs text-slate-500 uppercase">Quản lý</p></div>
+        <a href="revenue.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>💰</span> Tài chính</a>
+        <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📦</span> Kho hàng</a>
+        <a href="promotions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🎁</span> Khuyến mãi</a>
+        <a href="staff.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👔</span> Nhân viên</a>
+        <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📈</span> Báo cáo</a>
       </nav>
+      <div class="p-3 border-t border-white/10">
+        <a href="../index.html" class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-slate-400"><span>🏠</span> Về trang chủ</a>
+        <button onclick="logout()" class="w-full sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/20"><span>🚪</span> Đăng xuất</button>
+      </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-      <header class="bg-white shadow-sm">
-        <div class="flex justify-between items-center px-8 py-4">
-          <h2 class="text-2xl font-bold text-gray-800">🏆 Quản lý Cộng đồng</h2>
-        </div>
+      <header class="glass sticky top-0 z-10 border-b border-slate-200">
+        <div class="px-6 py-4"><h2 class="text-xl font-bold text-slate-800">Quản lý Cộng đồng</h2><p class="text-sm text-slate-500">Kiểm duyệt bài viết và giải đấu</p></div>
       </header>
-
-      <div class="p-8">
-        <!-- Stats -->
-        <div class="grid grid-cols-6 gap-4 mb-6">
-          <div class="bg-white rounded-xl shadow p-4">
-            <p class="text-gray-500 text-xs">Tổng bài đăng</p>
-            <p id="statTotal" class="text-2xl font-bold text-gray-800">0</p>
-          </div>
-          <div class="bg-white rounded-xl shadow p-4">
-            <p class="text-gray-500 text-xs">Đang hoạt động</p>
-            <p id="statActive" class="text-2xl font-bold text-green-600">0</p>
-          </div>
-          <div class="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg" onclick="showTab('pending')">
-            <p class="text-gray-500 text-xs">Chờ duyệt</p>
-            <p id="statPending" class="text-2xl font-bold text-yellow-600">0</p>
-          </div>
-          <div class="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg" onclick="showTab('reports')">
-            <p class="text-gray-500 text-xs">Báo cáo</p>
-            <p id="statReports" class="text-2xl font-bold text-red-600">0</p>
-          </div>
-          <div class="bg-white rounded-xl shadow p-4">
-            <p class="text-gray-500 text-xs">Rủi ro cao</p>
-            <p id="statHighRisk" class="text-2xl font-bold text-orange-600">0</p>
-          </div>
-          <div class="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg" onclick="showTab('blocked')">
-            <p class="text-gray-500 text-xs">User bị khóa</p>
-            <p id="statBlocked" class="text-2xl font-bold text-purple-600">0</p>
-          </div>
+      <div class="p-6">
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-2xl p-5 border border-slate-100"><p class="text-sm text-slate-500">Tổng bài viết</p><p id="totalPosts" class="text-2xl font-bold text-slate-800">0</p></div>
+          <div class="bg-yellow-50 rounded-2xl p-5 border border-yellow-100"><p class="text-sm text-yellow-600">Chờ duyệt</p><p id="pendingPosts" class="text-2xl font-bold text-yellow-700">0</p></div>
+          <div class="bg-green-50 rounded-2xl p-5 border border-green-100"><p class="text-sm text-green-600">Đã duyệt</p><p id="approvedPosts" class="text-2xl font-bold text-green-700">0</p></div>
+          <div class="bg-red-50 rounded-2xl p-5 border border-red-100 cursor-pointer hover:bg-red-100" onclick="filterReported()"><p class="text-sm text-red-600">Bị báo cáo</p><p id="reportedPosts" class="text-2xl font-bold text-red-700">0</p></div>
         </div>
-
-        <!-- Tabs -->
-        <div class="bg-white rounded-xl shadow mb-6">
-          <div class="flex border-b overflow-x-auto">
-            <button onclick="showTab('all')" id="tabAll" class="tab-btn flex-1 py-3 px-4 text-center font-semibold border-b-2 border-green-600 text-green-600 whitespace-nowrap">
-              📋 Tất cả bài đăng
-            </button>
-            <button onclick="showTab('pending')" id="tabPending" class="tab-btn flex-1 py-3 px-4 text-center font-semibold text-gray-500 hover:text-gray-700 whitespace-nowrap">
-              ⏳ Chờ duyệt (<span id="pendingCount">0</span>)
-            </button>
-            <button onclick="showTab('reports')" id="tabReports" class="tab-btn flex-1 py-3 px-4 text-center font-semibold text-gray-500 hover:text-gray-700 whitespace-nowrap">
-              🚨 Báo cáo (<span id="reportsCount">0</span>)
-            </button>
-            <button onclick="showTab('blocked')" id="tabBlocked" class="tab-btn flex-1 py-3 px-4 text-center font-semibold text-gray-500 hover:text-gray-700 whitespace-nowrap">
-              🔒 User bị khóa
-            </button>
-          </div>
+        <div class="flex gap-2 mb-4">
+          <button onclick="loadPosts()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200">Tất cả</button>
+          <button onclick="loadPosts('pending')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl text-sm font-medium hover:bg-yellow-200">Chờ duyệt</button>
+          <button onclick="filterReported()" class="px-4 py-2 bg-red-100 text-red-700 rounded-xl text-sm font-medium hover:bg-red-200">Có báo cáo</button>
         </div>
-
-        <!-- Tab Contents -->
-        <div id="allContent"></div>
-        <div id="pendingContent" class="hidden"></div>
-        <div id="reportsContent" class="hidden"></div>
-        <div id="blockedContent" class="hidden"></div>
+        <div id="postsContainer" class="space-y-4">
+          <div class="text-center py-8 text-slate-400">Đang tải...</div>
+        </div>
       </div>
     </main>
   </div>
-
-  <!-- Post Detail Modal -->
-  <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-      <div id="detailContent"></div>
-    </div>
-  </div>
-
-  <!-- Warn User Modal -->
-  <div id="warnModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-      <div class="p-6 border-b bg-yellow-500 text-white rounded-t-2xl">
-        <h3 class="text-xl font-bold">⚠️ Cảnh báo người dùng</h3>
-      </div>
-      <div class="p-6">
-        <p id="warnUserInfo" class="mb-4 text-gray-600"></p>
-        <label class="block text-gray-700 font-semibold mb-2">Lý do cảnh báo</label>
-        <textarea id="warnReason" rows="3" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập lý do cảnh báo..."></textarea>
-        <div class="flex gap-3 mt-6">
-          <button onclick="closeWarnModal()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 font-semibold">Hủy</button>
-          <button onclick="confirmWarn()" class="flex-1 bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 font-semibold">Gửi cảnh báo</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
     const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
-    let selectedPosts = [];
-    let currentWarnUser = null;
-    let currentWarnPostId = null;
-    let currentTab = 'all';
-
-    const typeInfo = {
-      find_match: { icon: '⚽', name: 'Tìm kèo', color: 'bg-green-100 text-green-800' },
-      tournament: { icon: '🏆', name: 'Giải đấu', color: 'bg-yellow-100 text-yellow-800' },
-      share: { icon: '💬', name: 'Chia sẻ', color: 'bg-purple-100 text-purple-800' }
-    };
-
-    const statusInfo = {
-      active: { name: 'Hoạt động', color: 'bg-green-100 text-green-800' },
-      pending: { name: 'Chờ duyệt', color: 'bg-yellow-100 text-yellow-800' },
-      rejected: { name: 'Từ chối', color: 'bg-red-100 text-red-800' },
-      closed: { name: 'Đã đóng', color: 'bg-gray-100 text-gray-800' },
-      deleted: { name: 'Đã xóa', color: 'bg-red-100 text-red-800' }
-    };
-
-    const reportReasons = {
-      spam: 'Spam / Quảng cáo',
-      inappropriate: 'Nội dung không phù hợp',
-      fake: 'Thông tin giả mạo',
-      harassment: 'Quấy rối / Xúc phạm',
-      other: 'Lý do khác'
-    };
-
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      const colors = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500' };
-      toast.className = `${colors[type]} text-white px-6 py-3 rounded-xl shadow-lg`;
-      toast.textContent = message;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = '../index.html';
-    }
-
-    function showTab(tab) {
-      currentTab = tab;
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = 'tab-btn flex-1 py-3 px-4 text-center font-semibold text-gray-500 hover:text-gray-700 whitespace-nowrap';
-      });
-      document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).className = 
-        'tab-btn flex-1 py-3 px-4 text-center font-semibold border-b-2 border-green-600 text-green-600 whitespace-nowrap';
-      
-      ['all', 'pending', 'reports', 'blocked'].forEach(t => {
-        document.getElementById(`${t}Content`).className = t === tab ? '' : 'hidden';
-      });
-    }
-
-    async function loadAll() {
-      await loadStats();
-      await loadAllPosts();
-      await loadPendingPosts();
-      await loadReportedPosts();
-      await loadBlockedUsers();
-    }
-
-    async function loadStats() {
+    let allPosts = [];
+    function logout() { localStorage.clear(); window.location.href = '../index.html'; }
+    
+    async function loadPosts(filter = '') {
       try {
-        const response = await fetch(`${API_URL}/community/admin/stats`, {
+        const url = filter === 'pending' 
+          ? `${API_URL}/community/admin/pending`
+          : `${API_URL}/community/admin/all${filter === 'reported' ? '?hasReports=true' : ''}`;
+        const res = await fetch(url, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await response.json();
+        const data = await res.json();
+        const posts = data.posts || [];
+        allPosts = posts;
         
-        document.getElementById('statTotal').textContent = data.totalPosts || 0;
-        document.getElementById('statActive').textContent = data.activePosts || 0;
-        document.getElementById('statPending').textContent = data.pendingPosts || 0;
-        document.getElementById('statReports').textContent = data.pendingReports || 0;
-        document.getElementById('statHighRisk').textContent = data.highRiskPosts || 0;
-        document.getElementById('pendingCount').textContent = data.pendingPosts || 0;
-        document.getElementById('reportsCount').textContent = data.pendingReports || 0;
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    }
-
-    async function loadAllPosts() {
-      try {
-        const response = await fetch(`${API_URL}/community/admin/all`, {
+        // Load stats
+        const statsRes = await fetch(`${API_URL}/community/admin/stats`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await response.json();
-        renderAllPosts(data.posts || []);
-      } catch (error) {
-        console.error('Error:', error);
+        const stats = await statsRes.json();
+        
+        document.getElementById('totalPosts').textContent = stats.totalPosts || 0;
+        document.getElementById('pendingPosts').textContent = stats.pendingPosts || 0;
+        document.getElementById('approvedPosts').textContent = stats.activePosts || 0;
+        document.getElementById('reportedPosts').textContent = stats.pendingReports || 0;
+        
+        displayPosts(posts);
+      } catch (e) { 
+        console.error(e);
+        document.getElementById('postsContainer').innerHTML = '<p class="text-red-500 text-center">Lỗi tải dữ liệu</p>'; 
       }
     }
-
-    function renderAllPosts(posts) {
-      const container = document.getElementById('allContent');
-      if (posts.length === 0) {
-        container.innerHTML = '<div class="bg-white rounded-xl shadow p-8 text-center text-gray-500">Chưa có bài đăng nào</div>';
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="bg-white rounded-xl shadow overflow-hidden">
-          <table class="w-full">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Bài đăng</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Tác giả</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Loại</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Trạng thái</th>
-                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Rủi ro</th>
-                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-600">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y">
-              ${posts.map(post => {
-                const type = typeInfo[post.type] || { icon: '📝', name: 'Khác', color: 'bg-gray-100 text-gray-800' };
-                const status = statusInfo[post.status] || statusInfo.active;
-                const riskColor = (post.riskScore || 0) >= 60 ? 'text-red-600' : (post.riskScore || 0) >= 30 ? 'text-yellow-600' : 'text-green-600';
-                const pendingReports = post.reports?.filter(r => r.status === 'pending').length || 0;
-                
-                return `
-                  <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3">
-                      <p class="font-semibold text-gray-800 truncate max-w-xs">${post.title}</p>
-                      <p class="text-xs text-gray-500">${new Date(post.createdAt).toLocaleDateString('vi-VN')}</p>
-                    </td>
-                    <td class="px-4 py-3">
-                      <p class="text-sm">${post.author?.name || 'N/A'}</p>
-                    </td>
-                    <td class="px-4 py-3">
-                      <span class="px-2 py-1 rounded-full text-xs font-semibold ${type.color}">${type.icon} ${type.name}</span>
-                    </td>
-                    <td class="px-4 py-3">
-                      <span class="px-2 py-1 rounded-full text-xs font-semibold ${status.color}">${status.name}</span>
-                      ${pendingReports > 0 ? `<span class="ml-1 px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">🚨${pendingReports}</span>` : ''}
-                    </td>
-                    <td class="px-4 py-3">
-                      <span class="font-semibold ${riskColor}">${post.riskScore || 0}%</span>
-                    </td>
-                    <td class="px-4 py-3">
-                      <div class="flex justify-center gap-1">
-                        <button onclick="viewPost('${post._id}')" class="p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200" title="Xem">👁️</button>
-                        ${post.status !== 'deleted' ? `<button onclick="deletePost('${post._id}')" class="p-2 bg-red-100 text-red-600 rounded hover:bg-red-200" title="Xóa">🗑️</button>` : ''}
-                      </div>
-                    </td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
+    
+    function filterReported() {
+      loadPosts('reported');
     }
-
-    async function loadPendingPosts() {
-      try {
-        const response = await fetch(`${API_URL}/community/admin/pending`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-        renderPendingPosts(data.posts || []);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    }
-
-    function renderPendingPosts(posts) {
-      const container = document.getElementById('pendingContent');
-      if (posts.length === 0) {
-        container.innerHTML = '<div class="bg-white rounded-xl shadow p-8 text-center text-gray-500">✅ Không có bài đăng nào chờ duyệt</div>';
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="bg-white rounded-xl shadow p-4 mb-4 flex items-center gap-4">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="w-5 h-5">
-            <span class="font-semibold">Chọn tất cả</span>
-          </label>
-          <div class="flex-1"></div>
-          <span id="selectedCount" class="text-gray-500">Đã chọn: 0</span>
-          <button onclick="bulkApprove()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50" id="btnBulkApprove" disabled>✅ Duyệt</button>
-          <button onclick="bulkReject()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50" id="btnBulkReject" disabled>❌ Từ chối</button>
-        </div>
-        <div class="space-y-4">
-          ${posts.map(post => {
-            const riskColor = (post.riskScore || 0) >= 60 ? 'bg-red-100 text-red-800' : (post.riskScore || 0) >= 30 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800';
-            return `
-              <div class="bg-white rounded-xl shadow p-4 hover:shadow-lg">
-                <div class="flex items-start gap-4">
-                  <input type="checkbox" class="post-checkbox w-5 h-5 mt-1" data-id="${post._id}" onchange="updateSelection()">
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-2">
-                      <h3 class="font-bold text-gray-800">${post.title}</h3>
-                      <span class="px-2 py-1 rounded text-xs font-semibold ${riskColor}">Rủi ro: ${post.riskScore || 0}%</span>
-                    </div>
-                    <p class="text-gray-600 text-sm mb-2 line-clamp-2">${post.content}</p>
-                    <div class="flex items-center gap-4 text-xs text-gray-500">
-                      <span>👤 ${post.author?.name || 'N/A'}</span>
-                      <span>📅 ${new Date(post.createdAt).toLocaleString('vi-VN')}</span>
-                    </div>
-                    ${post.autoModerationDetails?.bannedWords?.length > 0 ? `
-                      <div class="mt-2 p-2 bg-red-50 rounded text-xs text-red-700">
-                        ⚠️ Từ ngữ: ${post.autoModerationDetails.bannedWords.join(', ')}
-                      </div>
-                    ` : ''}
-                  </div>
-                  <div class="flex flex-col gap-2">
-                    <button onclick="viewPost('${post._id}')" class="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200">👁️ Xem</button>
-                    <button onclick="approvePost('${post._id}')" class="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200">✅ Duyệt</button>
-                    <button onclick="rejectPost('${post._id}')" class="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200">❌ Từ chối</button>
-                  </div>
-                </div>
+    
+    function displayPosts(posts) {
+      const container = document.getElementById('postsContainer');
+      if (!posts.length) { container.innerHTML = '<p class="text-slate-400 text-center py-8">Chưa có bài viết</p>'; return; }
+      const typeMap = { 'find_team': '🔍 Tìm đồng đội', 'share': '📝 Chia sẻ', 'tournament': '🏆 Giải đấu' };
+      const reasonMap = { 'spam': 'Spam', 'inappropriate': 'Nội dung không phù hợp', 'harassment': 'Quấy rối', 'fake': 'Thông tin sai', 'other': 'Khác' };
+      
+      container.innerHTML = posts.slice(0, 20).map(p => {
+        const pendingReports = (p.reports || []).filter(r => r.status === 'pending');
+        const hasReports = pendingReports.length > 0;
+        
+        return `
+        <div class="bg-white rounded-2xl p-5 border ${hasReports ? 'border-red-300 bg-red-50/30' : 'border-slate-100'}">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">${(p.author?.name || 'N')[0]}</div>
+              <div>
+                <p class="font-semibold text-slate-800">${p.author?.name || 'Ẩn danh'}</p>
+                <p class="text-xs text-slate-500">${new Date(p.createdAt).toLocaleString('vi-VN')}</p>
               </div>
-            `;
-          }).join('')}
-        </div>
-      `;
-    }
-
-    async function loadReportedPosts() {
-      try {
-        const response = await fetch(`${API_URL}/community/admin/all?hasReports=true`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-        const reportedPosts = (data.posts || []).filter(p => p.reports?.some(r => r.status === 'pending'));
-        renderReportedPosts(reportedPosts);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    }
-
-    function renderReportedPosts(posts) {
-      const container = document.getElementById('reportsContent');
-      if (posts.length === 0) {
-        container.innerHTML = '<div class="bg-white rounded-xl shadow p-8 text-center text-gray-500">✅ Không có báo cáo nào chờ xử lý</div>';
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="space-y-4">
-          ${posts.map(post => {
-            const pendingReports = post.reports?.filter(r => r.status === 'pending') || [];
-            return `
-              <div class="bg-white rounded-xl shadow p-4">
-                <div class="flex items-start gap-4">
-                  <div class="flex-1">
-                    <h3 class="font-bold text-gray-800 mb-2">${post.title}</h3>
-                    <p class="text-gray-600 text-sm mb-3">${post.content.substring(0, 100)}...</p>
-                    <div class="space-y-2">
-                      ${pendingReports.map(r => `
-                        <div class="flex items-center gap-2 p-2 bg-red-50 rounded text-sm">
-                          <span class="px-2 py-1 bg-red-200 text-red-800 rounded text-xs">${reportReasons[r.reason] || r.reason}</span>
-                          ${r.description ? `<span class="text-gray-600">${r.description}</span>` : ''}
-                        </div>
-                      `).join('')}
-                    </div>
-                  </div>
-                  <div class="flex flex-col gap-2">
-                    <button onclick="viewPost('${post._id}')" class="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">👁️ Xem</button>
-                    <button onclick="dismissReports('${post._id}')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm">✓ Bỏ qua</button>
-                    <button onclick="deletePost('${post._id}')" class="px-3 py-1 bg-red-100 text-red-700 rounded text-sm">🗑️ Xóa</button>
-                  </div>
-                </div>
+            </div>
+            <div class="flex items-center gap-2">
+              ${hasReports ? `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">🚨 ${pendingReports.length} báo cáo</span>` : ''}
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">${typeMap[p.type] || p.type}</span>
+            </div>
+          </div>
+          <p class="text-slate-700 mb-3">${p.content?.substring(0, 200)}${p.content?.length > 200 ? '...' : ''}</p>
+          
+          ${hasReports ? `
+          <div class="bg-red-50 rounded-xl p-3 mb-3 border border-red-200">
+            <p class="text-sm font-semibold text-red-700 mb-2">📋 Chi tiết báo cáo:</p>
+            ${pendingReports.map(r => `
+              <div class="text-sm text-red-600 mb-1">
+                • <strong>${reasonMap[r.reason] || r.reason}</strong>: ${r.description || 'Không có mô tả'}
+                <span class="text-xs text-red-400">(${new Date(r.createdAt).toLocaleDateString('vi-VN')})</span>
               </div>
-            `;
-          }).join('')}
+            `).join('')}
+          </div>
+          ` : ''}
+          
+          <div class="flex gap-2 flex-wrap">
+            ${p.moderationStatus === 'pending' ? `<button onclick="updatePost('${p._id}', 'approve')" class="px-4 py-2 bg-green-100 text-green-700 rounded-xl text-sm font-medium hover:bg-green-200">✓ Duyệt</button>` : ''}
+            ${hasReports ? `
+              <button onclick="dismissReports('${p._id}')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl text-sm font-medium hover:bg-yellow-200">⊘ Bỏ qua báo cáo</button>
+              <button onclick="deleteFromReport('${p._id}')" class="px-4 py-2 bg-red-100 text-red-700 rounded-xl text-sm font-medium hover:bg-red-200">🗑️ Xóa (vi phạm)</button>
+            ` : `
+              <button onclick="deletePost('${p._id}')" class="px-4 py-2 bg-red-100 text-red-700 rounded-xl text-sm font-medium hover:bg-red-200">🗑️ Xóa</button>
+            `}
+            ${p.author?._id ? `<button onclick="warnUser('${p.author._id}', '${p._id}')" class="px-4 py-2 bg-orange-100 text-orange-700 rounded-xl text-sm font-medium hover:bg-orange-200">⚠️ Cảnh báo user</button>` : ''}
+          </div>
         </div>
-      `;
+      `}).join('');
     }
-
-    async function loadBlockedUsers() {
+    
+    async function updatePost(id, action) {
       try {
-        const response = await fetch(`${API_URL}/community/admin/blocked-users`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+        await fetch(`${API_URL}/community/admin/${id}/moderate`, { 
+          method: 'PATCH', 
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, 
+          body: JSON.stringify({ action }) 
         });
-        const users = await response.json();
-        document.getElementById('statBlocked').textContent = users.length;
-        renderBlockedUsers(users);
-      } catch (error) {
-        console.error('Error:', error);
-      }
+        loadPosts();
+      } catch (e) { alert('Lỗi'); }
     }
-
-    function renderBlockedUsers(users) {
-      const container = document.getElementById('blockedContent');
-      if (users.length === 0) {
-        container.innerHTML = '<div class="bg-white rounded-xl shadow p-8 text-center text-gray-500">✅ Không có người dùng bị khóa</div>';
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="bg-white rounded-xl shadow overflow-hidden">
-          <table class="w-full">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left">Người dùng</th>
-                <th class="px-6 py-3 text-left">Email</th>
-                <th class="px-6 py-3 text-left">Lý do</th>
-                <th class="px-6 py-3 text-left">Ngày khóa</th>
-                <th class="px-6 py-3 text-center">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y">
-              ${users.map(u => `
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 font-semibold">${u.name}</td>
-                  <td class="px-6 py-4 text-gray-500">${u.email}</td>
-                  <td class="px-6 py-4 text-red-600 text-sm">${u.blockedReason || 'Vi phạm quy định'}</td>
-                  <td class="px-6 py-4 text-gray-500 text-sm">${u.blockedAt ? new Date(u.blockedAt).toLocaleDateString('vi-VN') : '-'}</td>
-                  <td class="px-6 py-4 text-center">
-                    <button onclick="unblockUser('${u._id}')" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200">🔓 Mở khóa</button>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    // Actions
-    function toggleSelectAll() {
-      const selectAll = document.getElementById('selectAll').checked;
-      document.querySelectorAll('.post-checkbox').forEach(cb => cb.checked = selectAll);
-      updateSelection();
-    }
-
-    function updateSelection() {
-      selectedPosts = Array.from(document.querySelectorAll('.post-checkbox:checked')).map(cb => cb.dataset.id);
-      document.getElementById('selectedCount').textContent = `Đã chọn: ${selectedPosts.length}`;
-      document.getElementById('btnBulkApprove').disabled = selectedPosts.length === 0;
-      document.getElementById('btnBulkReject').disabled = selectedPosts.length === 0;
-    }
-
-    async function bulkApprove() {
-      if (!selectedPosts.length || !confirm(`Duyệt ${selectedPosts.length} bài đăng?`)) return;
-      try {
-        await fetch(`${API_URL}/community/admin/bulk-moderate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ postIds: selectedPosts, action: 'approve' })
-        });
-        showToast(`Đã duyệt ${selectedPosts.length} bài đăng`);
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
-    }
-
-    async function bulkReject() {
-      if (!selectedPosts.length) return;
-      const reason = prompt('Nhập lý do từ chối:');
-      if (!reason) return;
-      try {
-        await fetch(`${API_URL}/community/admin/bulk-moderate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ postIds: selectedPosts, action: 'reject', reason })
-        });
-        showToast(`Đã từ chối ${selectedPosts.length} bài đăng`);
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
-    }
-
-    async function approvePost(id) {
-      try {
-        await fetch(`${API_URL}/community/admin/${id}/moderate`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ action: 'approve' })
-        });
-        showToast('Đã duyệt bài đăng');
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
-    }
-
-    async function rejectPost(id) {
-      const reason = prompt('Nhập lý do từ chối:');
-      if (!reason) return;
-      try {
-        await fetch(`${API_URL}/community/admin/${id}/moderate`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ action: 'reject', reason })
-        });
-        showToast('Đã từ chối bài đăng');
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
-    }
-
+    
     async function deletePost(id) {
-      if (!confirm('Xóa bài đăng này?')) return;
+      if (!confirm('Xóa bài viết này?')) return;
       try {
-        await fetch(`${API_URL}/community/admin/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        showToast('Đã xóa bài đăng');
-        closeDetailModal();
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
+        await fetch(`${API_URL}/community/admin/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        loadPosts();
+      } catch (e) { alert('Lỗi'); }
     }
-
+    
     async function dismissReports(postId) {
+      if (!confirm('Bỏ qua tất cả báo cáo của bài viết này?')) return;
       try {
-        const response = await fetch(`${API_URL}/community/${postId}`);
-        const post = await response.json();
-        const pendingReports = post.reports?.filter(r => r.status === 'pending') || [];
+        const post = allPosts.find(p => p._id === postId);
+        const pendingReports = (post?.reports || []).filter(r => r.status === 'pending');
         
         for (const report of pendingReports) {
           await fetch(`${API_URL}/community/admin/${postId}/report`, {
@@ -566,105 +188,43 @@
             body: JSON.stringify({ reportId: report._id, action: 'dismiss' })
           });
         }
-        showToast('Đã bỏ qua báo cáo');
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
+        loadPosts();
+      } catch (e) { alert('Lỗi xử lý báo cáo'); }
     }
-
-    async function unblockUser(userId) {
-      if (!confirm('Mở khóa tài khoản này?')) return;
+    
+    async function deleteFromReport(postId) {
+      if (!confirm('Xóa bài viết do vi phạm?')) return;
       try {
-        await fetch(`${API_URL}/community/admin/unblock-user/${userId}`, {
-          method: 'PATCH',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        showToast('Đã mở khóa tài khoản');
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
-    }
-
-    async function viewPost(id) {
-      try {
-        const response = await fetch(`${API_URL}/community/${id}`);
-        const post = await response.json();
-        const type = typeInfo[post.type] || { icon: '📝', name: 'Khác', color: 'bg-gray-100 text-gray-800' };
-        const status = statusInfo[post.status] || statusInfo.active;
-        const riskColor = (post.riskScore || 0) >= 60 ? 'bg-red-100 text-red-800' : (post.riskScore || 0) >= 30 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800';
+        const post = allPosts.find(p => p._id === postId);
+        const pendingReport = (post?.reports || []).find(r => r.status === 'pending');
         
-        document.getElementById('detailContent').innerHTML = `
-          <div class="p-6 border-b bg-gray-50">
-            <div class="flex justify-between items-start">
-              <div class="flex items-center gap-2">
-                <span class="px-3 py-1 rounded-full text-sm font-semibold ${type.color}">${type.icon} ${type.name}</span>
-                <span class="px-3 py-1 rounded-full text-sm font-semibold ${status.color}">${status.name}</span>
-                <span class="px-3 py-1 rounded-full text-sm font-semibold ${riskColor}">Rủi ro: ${post.riskScore || 0}%</span>
-              </div>
-              <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
-            </div>
-            <h2 class="text-xl font-bold text-gray-800 mt-4">${post.title}</h2>
-            <p class="text-gray-500 mt-2 text-sm">Bởi: ${post.author?.name || 'N/A'} • ${new Date(post.createdAt).toLocaleString('vi-VN')}</p>
-          </div>
-          <div class="p-6">
-            <p class="text-gray-700 whitespace-pre-wrap mb-4">${post.content}</p>
-            ${post.autoModerationDetails?.bannedWords?.length > 0 ? `
-              <div class="bg-red-50 rounded-lg p-3 mb-4">
-                <p class="text-sm text-red-700"><strong>⚠️ Từ ngữ vi phạm:</strong> ${post.autoModerationDetails.bannedWords.join(', ')}</p>
-              </div>
-            ` : ''}
-            <div class="flex gap-2 text-sm text-gray-500 mb-4">
-              <span>❤️ ${post.likes?.length || 0}</span>
-              <span>💬 ${post.comments?.length || 0}</span>
-              <span>👁️ ${post.views || 0}</span>
-            </div>
-            <div class="flex gap-3">
-              ${post.moderationStatus === 'pending' ? `
-                <button onclick="approvePost('${post._id}'); closeDetailModal();" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">✅ Duyệt</button>
-                <button onclick="rejectPost('${post._id}'); closeDetailModal();" class="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">❌ Từ chối</button>
-              ` : ''}
-              ${post.status !== 'deleted' ? `<button onclick="deletePost('${post._id}')" class="flex-1 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700">🗑️ Xóa</button>` : ''}
-              <button onclick="openWarnModal('${post.author?._id}', '${post.author?.name}', '${post._id}')" class="flex-1 bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600">⚠️ Cảnh báo user</button>
-            </div>
-          </div>
-        `;
-        document.getElementById('detailModal').classList.remove('hidden');
-      } catch (error) { showToast('Lỗi', 'error'); }
+        if (pendingReport) {
+          await fetch(`${API_URL}/community/admin/${postId}/report`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ reportId: pendingReport._id, action: 'delete_post' })
+          });
+        }
+        loadPosts();
+      } catch (e) { alert('Lỗi'); }
     }
-
-    function closeDetailModal() {
-      document.getElementById('detailModal').classList.add('hidden');
-    }
-
-    function openWarnModal(userId, userName, postId = null) {
-      currentWarnUser = userId;
-      currentWarnPostId = postId;
-      document.getElementById('warnUserInfo').textContent = `Gửi cảnh báo đến: ${userName}`;
-      document.getElementById('warnReason').value = '';
-      document.getElementById('warnModal').classList.remove('hidden');
-    }
-
-    function closeWarnModal() {
-      document.getElementById('warnModal').classList.add('hidden');
-    }
-
-    async function confirmWarn() {
-      const reason = document.getElementById('warnReason').value.trim();
-      if (!reason) { showToast('Vui lòng nhập lý do', 'warning'); return; }
+    
+    async function warnUser(userId, postId) {
+      const reason = prompt('Nhập lý do cảnh báo:');
+      if (!reason) return;
       try {
-        const response = await fetch(`${API_URL}/community/admin/warn-user`, {
+        const res = await fetch(`${API_URL}/community/admin/warn-user`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ userId: currentWarnUser, reason, postId: currentWarnPostId })
+          body: JSON.stringify({ userId, reason, postId })
         });
-        const data = await response.json();
-        showToast(data.isBlocked ? 'Tài khoản đã bị khóa' : `Đã gửi cảnh báo (${data.violationCount}/3)`, data.isBlocked ? 'warning' : 'success');
-        closeWarnModal();
-        closeDetailModal();
-        loadAll();
-      } catch (error) { showToast('Lỗi', 'error'); }
+        const data = await res.json();
+        alert(data.message + (data.isBlocked ? ' (Tài khoản đã bị khóa)' : ` (Vi phạm: ${data.violationCount}/3)`));
+        loadPosts();
+      } catch (e) { alert('Lỗi'); }
     }
-
-    // Init
-    loadAll();
+    
+    loadPosts();
   </script>
 </body>
 </html>

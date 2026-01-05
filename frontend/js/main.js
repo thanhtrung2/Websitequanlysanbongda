@@ -326,3 +326,74 @@ function updateMobileUserMenu() {
 
 // Cập nhật mobile menu khi trang tải
 document.addEventListener('DOMContentLoaded', updateMobileUserMenu);
+
+// ========== FOOTER COMPONENT ==========
+
+/**
+ * Render footer cho tất cả các trang
+ * Gọi hàm này trong các trang cần footer
+ */
+function renderFooter() {
+  const footerContainer = document.getElementById('footer');
+  if (!footerContainer) return;
+  
+  // Xác định đường dẫn dựa trên vị trí trang
+  const isInPages = window.location.pathname.includes('/pages/');
+  const basePath = isInPages ? '../' : '';
+  const pagesPath = isInPages ? '' : 'pages/';
+  
+  footerContainer.innerHTML = `
+    <footer class="bg-gray-900 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+          <div class="grid md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
+                  <span class="text-xl">⚽</span>
+                </div>
+                <h4 class="text-lg font-bold">Thành Trung M10</h4>
+              </div>
+              <p class="text-gray-400 text-sm mb-4">Hệ thống quản lý sân bóng hiện đại và chuyên nghiệp tại Trà Vinh</p>
+              <div class="flex gap-3">
+                <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition">📘</a>
+                <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition">📷</a>
+                <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-red-600 transition">▶️</a>
+                <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-400 transition">💬</a>
+              </div>
+            </div>
+            <div>
+              <h5 class="font-bold mb-4 text-lg">Liên kết nhanh</h5>
+              <ul class="space-y-3 text-gray-400">
+                <li><a href="${basePath}san-bong.html" class="hover:text-white transition flex items-center gap-2"><span>→</span> Sân bóng</a></li>
+                <li><a href="${basePath}${pagesPath}shop.html" class="hover:text-white transition flex items-center gap-2"><span>→</span> Cửa hàng</a></li>
+                <li><a href="${basePath}${pagesPath}about.html" class="hover:text-white transition flex items-center gap-2"><span>→</span> Giới thiệu</a></li>
+                <li><a href="${basePath}${pagesPath}contact.html" class="hover:text-white transition flex items-center gap-2"><span>→</span> Liên hệ</a></li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-bold mb-4 text-lg">Liên hệ</h5>
+              <ul class="space-y-3 text-gray-400">
+                <li class="flex items-center gap-2">📍 Trà Vinh, Việt Nam</li>
+                <li class="flex items-center gap-2">📞 0123 456 789</li>
+                <li class="flex items-center gap-2">✉️ contact@thanhtrungm10.vn</li>
+                <li class="flex items-center gap-2">⏰ 6:00 - 22:00 hàng ngày</li>
+              </ul>
+            </div>
+          </div>
+          <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-400 text-sm">&copy; 2024 Thành Trung M10. All rights reserved.</p>
+            <div class="flex gap-6 text-gray-400 text-sm">
+              <a href="#" class="hover:text-white transition">Điều khoản</a>
+              <a href="#" class="hover:text-white transition">Chính sách</a>
+              <a href="#" class="hover:text-white transition">Hỗ trợ</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  `;
+}
+
+// Tự động render footer khi trang tải
+document.addEventListener('DOMContentLoaded', renderFooter);

@@ -6,270 +6,158 @@
   <title>Quản lý Sân - Admin</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
+    .sidebar-link.active { background: rgba(255,255,255,0.15); border-left: 3px solid #fbbf24; }
+    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+    .card-hover { transition: all 0.3s; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <!-- Toast Notification Container -->
+<body class="bg-slate-50">
   <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-3"></div>
 
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-green-800 text-white flex-shrink-0">
-      <div class="p-6">
-        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
-        <p class="text-sm text-green-200">Thành Trung M10</p>
+    <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
+      <div class="p-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl">⚽</div>
+          <div><h1 class="font-bold text-lg">Thành Trung M10</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
+        </div>
       </div>
-      <nav class="mt-6">
-        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📊</span> Dashboard
-        </a>
-        <a href="fields.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
-          <span class="mr-3">⚽</span> Quản lý sân
-        </a>
-        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📅</span> Quản lý lịch đặt
-        </a>
-        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👥</span> Quản lý khách hàng
-        </a>
-        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🏆</span> Quản lý cộng đồng
-        </a>
-        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">💰</span> Quản lý tài chính
-        </a>
-        <a href="inventory.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📦</span> Quản lý kho
-        </a>
-        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🎁</span> Quản lý khuyến mãi
-        </a>
-        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👔</span> Quản lý nhân viên
-        </a>
-        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📈</span> Báo cáo & Thống kê
-        </a>
-        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
-          <span class="mr-3">🏠</span> Về trang chủ
-        </a>
-        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
-          <span class="mr-3">🚪</span> Đăng xuất
-        </a>
+      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <a href="index.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📊</span> Dashboard</a>
+        <a href="fields.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><span>⚽</span> Quản lý sân</a>
+        <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📅</span> Lịch đặt sân</a>
+        <a href="customers.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👥</span> Khách hàng</a>
+        <a href="community.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🏆</span> Cộng đồng</a>
+        <div class="pt-2 mt-2 border-t border-white/10"><p class="px-4 py-2 text-xs text-slate-500 uppercase">Quản lý</p></div>
+        <a href="revenue.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>💰</span> Tài chính</a>
+        <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📦</span> Kho hàng</a>
+        <a href="promotions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🎁</span> Khuyến mãi</a>
+        <a href="staff.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👔</span> Nhân viên</a>
+        <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📈</span> Báo cáo</a>
       </nav>
+      <div class="p-3 border-t border-white/10">
+        <a href="../index.html" class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-slate-400"><span>🏠</span> Về trang chủ</a>
+        <button onclick="logout()" class="w-full sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/20"><span>🚪</span> Đăng xuất</button>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-      <header class="bg-white shadow-sm">
-        <div class="flex justify-between items-center px-8 py-4">
-          <h2 class="text-2xl font-bold text-gray-800">Quản lý Sân Bóng</h2>
-          <button onclick="openAddModal()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
-            ➕ Thêm sân mới
+      <header class="glass sticky top-0 z-10 border-b border-slate-200">
+        <div class="flex justify-between items-center px-6 py-4">
+          <div><h2 class="text-xl font-bold text-slate-800">Quản lý Sân Bóng</h2><p class="text-sm text-slate-500">Thêm, sửa, xóa sân bóng</p></div>
+          <button onclick="openAddModal()" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg transition font-semibold flex items-center gap-2">
+            <span>➕</span> Thêm sân mới
           </button>
         </div>
       </header>
 
-      <div class="p-8">
-        <div id="loading" class="text-center py-8">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-          <p class="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+      <div class="p-6">
+        <div id="loading" class="text-center py-12">
+          <div class="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p class="mt-4 text-slate-500">Đang tải dữ liệu...</p>
         </div>
-        <div id="fieldsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6 hidden"></div>
+        <div id="fieldsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
       </div>
     </main>
   </div>
 
   <!-- Add/Edit Modal -->
-  <div id="fieldModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="p-6 border-b">
-        <h3 id="modalTitle" class="text-2xl font-bold text-gray-800">Thêm sân mới</h3>
+  <div id="fieldModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-t-2xl">
+        <h3 id="modalTitle" class="text-xl font-bold">Thêm sân mới</h3>
       </div>
       <form id="fieldForm" class="p-6 space-y-4">
         <input type="hidden" id="fieldId">
-        
         <div class="grid md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Tên sân *</label>
-            <input type="text" id="fieldName" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            <label class="block text-slate-700 font-semibold mb-2">Tên sân *</label>
+            <input type="text" id="fieldName" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition">
           </div>
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Loại sân *</label>
-            <select id="fieldType" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+            <label class="block text-slate-700 font-semibold mb-2">Loại sân *</label>
+            <select id="fieldType" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition">
               <option value="5vs5">Sân 5 người</option>
               <option value="7vs7">Sân 7 người</option>
               <option value="11vs11">Sân 11 người</option>
             </select>
           </div>
         </div>
-
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Địa chỉ *</label>
-          <input type="text" id="fieldAddress" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+          <label class="block text-slate-700 font-semibold mb-2">Địa chỉ *</label>
+          <input type="text" id="fieldAddress" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition">
         </div>
-
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Giá/giờ (VNĐ) *</label>
-          <input type="number" id="fieldPrice" required min="0" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+          <label class="block text-slate-700 font-semibold mb-2">Giá/giờ (VNĐ) *</label>
+          <input type="number" id="fieldPrice" required min="0" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition">
         </div>
-
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Tiện ích</label>
-          <textarea id="fieldAmenities" rows="2" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Đèn chiếu sáng, Phòng thay đồ, Bãi đỗ xe"></textarea>
+          <label class="block text-slate-700 font-semibold mb-2">Tiện ích</label>
+          <textarea id="fieldAmenities" rows="2" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition" placeholder="Đèn chiếu sáng, Phòng thay đồ, Bãi đỗ xe"></textarea>
         </div>
-
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Trạng thái</label>
-          <select id="fieldStatus" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+          <label class="block text-slate-700 font-semibold mb-2">Trạng thái</label>
+          <select id="fieldStatus" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-green-500 transition">
             <option value="active">Hoạt động</option>
             <option value="maintenance">Bảo trì</option>
             <option value="inactive">Không hoạt động</option>
           </select>
         </div>
-
-        <div class="flex gap-4 pt-4">
-          <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold">
-            Lưu
-          </button>
-          <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition font-semibold">
-            Hủy
-          </button>
+        <div>
+          <label class="block text-slate-700 font-semibold mb-2">Sân con</label>
+          <div id="subFieldsList" class="space-y-2 mb-3"></div>
+          <button type="button" onclick="addSubField()" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 text-sm">➕ Thêm sân con</button>
+        </div>
+        <div class="flex gap-3 pt-4">
+          <button type="submit" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl hover:shadow-lg transition font-semibold">Lưu</button>
+          <button type="button" onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl hover:bg-slate-200 transition font-semibold">Hủy</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Image Upload Modal -->
-  <div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="p-6 border-b">
-        <div class="flex justify-between items-start">
-          <div>
-            <h3 class="text-2xl font-bold text-gray-800">📷 Quản lý ảnh sân</h3>
-            <div id="imageFieldInfo" class="mt-2 p-3 bg-green-50 rounded-lg">
-              <!-- Field info will be inserted here -->
-            </div>
-          </div>
-          <button onclick="closeImageModal()" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
-        </div>
+  <!-- Image Modal -->
+  <div id="imageModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-t-2xl flex justify-between items-center">
+        <h3 class="text-xl font-bold">📷 Quản lý ảnh sân</h3>
+        <button onclick="closeImageModal()" class="text-white/80 hover:text-white text-2xl">&times;</button>
       </div>
       <div class="p-6">
         <input type="hidden" id="imageFieldId">
-        
-        <!-- Upload form -->
-        <div class="mb-6 p-4 border-2 border-dashed border-green-400 rounded-lg bg-green-50">
-          <label class="block text-gray-700 font-semibold mb-2">📤 Thêm ảnh mới</label>
-          <p class="text-sm text-gray-500 mb-3">Chọn tối đa 5 ảnh, mỗi ảnh ≤ 5MB (jpg, png, gif, webp)</p>
-          <input type="file" id="imageInput" multiple accept="image/*" class="w-full mb-3 p-2 border rounded">
+        <div class="mb-6 p-4 border-2 border-dashed border-green-400 rounded-xl bg-green-50">
+          <p class="text-sm text-slate-600 mb-3">Chọn tối đa 5 ảnh, mỗi ảnh ≤ 5MB</p>
+          <input type="file" id="imageInput" multiple accept="image/*" class="w-full mb-3">
           <div id="previewImages" class="flex gap-2 flex-wrap mb-3"></div>
-          <button type="button" onclick="uploadImages()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
-            ⬆️ Upload ảnh
-          </button>
+          <button type="button" onclick="uploadImages()" class="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition font-semibold">⬆️ Upload</button>
         </div>
-
-        <!-- Current images -->
-        <div>
-          <h4 class="font-semibold text-gray-700 mb-3">🖼️ Ảnh hiện tại (<span id="imageCount">0</span> ảnh):</h4>
-          <div id="currentImages" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
-        </div>
+        <h4 class="font-semibold text-slate-700 mb-3">Ảnh hiện tại (<span id="imageCount">0</span>):</h4>
+        <div id="currentImages" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
       </div>
     </div>
   </div>
-
-  <style>
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
-    }
-    .toast-enter { animation: slideIn 0.3s ease-out; }
-    .toast-exit { animation: slideOut 0.3s ease-out; }
-  </style>
 
   <script>
     const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
     let allFields = [];
+    let subFieldsData = [];
 
-    // ========== TOAST NOTIFICATION SYSTEM ==========
-    function showToast(message, type = 'success', duration = 3000) {
-      const container = document.getElementById('toastContainer');
+    function logout() { localStorage.clear(); window.location.href = '../index.html'; }
+    
+    function showToast(message, type = 'success') {
+      const colors = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500' };
       const toast = document.createElement('div');
-      
-      const icons = {
-        success: '✓',
-        error: '✕',
-        warning: '⚠',
-        info: 'ℹ'
-      };
-      
-      const colors = {
-        success: 'bg-green-500',
-        error: 'bg-red-500',
-        warning: 'bg-yellow-500',
-        info: 'bg-blue-500'
-      };
-      
-      toast.className = `toast-enter flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl text-white min-w-[300px] max-w-[400px] ${colors[type]}`;
-      toast.innerHTML = `
-        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl font-bold">
-          ${icons[type]}
-        </div>
-        <div class="flex-1">
-          <p class="font-semibold">${message}</p>
-        </div>
-        <button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white text-xl">&times;</button>
-      `;
-      
-      container.appendChild(toast);
-      
-      // Auto remove
-      setTimeout(() => {
-        toast.classList.remove('toast-enter');
-        toast.classList.add('toast-exit');
-        setTimeout(() => toast.remove(), 300);
-      }, duration);
-    }
-
-    // Confirm dialog đẹp
-    function showConfirm(title, message, onConfirm) {
-      const modal = document.createElement('div');
-      modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-[99]';
-      modal.innerHTML = `
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-[slideIn_0.3s_ease-out]">
-          <div class="p-6 text-center">
-            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span class="text-3xl">🗑️</span>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
-            <p class="text-gray-600">${message}</p>
-          </div>
-          <div class="flex border-t">
-            <button onclick="this.closest('.fixed').remove()" 
-              class="flex-1 py-4 text-gray-600 hover:bg-gray-100 font-semibold transition">
-              Hủy
-            </button>
-            <button id="confirmBtn" 
-              class="flex-1 py-4 bg-red-500 text-white hover:bg-red-600 font-semibold transition">
-              Xác nhận
-            </button>
-          </div>
-        </div>
-      `;
-      
-      document.body.appendChild(modal);
-      modal.querySelector('#confirmBtn').onclick = () => {
-        modal.remove();
-        onConfirm();
-      };
-    }
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = '../index.html';
+      toast.className = `${colors[type]} text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-2`;
+      toast.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span> ${message}`;
+      document.getElementById('toastContainer').appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
 
     async function loadFields() {
@@ -279,57 +167,39 @@
         document.getElementById('loading').classList.add('hidden');
         displayFields(allFields);
       } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('loading').innerHTML = '<p class="text-red-600">Lỗi tải dữ liệu</p>';
+        document.getElementById('loading').innerHTML = '<p class="text-red-500">Lỗi tải dữ liệu</p>';
       }
     }
 
     function displayFields(fields) {
       const grid = document.getElementById('fieldsGrid');
       grid.classList.remove('hidden');
-      
       const typeMap = { '5vs5': 'Sân 5', '7vs7': 'Sân 7', '11vs11': 'Sân 11' };
-      const statusMap = {
-        'active': { text: 'Hoạt động', color: 'bg-green-100 text-green-800' },
-        'maintenance': { text: 'Bảo trì', color: 'bg-yellow-100 text-yellow-800' },
-        'inactive': { text: 'Ngừng', color: 'bg-red-100 text-red-800' }
-      };
+      const statusMap = { 'active': { text: 'Hoạt động', class: 'bg-green-100 text-green-700' }, 'maintenance': { text: 'Bảo trì', class: 'bg-yellow-100 text-yellow-700' }, 'inactive': { text: 'Ngừng', class: 'bg-red-100 text-red-700' } };
+      const typeColors = { '5vs5': 'bg-blue-500', '7vs7': 'bg-purple-500', '11vs11': 'bg-orange-500' };
 
       grid.innerHTML = fields.map(field => {
         const hasImage = field.images && field.images.length > 0;
-        const imageUrl = hasImage ? field.images[0] : null;
-        
+        const subFieldCount = field.subFields?.length || 0;
         return `
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="h-48 bg-gray-200 relative">
-              ${hasImage 
-                ? `<img src="${imageUrl}" alt="${field.name}" class="w-full h-full object-cover">`
-                : `<div class="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-6xl">⚽</div>`
-              }
-              <span class="absolute top-2 right-2 px-2 py-1 rounded text-xs font-semibold ${statusMap[field.status]?.color}">
-                ${statusMap[field.status]?.text}
-              </span>
-              ${hasImage ? `<span class="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">${field.images.length} ảnh</span>` : ''}
+          <div class="card-hover bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
+            <div class="h-44 relative">
+              ${hasImage ? `<img src="${field.images[0]}" alt="${field.name}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-5xl">⚽</div>`}
+              <span class="absolute top-3 left-3 ${typeColors[field.type]} text-white px-3 py-1 rounded-full text-xs font-bold">${typeMap[field.type]}</span>
+              <span class="absolute top-3 right-3 ${statusMap[field.status]?.class} px-2 py-1 rounded-lg text-xs font-semibold">${statusMap[field.status]?.text}</span>
+              ${subFieldCount > 0 ? `<span class="absolute bottom-3 right-3 bg-black/50 text-white px-2 py-1 rounded-lg text-xs">${subFieldCount} sân con</span>` : ''}
             </div>
             <div class="p-4">
-              <h3 class="text-lg font-bold mb-1">${field.name}</h3>
-              <p class="text-gray-600 text-sm mb-1">📍 ${field.location?.address || 'N/A'}</p>
-              <p class="text-gray-600 text-sm mb-2">🏟️ ${typeMap[field.type]}</p>
+              <h3 class="font-bold text-lg text-slate-800 mb-1">${field.name}</h3>
+              <p class="text-slate-500 text-sm mb-2">📍 ${field.location?.address || 'N/A'}</p>
               <p class="text-green-600 font-bold mb-3">${field.pricePerHour.toLocaleString()}đ/giờ</p>
               <div class="flex gap-2">
-                <button onclick="openImageModal('${field._id}')" class="flex-1 bg-purple-500 text-white py-2 rounded hover:bg-purple-600 text-sm">
-                  📷 Ảnh
-                </button>
-                <button onclick="editField('${field._id}')" class="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 text-sm">
-                  ✏️ Sửa
-                </button>
-                <button onclick="deleteField('${field._id}', '${field.name}')" class="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-600 text-sm">
-                  🗑️
-                </button>
+                <button onclick="openImageModal('${field._id}')" class="flex-1 bg-purple-100 text-purple-700 py-2 rounded-xl hover:bg-purple-200 text-sm font-medium">📷</button>
+                <button onclick="editField('${field._id}')" class="flex-1 bg-blue-100 text-blue-700 py-2 rounded-xl hover:bg-blue-200 text-sm font-medium">✏️</button>
+                <button onclick="deleteField('${field._id}', '${field.name}')" class="flex-1 bg-red-100 text-red-700 py-2 rounded-xl hover:bg-red-200 text-sm font-medium">🗑️</button>
               </div>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
     }
 
@@ -337,13 +207,34 @@
       document.getElementById('modalTitle').textContent = 'Thêm sân mới';
       document.getElementById('fieldForm').reset();
       document.getElementById('fieldId').value = '';
+      subFieldsData = [];
+      renderSubFields();
       document.getElementById('fieldModal').classList.remove('hidden');
+    }
+
+    function renderSubFields() {
+      const container = document.getElementById('subFieldsList');
+      if (subFieldsData.length === 0) { container.innerHTML = '<p class="text-slate-400 text-sm">Chưa có sân con</p>'; return; }
+      container.innerHTML = subFieldsData.map((sf, i) => `
+        <div class="flex gap-2 items-center bg-slate-50 p-3 rounded-xl">
+          <input type="text" value="${sf.name}" onchange="subFieldsData[${i}].name=this.value" class="flex-1 px-3 py-2 border rounded-lg text-sm" placeholder="Tên sân con">
+          <select onchange="subFieldsData[${i}].type=this.value" class="px-3 py-2 border rounded-lg text-sm">
+            <option value="5vs5" ${sf.type === '5vs5' ? 'selected' : ''}>Sân 5</option>
+            <option value="7vs7" ${sf.type === '7vs7' ? 'selected' : ''}>Sân 7</option>
+          </select>
+          <input type="number" value="${sf.pricePerHour || ''}" onchange="subFieldsData[${i}].pricePerHour=this.value?parseInt(this.value):null" class="w-28 px-3 py-2 border rounded-lg text-sm" placeholder="Giá riêng">
+          <button type="button" onclick="subFieldsData.splice(${i},1);renderSubFields()" class="text-red-500 hover:bg-red-100 p-2 rounded-lg">✕</button>
+        </div>`).join('');
+    }
+
+    function addSubField() {
+      subFieldsData.push({ name: `Sân ${subFieldsData.length + 1}`, type: '5vs5', pricePerHour: null, status: 'active' });
+      renderSubFields();
     }
 
     function editField(id) {
       const field = allFields.find(f => f._id === id);
       if (!field) return;
-
       document.getElementById('modalTitle').textContent = 'Chỉnh sửa sân';
       document.getElementById('fieldId').value = field._id;
       document.getElementById('fieldName').value = field.name;
@@ -352,231 +243,109 @@
       document.getElementById('fieldPrice').value = field.pricePerHour;
       document.getElementById('fieldAmenities').value = field.amenities?.join(', ') || '';
       document.getElementById('fieldStatus').value = field.status;
+      subFieldsData = field.subFields?.map(sf => ({ ...sf })) || [];
+      renderSubFields();
       document.getElementById('fieldModal').classList.remove('hidden');
     }
 
-    function closeModal() {
-      document.getElementById('fieldModal').classList.add('hidden');
+    function closeModal() { document.getElementById('fieldModal').classList.add('hidden'); }
+
+    document.getElementById('fieldForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('fieldId').value;
+      const data = {
+        name: document.getElementById('fieldName').value,
+        type: document.getElementById('fieldType').value,
+        location: { address: document.getElementById('fieldAddress').value, city: 'Trà Vinh' },
+        pricePerHour: parseInt(document.getElementById('fieldPrice').value),
+        amenities: document.getElementById('fieldAmenities').value.split(',').map(a => a.trim()).filter(a => a),
+        status: document.getElementById('fieldStatus').value,
+        subFields: subFieldsData
+      };
+      try {
+        const response = await fetch(id ? `${API_URL}/fields/${id}` : `${API_URL}/fields`, {
+          method: id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(data)
+        });
+        if (response.ok) { showToast(id ? 'Cập nhật thành công!' : 'Thêm sân thành công!'); closeModal(); loadFields(); }
+        else { showToast('Lỗi lưu dữ liệu', 'error'); }
+      } catch (error) { showToast('Lỗi kết nối', 'error'); }
+    });
+
+    async function deleteField(id, name) {
+      if (!confirm(`Xóa sân "${name}"?`)) return;
+      try {
+        const response = await fetch(`${API_URL}/fields/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (response.ok) { showToast('Đã xóa sân!'); loadFields(); }
+      } catch (error) { showToast('Lỗi xóa', 'error'); }
     }
 
-    // Image Modal
-    const typeMap = { '5vs5': 'Sân 5 người', '7vs7': 'Sân 7 người', '11vs11': 'Sân 11 người' };
-    
     function openImageModal(id) {
-      const field = allFields.find(f => f._id === id);
-      if (!field) return;
-      
       document.getElementById('imageFieldId').value = id;
       document.getElementById('imageInput').value = '';
       document.getElementById('previewImages').innerHTML = '';
-      
-      // Hiển thị thông tin sân
-      document.getElementById('imageFieldInfo').innerHTML = `
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-2xl text-white">⚽</div>
-          <div>
-            <p class="font-bold text-lg text-green-800">${field.name}</p>
-            <p class="text-sm text-gray-600">📍 ${field.location?.address || 'N/A'} • ${typeMap[field.type]} • ${field.pricePerHour.toLocaleString()}đ/giờ</p>
-          </div>
-        </div>
-      `;
-      
       loadFieldImages(id);
       document.getElementById('imageModal').classList.remove('hidden');
     }
-
-    function closeImageModal() {
-      document.getElementById('imageModal').classList.add('hidden');
-    }
-
-    // Preview ảnh trước khi upload
-    document.getElementById('imageInput').addEventListener('change', function(e) {
-      const preview = document.getElementById('previewImages');
-      preview.innerHTML = '';
-      
-      if (this.files.length > 5) {
-        showToast('Chỉ được chọn tối đa 5 ảnh!', 'warning');
-        this.value = '';
-        return;
-      }
-      
-      for (let file of this.files) {
-        if (file.size > 5 * 1024 * 1024) {
-          showToast(`Ảnh "${file.name}" vượt quá 5MB!`, 'warning');
-          continue;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          preview.innerHTML += `
-            <div class="relative">
-              <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border-2 border-green-400">
-              <span class="absolute -top-1 -right-1 bg-green-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">✓</span>
-            </div>
-          `;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    function closeImageModal() { document.getElementById('imageModal').classList.add('hidden'); }
 
     function loadFieldImages(id) {
       const field = allFields.find(f => f._id === id);
       const container = document.getElementById('currentImages');
-      const countEl = document.getElementById('imageCount');
-      
-      if (!field || !field.images || field.images.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">📷 Chưa có ảnh nào. Hãy upload ảnh cho sân này!</p>';
-        countEl.textContent = '0';
-        return;
-      }
-
-      countEl.textContent = field.images.length;
-      container.innerHTML = field.images.map((img, index) => `
+      document.getElementById('imageCount').textContent = field?.images?.length || 0;
+      if (!field?.images?.length) { container.innerHTML = '<p class="text-slate-400 col-span-3 text-center py-8">Chưa có ảnh</p>'; return; }
+      container.innerHTML = field.images.map((img, i) => `
         <div class="relative group">
-          <img src="${img}" alt="Ảnh ${index + 1}" class="w-full h-32 object-cover rounded-lg border">
-          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition rounded-lg"></div>
-          <span class="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">Ảnh ${index + 1}</span>
-          <button onclick="deleteImage('${id}', ${index})" 
-            class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full opacity-0 group-hover:opacity-100 transition hover:bg-red-600"
-            title="Xóa ảnh này">
-            ✕
-          </button>
-        </div>
-      `).join('');
+          <img src="${img}" class="w-full h-32 object-cover rounded-xl">
+          <button onclick="deleteImage('${id}', ${i})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full opacity-0 group-hover:opacity-100 transition">✕</button>
+        </div>`).join('');
     }
+
+    document.getElementById('imageInput').addEventListener('change', function() {
+      const preview = document.getElementById('previewImages');
+      preview.innerHTML = '';
+      for (let file of this.files) {
+        const reader = new FileReader();
+        reader.onload = e => preview.innerHTML += `<img src="${e.target.result}" class="w-16 h-16 object-cover rounded-lg">`;
+        reader.readAsDataURL(file);
+      }
+    });
 
     async function uploadImages() {
       const id = document.getElementById('imageFieldId').value;
       const input = document.getElementById('imageInput');
-      
-      if (!input.files || input.files.length === 0) {
-        showToast('Vui lòng chọn ảnh', 'warning');
-        return;
-      }
-
+      if (!input.files.length) { showToast('Chọn ảnh trước', 'warning'); return; }
       const formData = new FormData();
-      for (let file of input.files) {
-        formData.append('images', file);
-      }
-
+      for (let file of input.files) formData.append('images', file);
       try {
-        const response = await fetch(`${API_URL}/fields/${id}/images`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
-          body: formData
-        });
-
-        const data = await response.json();
+        const response = await fetch(`${API_URL}/fields/${id}/images`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
         if (response.ok) {
-          showToast('Upload ảnh thành công!', 'success');
-          const fieldIndex = allFields.findIndex(f => f._id === id);
-          if (fieldIndex !== -1) {
-            allFields[fieldIndex].images = data.images;
-          }
+          const data = await response.json();
+          const idx = allFields.findIndex(f => f._id === id);
+          if (idx !== -1) allFields[idx].images = data.images;
+          showToast('Upload thành công!');
           loadFieldImages(id);
           displayFields(allFields);
           input.value = '';
           document.getElementById('previewImages').innerHTML = '';
-        } else {
-          showToast('Lỗi: ' + data.message, 'error');
         }
-      } catch (error) {
-        console.error('Error:', error);
-        showToast('Lỗi upload ảnh', 'error');
-      }
+      } catch (error) { showToast('Lỗi upload', 'error'); }
     }
 
-    async function deleteImage(fieldId, imageIndex) {
-      showConfirm('Xóa ảnh', 'Bạn có chắc muốn xóa ảnh này?', async () => {
-        try {
-          const response = await fetch(`${API_URL}/fields/${fieldId}/images/${imageIndex}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-
-          const data = await response.json();
-          if (response.ok) {
-            showToast('Đã xóa ảnh', 'success');
-            const fieldIndex = allFields.findIndex(f => f._id === fieldId);
-            if (fieldIndex !== -1) {
-              allFields[fieldIndex].images = data.images;
-            }
-            loadFieldImages(fieldId);
-            displayFields(allFields);
-          } else {
-            showToast('Lỗi: ' + data.message, 'error');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          showToast('Lỗi xóa ảnh', 'error');
-        }
-      });
-    }
-
-    document.getElementById('fieldForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const id = document.getElementById('fieldId').value;
-      const amenitiesText = document.getElementById('fieldAmenities').value;
-      const data = {
-        name: document.getElementById('fieldName').value,
-        type: document.getElementById('fieldType').value,
-        location: {
-          address: document.getElementById('fieldAddress').value,
-          city: 'Trà Vinh'
-        },
-        pricePerHour: parseInt(document.getElementById('fieldPrice').value),
-        amenities: amenitiesText ? amenitiesText.split(',').map(a => a.trim()).filter(a => a) : [],
-        status: document.getElementById('fieldStatus').value
-      };
-
+    async function deleteImage(fieldId, index) {
+      if (!confirm('Xóa ảnh này?')) return;
       try {
-        const url = id ? `${API_URL}/fields/${id}` : `${API_URL}/fields`;
-        const method = id ? 'PUT' : 'POST';
-        
-        const response = await fetch(url, {
-          method,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(data)
-        });
-
+        const response = await fetch(`${API_URL}/fields/${fieldId}/images/${index}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
         if (response.ok) {
-          showToast(id ? 'Cập nhật sân thành công!' : 'Thêm sân mới thành công!', 'success');
-          closeModal();
-          loadFields();
-        } else {
-          const error = await response.json();
-          showToast('Lỗi: ' + error.message, 'error');
+          const data = await response.json();
+          const idx = allFields.findIndex(f => f._id === fieldId);
+          if (idx !== -1) allFields[idx].images = data.images;
+          showToast('Đã xóa ảnh');
+          loadFieldImages(fieldId);
+          displayFields(allFields);
         }
-      } catch (error) {
-        console.error('Error:', error);
-        showToast('Lỗi kết nối server', 'error');
-      }
-    });
-
-    async function deleteField(id, name) {
-      showConfirm('Xóa sân bóng', `Bạn có chắc muốn xóa sân "${name}"? Hành động này không thể hoàn tác.`, async () => {
-        try {
-          const response = await fetch(`${API_URL}/fields/${id}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-
-          if (response.ok) {
-            showToast('Đã xóa sân thành công!', 'success');
-            loadFields();
-          } else {
-            const error = await response.json();
-            showToast('Lỗi: ' + error.message, 'error');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          showToast('Lỗi kết nối server', 'error');
-        }
-      });
+      } catch (error) { showToast('Lỗi xóa', 'error'); }
     }
 
     loadFields();

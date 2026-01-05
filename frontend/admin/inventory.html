@@ -6,317 +6,186 @@
   <title>Quản lý Kho - Admin</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
+    .sidebar-link.active { background: rgba(255,255,255,0.15); border-left: 3px solid #fbbf24; }
+    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+  </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-50">
   <div class="flex h-screen">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-green-800 text-white">
-      <div class="p-6">
-        <h1 class="text-2xl font-bold">⚽ Admin Panel</h1>
+    <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
+      <div class="p-5 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl">⚽</div>
+          <div><h1 class="font-bold text-lg">Thành Trung M10</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
+        </div>
       </div>
-      <nav class="mt-6">
-        <a href="index.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📊</span> Dashboard
-        </a>
-        <a href="fields.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">⚽</span> Quản lý sân
-        </a>
-        <a href="bookings.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📅</span> Quản lý lịch đặt
-        </a>
-        <a href="customers.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👥</span> Quản lý khách hàng
-        </a>
-        <a href="community.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🏆</span> Quản lý cộng đồng
-        </a>
-        <a href="revenue.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">💰</span> Quản lý tài chính
-        </a>
-        <a href="inventory.html" class="flex items-center px-6 py-3 bg-green-700 border-l-4 border-white">
-          <span class="mr-3">📦</span> Quản lý kho
-        </a>
-        <a href="promotions.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">🎁</span> Quản lý khuyến mãi
-        </a>
-        <a href="staff.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">👔</span> Quản lý nhân viên
-        </a>
-        <a href="reports.html" class="flex items-center px-6 py-3 hover:bg-green-700">
-          <span class="mr-3">📈</span> Báo cáo & Thống kê
-        </a>
-        <a href="../index.html" class="flex items-center px-6 py-3 hover:bg-green-700 mt-4 border-t border-green-700">
-          <span class="mr-3">🏠</span> Về trang chủ
-        </a>
-        <a href="#" onclick="logout()" class="flex items-center px-6 py-3 hover:bg-red-700">
-          <span class="mr-3">🚪</span> Đăng xuất
-        </a>
+      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <a href="index.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📊</span> Dashboard</a>
+        <a href="fields.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>⚽</span> Quản lý sân</a>
+        <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📅</span> Lịch đặt sân</a>
+        <a href="customers.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👥</span> Khách hàng</a>
+        <a href="community.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🏆</span> Cộng đồng</a>
+        <div class="pt-2 mt-2 border-t border-white/10"><p class="px-4 py-2 text-xs text-slate-500 uppercase">Quản lý</p></div>
+        <a href="revenue.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>💰</span> Tài chính</a>
+        <a href="inventory.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><span>📦</span> Kho hàng</a>
+        <a href="promotions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🎁</span> Khuyến mãi</a>
+        <a href="staff.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👔</span> Nhân viên</a>
+        <a href="reports.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📈</span> Báo cáo</a>
       </nav>
+      <div class="p-3 border-t border-white/10">
+        <a href="../index.html" class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-slate-400"><span>🏠</span> Về trang chủ</a>
+        <button onclick="logout()" class="w-full sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/20"><span>🚪</span> Đăng xuất</button>
+      </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-      <header class="bg-white shadow-sm">
-        <div class="flex justify-between items-center px-8 py-4">
-          <h2 class="text-2xl font-bold text-gray-800">Quản lý Kho</h2>
-          <button onclick="openAddModal()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
-            ➕ Thêm sản phẩm
-          </button>
+      <header class="glass sticky top-0 z-10 border-b border-slate-200">
+        <div class="flex justify-between items-center px-6 py-4">
+          <div><h2 class="text-xl font-bold text-slate-800">Quản lý Kho hàng</h2><p class="text-sm text-slate-500">Quản lý sản phẩm cửa hàng</p></div>
+          <button onclick="openModal()" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg transition font-semibold flex items-center gap-2"><span>➕</span> Thêm sản phẩm</button>
         </div>
       </header>
-
-      <div class="p-8">
-        <!-- Stats -->
-        <div class="grid md:grid-cols-4 gap-6 mb-6">
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Tổng sản phẩm</p>
-            <p class="text-3xl font-bold text-gray-800" id="totalProducts">0</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Sắp hết hàng</p>
-            <p class="text-3xl font-bold text-red-600" id="lowStock">0</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Giá trị kho</p>
-            <p class="text-2xl font-bold text-blue-600" id="totalValue">0đ</p>
-          </div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Doanh thu tháng</p>
-            <p class="text-2xl font-bold text-green-600" id="monthSales">0đ</p>
-          </div>
+      <div class="p-6">
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-2xl p-5 border border-slate-100"><p class="text-sm text-slate-500">Tổng sản phẩm</p><p id="totalProducts" class="text-2xl font-bold text-slate-800">0</p></div>
+          <div class="bg-green-50 rounded-2xl p-5 border border-green-100"><p class="text-sm text-green-600">Đang bán</p><p id="activeProducts" class="text-2xl font-bold text-green-700">0</p></div>
+          <div class="bg-red-50 rounded-2xl p-5 border border-red-100"><p class="text-sm text-red-600">Sắp hết</p><p id="lowStock" class="text-2xl font-bold text-red-700">0</p></div>
+          <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100"><p class="text-sm text-blue-600">Tổng giá trị</p><p id="totalValue" class="text-2xl font-bold text-blue-700">0đ</p></div>
         </div>
-
-        <!-- Inventory Table -->
-        <div class="bg-white rounded-lg shadow">
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sản phẩm</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Danh mục</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giá bán</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tồn kho</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Đã bán</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
-                </tr>
-              </thead>
-              <tbody id="inventoryTable" class="divide-y divide-gray-200">
-              </tbody>
-            </table>
-          </div>
+        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="col-span-full text-center py-8 text-slate-400">Đang tải...</div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Add/Edit Modal -->
-  <div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-8 max-w-md w-full">
-      <h3 class="text-xl font-bold mb-4" id="modalTitle">Thêm sản phẩm</h3>
-      <form id="productForm">
-        <div class="mb-4">
-          <label class="block text-gray-700 font-semibold mb-2">Tên sản phẩm</label>
-          <input type="text" id="productName" required class="w-full px-4 py-2 border rounded-lg">
+  <div id="productModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+      <div class="p-6 border-b bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-t-2xl"><h3 class="text-xl font-bold">Thêm sản phẩm</h3></div>
+      <form id="productForm" class="p-6 space-y-4">
+        <input type="hidden" id="productId">
+        <div><label class="block text-slate-700 font-semibold mb-2">Tên sản phẩm *</label><input type="text" id="productName" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-green-500"></div>
+        <div><label class="block text-slate-700 font-semibold mb-2">Danh mục *</label><select id="productCategory" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl"><option value="drinks">Đồ uống</option><option value="equipment">Thiết bị</option><option value="accessories">Phụ kiện</option></select></div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-slate-700 font-semibold mb-2">Giá *</label><input type="number" id="productPrice" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl"></div>
+          <div><label class="block text-slate-700 font-semibold mb-2">Số lượng *</label><input type="number" id="productStock" required class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl"></div>
         </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-semibold mb-2">Danh mục</label>
-          <select id="productCategory" required class="w-full px-4 py-2 border rounded-lg">
-            <option value="drink">Nước uống</option>
-            <option value="ball">Bóng đá</option>
-            <option value="equipment">Dụng cụ thể thao</option>
-            <option value="other">Khác</option>
-          </select>
-        </div>
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">Giá bán</label>
-            <input type="number" id="productPrice" required class="w-full px-4 py-2 border rounded-lg">
-          </div>
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">Tồn kho</label>
-            <input type="number" id="productStock" required class="w-full px-4 py-2 border rounded-lg">
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <button type="submit" class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-            Lưu
-          </button>
-          <button type="button" onclick="closeModal()" class="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
-            Hủy
-          </button>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold">Lưu</button>
+          <button type="button" onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl font-semibold">Hủy</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
+    const API_URL = 'http://localhost:3000/api';
     const token = localStorage.getItem('token');
     let products = [];
-    let editingId = null;
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = '../index.html';
+    function logout() { localStorage.clear(); window.location.href = '../index.html'; }
+    function openModal() { 
+      document.getElementById('productModal').classList.remove('hidden'); 
+      document.querySelector('#productModal h3').textContent = 'Thêm sản phẩm';
     }
-
-    async function loadInventory() {
+    function closeModal() { 
+      document.getElementById('productModal').classList.add('hidden'); 
+      document.getElementById('productForm').reset(); 
+      document.getElementById('productId').value = '';
+    }
+    
+    async function loadProducts() {
       try {
-        const response = await fetch(`http://localhost:3000/api/inventory`);
-        if (response.ok) {
-          products = await response.json();
-        } else {
-          console.error('Failed to load inventory');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-      
-      displayInventory();
-      updateStats();
+        const res = await fetch(`${API_URL}/inventory`, { headers: { 'Authorization': `Bearer ${token}` } });
+        products = await res.json();
+        document.getElementById('totalProducts').textContent = products.length;
+        document.getElementById('activeProducts').textContent = products.filter(p => p.status === 'active').length;
+        document.getElementById('lowStock').textContent = products.filter(p => p.stock < 10).length;
+        document.getElementById('totalValue').textContent = products.reduce((s, p) => s + p.price * p.stock, 0).toLocaleString() + 'đ';
+        displayProducts();
+      } catch (e) { document.getElementById('productsGrid').innerHTML = '<p class="col-span-full text-center text-red-500">Lỗi tải dữ liệu</p>'; }
     }
-
-    function displayInventory() {
-      const tbody = document.getElementById('inventoryTable');
-      const categoryMap = {
-        'drink': 'Nước uống',
-        'ball': 'Bóng đá',
-        'equipment': 'Dụng cụ',
-        'other': 'Khác'
-      };
-
-      tbody.innerHTML = products.map(p => `
-        <tr class="hover:bg-gray-50">
-          <td class="px-6 py-4 font-semibold">${p.name}</td>
-          <td class="px-6 py-4">${categoryMap[p.category]}</td>
-          <td class="px-6 py-4">${p.price.toLocaleString()}đ</td>
-          <td class="px-6 py-4">
-            <span class="${p.stock < 10 ? 'text-red-600 font-bold' : ''}">${p.stock}</span>
-          </td>
-          <td class="px-6 py-4">${p.sold || 0}</td>
-          <td class="px-6 py-4">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold ${
-              p.stock === 0 ? 'bg-red-100 text-red-800' :
-              p.stock < 10 ? 'bg-yellow-100 text-yellow-800' :
-              'bg-green-100 text-green-800'
-            }">
-              ${p.stock === 0 ? 'Hết hàng' : p.stock < 10 ? 'Sắp hết' : 'Còn hàng'}
-            </span>
-          </td>
-          <td class="px-6 py-4">
-            <button onclick="editProduct('${p._id}')" class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 mr-2">
-              Sửa
-            </button>
-            <button onclick="deleteProduct('${p._id}')" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
-              Xóa
-            </button>
-          </td>
-        </tr>
+    
+    function displayProducts() {
+      const grid = document.getElementById('productsGrid');
+      if (!products.length) { grid.innerHTML = '<p class="col-span-full text-center py-8 text-slate-400">Chưa có sản phẩm</p>'; return; }
+      const catMap = { drinks: '🥤 Đồ uống', equipment: '⚽ Thiết bị', accessories: '🎽 Phụ kiện' };
+      grid.innerHTML = products.map(p => `
+        <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition">
+          <div class="h-32 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-4xl">${p.category === 'drinks' ? '🥤' : p.category === 'equipment' ? '⚽' : '🎽'}</div>
+          <div class="p-4">
+            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">${catMap[p.category] || p.category}</span>
+            <h3 class="font-bold text-slate-800 mt-2">${p.name}</h3>
+            <p class="text-green-600 font-bold">${p.price.toLocaleString()}đ</p>
+            <p class="text-sm ${p.stock < 10 ? 'text-red-500' : 'text-slate-500'}">Tồn kho: ${p.stock}</p>
+            <div class="flex gap-2 mt-3">
+              <button onclick="editProduct('${p._id}')" class="flex-1 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200">✏️ Sửa</button>
+              <button onclick="deleteProduct('${p._id}')" class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200">🗑️</button>
+            </div>
+            <div class="flex gap-2 mt-2">
+              <button onclick="updateStock('${p._id}', 'add')" class="flex-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">+ Nhập</button>
+              <button onclick="updateStock('${p._id}', 'subtract')" class="flex-1 px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs font-medium">- Xuất</button>
+            </div>
+          </div>
+        </div>
       `).join('');
     }
-
-    function updateStats() {
-      document.getElementById('totalProducts').textContent = products.length;
-      document.getElementById('lowStock').textContent = products.filter(p => p.stock < 10).length;
-      
-      const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock), 0);
-      document.getElementById('totalValue').textContent = totalValue.toLocaleString() + 'đ';
-      
-      const monthSales = products.reduce((sum, p) => sum + (p.price * p.sold), 0);
-      document.getElementById('monthSales').textContent = monthSales.toLocaleString() + 'đ';
-    }
-
-    function openAddModal() {
-      editingId = null;
-      document.getElementById('modalTitle').textContent = 'Thêm sản phẩm';
-      document.getElementById('productForm').reset();
-      document.getElementById('productModal').classList.remove('hidden');
-    }
-
-    function editProduct(id) {
-      const product = products.find(p => p._id === id);
-      if (!product) return;
-      
-      editingId = id;
-      document.getElementById('modalTitle').textContent = 'Sửa sản phẩm';
-      document.getElementById('productName').value = product.name;
-      document.getElementById('productCategory').value = product.category;
-      document.getElementById('productPrice').value = product.price;
-      document.getElementById('productStock').value = product.stock;
-      document.getElementById('productModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('productModal').classList.add('hidden');
-    }
-
-    async function deleteProduct(id) {
-      if (!confirm('Xác nhận xóa sản phẩm?')) return;
-      
-      try {
-        const response = await fetch(`http://localhost:3000/api/inventory/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        if (response.ok) {
-          alert('Đã xóa sản phẩm!');
-          loadInventory();
-        } else {
-          alert('Lỗi khi xóa sản phẩm');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Lỗi kết nối server');
-      }
-    }
-
+    
     document.getElementById('productForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      const data = {
-        name: document.getElementById('productName').value,
-        category: document.getElementById('productCategory').value,
-        price: parseInt(document.getElementById('productPrice').value),
-        stock: parseInt(document.getElementById('productStock').value)
-      };
-
+      const id = document.getElementById('productId').value;
+      const data = { name: document.getElementById('productName').value, category: document.getElementById('productCategory').value, price: parseInt(document.getElementById('productPrice').value), stock: parseInt(document.getElementById('productStock').value) };
       try {
-        let response;
-        if (editingId) {
-          response = await fetch(`http://localhost:3000/api/inventory/${editingId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-          });
+        if (id) {
+          await fetch(`${API_URL}/inventory/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(data) });
         } else {
-          response = await fetch('http://localhost:3000/api/inventory', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-          });
+          await fetch(`${API_URL}/inventory`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(data) });
         }
-
-        if (response.ok) {
-          alert('Đã lưu sản phẩm!');
-          closeModal();
-          loadInventory();
-        } else {
-          alert('Lỗi khi lưu sản phẩm');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Lỗi kết nối server');
-      }
+        closeModal(); loadProducts();
+      } catch (e) { alert('Lỗi'); }
     });
-
-    loadInventory();
+    
+    function editProduct(id) {
+      const p = products.find(x => x._id === id);
+      if (!p) return;
+      document.getElementById('productId').value = p._id;
+      document.getElementById('productName').value = p.name;
+      document.getElementById('productCategory').value = p.category;
+      document.getElementById('productPrice').value = p.price;
+      document.getElementById('productStock').value = p.stock;
+      document.querySelector('#productModal h3').textContent = 'Sửa sản phẩm';
+      openModal();
+    }
+    
+    async function deleteProduct(id) {
+      if (!confirm('Xóa sản phẩm này?')) return;
+      try {
+        await fetch(`${API_URL}/inventory/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        loadProducts();
+      } catch (e) { alert('Lỗi'); }
+    }
+    
+    async function updateStock(id, type) {
+      const quantity = parseInt(prompt(`Nhập số lượng ${type === 'add' ? 'nhập' : 'xuất'}:`));
+      if (!quantity || quantity <= 0) return;
+      try {
+        const res = await fetch(`${API_URL}/inventory/${id}/stock`, { 
+          method: 'PATCH', 
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, 
+          body: JSON.stringify({ quantity, type }) 
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          alert(err.message);
+          return;
+        }
+        loadProducts();
+      } catch (e) { alert('Lỗi'); }
+    }
+    
+    loadProducts();
   </script>
 </body>
 </html>

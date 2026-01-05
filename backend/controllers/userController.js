@@ -82,3 +82,34 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Admin: Create user (staff/admin)
+exports.createUser = async (req, res) => {
+  try {
+    const { name, email, password, phone, role } = req.body;
+    
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'Email đã được sử dụng' });
+    }
+    
+    const user = await User.create({
+      name,
+      email,
+      password,
+      phone,
+      role: role || 'staff'
+    });
+    
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      createdAt: user.createdAt
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
