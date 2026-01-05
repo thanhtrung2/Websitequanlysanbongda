@@ -4,7 +4,7 @@
  */
 
 // Địa chỉ API backend
-const API_URL = 'http://localhost:3000/api';
+var API_URL = 'http://localhost:3000/api';
 
 /**
  * Kiểm tra người dùng đã đăng nhập chưa
@@ -48,7 +48,7 @@ function logout() {
 
 /**
  * Cập nhật thanh điều hướng dựa trên trạng thái đăng nhập
- * - Nếu đã đăng nhập: Hiển thị avatar, tên, chuông thông báo, nút đăng xuất
+ * - Nếu đã đăng nhập: Hiển thị avatar, tên, nút đăng xuất
  * - Nếu chưa đăng nhập: Hiển thị nút đăng nhập
  */
 function updateNavigation() {
@@ -57,8 +57,32 @@ function updateNavigation() {
 
   if (checkAuth()) {
     const user = getUser();
+    if (!user || !user.name) {
+      // Nếu user không hợp lệ, xóa và hiển thị nút đăng nhập
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      const loginPath = window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
+      userMenu.innerHTML = `
+        <a href="${loginPath}" class="bg-white text-green-600 px-6 py-2 rounded-full hover:bg-yellow-300 hover:text-green-800 transition font-semibold shadow-lg">
+          Đăng nhập
+        </a>
+      `;
+      return;
+    }
+    
     const profilePath = window.location.pathname.includes('/pages/') ? 'profile.html' : 'pages/profile.html';
-    const initial = user.name.charAt(0).toUpperCase(); // Lấy chữ cái đầu của tên
+    const notifPath = window.location.pathname.includes('/pages/') ? 'notifications.html' : 'pages/notifications.html';
+    const adminPath = window.location.pathname.includes('/pages/') ? '../admin/index.html' : 'admin/index.html';
+    const initial = user.name.charAt(0).toUpperCase();
+    
+    // Kiểm tra nếu là admin hoặc staff thì hiển thị nút quản lý
+    const isAdminOrStaff = user.role === 'admin' || user.role === 'staff';
+    const adminButton = isAdminOrStaff ? `
+      <a href="${adminPath}" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition text-sm font-medium text-white flex items-center gap-1" title="${user.role === 'admin' ? 'Trang Admin' : 'Trang Nhân viên'}">
+        ${user.role === 'admin' ? '👑' : '📋'} Quản lý
+      </a>
+    ` : '';
+    
     userMenu.innerHTML = `
       <div class="flex items-center gap-3">
         <!-- Chuông thông báo -->
@@ -74,57 +98,60 @@ function updateNavigation() {
               <button onclick="markAllNotificationsRead()" class="text-xs hover:underline">Đánh dấu đã đọc</button>
             </div>
             <div id="notificationList" class="max-h-80 overflow-y-auto">
-              <p class="p-4 text-gray-500 text-center">Đang tải...</p>
+              <p class="p-4 text-gray-500 text-center">Không có thông báo</p>
             </div>
-            <a href="${window.location.pathname.includes('/pages/') ? 'notifications.html' : 'pages/notifications.html'}" class="block text-center py-3 bg-gray-50 text-green-600 font-semibold hover:bg-gray-100 transition">
+            <a href="${notifPath}" class="block text-center py-3 bg-gray-50 text-green-600 font-semibold hover:bg-gray-100 transition">
               Xem tất cả
             </a>
           </div>
         </div>
         
+        ${adminButton}
+        
         <!-- Avatar và tên người dùng -->
-        <a href="${profilePath}" class="flex items-center gap-2 hover:bg-green-700 px-3 py-2 rounded transition" title="Xem profile">
-          <div class="w-8 h-8 bg-white text-green-600 rounded-full flex items-center justify-center font-bold">
+        <a href="${profilePath}" class="flex items-center gap-2 hover:bg-green-700 px-3 py-2 rounded-lg transition" title="Xem profile">
+          <div class="w-8 h-8 bg-white text-green-600 rounded-full flex items-center justify-center font-bold text-sm">
             ${initial}
           </div>
-          <span class="text-sm font-semibold">${user.name}</span>
+          <span class="text-sm font-semibold hidden sm:inline">${user.name}</span>
         </a>
         
         <!-- Nút đăng xuất -->
-        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded transition text-sm">
+        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition text-sm font-medium">
           Đăng xuất
         </button>
       </div>
     `;
     
-    // Tải danh sách thông báo
+    // Load thông báo
     loadNotifications();
   } else {
-    // Chưa đăng nhập - hiển thị nút đăng nhập
+    // Chưa đăng nhập - hiển thị nút đăng nhập và đăng ký
     const loginPath = window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
+    const registerPath = window.location.pathname.includes('/pages/') ? 'register.html' : 'pages/register.html';
     userMenu.innerHTML = `
-      <a href="${loginPath}" class="bg-white text-green-600 px-6 py-2 rounded-full hover:bg-yellow-300 hover:text-green-800 transition font-semibold shadow-lg">
-        Đăng nhập
-      </a>
+      <div class="flex items-center gap-2">
+        <a href="${loginPath}" class="bg-white text-green-600 px-5 py-2 rounded-lg hover:bg-green-50 transition font-semibold text-sm">
+          Đăng nhập
+        </a>
+        <a href="${registerPath}" class="bg-yellow-400 text-green-800 px-5 py-2 rounded-lg hover:bg-yellow-300 transition font-semibold text-sm hidden sm:inline-block">
+          Đăng ký
+        </a>
+      </div>
     `;
   }
 }
 
 // ========== CÁC HÀM XỬ LÝ THÔNG BÁO ==========
 
-let notificationDropdownOpen = false; // Trạng thái dropdown thông báo
+let notificationDropdownOpen = false;
 
-/**
- * Bật/tắt dropdown thông báo
- */
 function toggleNotificationDropdown() {
   const dropdown = document.getElementById('notificationDropdown');
+  if (!dropdown) return;
   notificationDropdownOpen = !notificationDropdownOpen;
   dropdown.classList.toggle('hidden', !notificationDropdownOpen);
-  
-  if (notificationDropdownOpen) {
-    loadNotifications(); // Tải lại thông báo khi mở
-  }
+  if (notificationDropdownOpen) loadNotifications();
 }
 
 // Đóng dropdown khi click ra ngoài
@@ -139,22 +166,15 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/**
- * Tải danh sách thông báo từ server
- */
 async function loadNotifications() {
   if (!checkAuth()) return;
-  
   try {
     const response = await fetch(`${API_URL}/notifications?limit=10`, {
       headers: { 'Authorization': `Bearer ${getToken()}` }
     });
-    
     if (!response.ok) return;
-    
     const data = await response.json();
     
-    // Cập nhật badge số thông báo chưa đọc
     const badge = document.getElementById('notificationBadge');
     if (badge) {
       if (data.unreadCount > 0) {
@@ -165,25 +185,16 @@ async function loadNotifications() {
       }
     }
     
-    // Cập nhật danh sách thông báo
     const list = document.getElementById('notificationList');
     if (list) {
-      if (data.notifications.length === 0) {
+      if (!data.notifications || data.notifications.length === 0) {
         list.innerHTML = '<p class="p-4 text-gray-500 text-center">Không có thông báo</p>';
       } else {
         list.innerHTML = data.notifications.map(n => `
           <div class="p-3 border-b hover:bg-gray-50 cursor-pointer ${n.isRead ? '' : 'bg-blue-50'}" onclick="openNotification('${n._id}', '${n.link || ''}')">
-            <div class="flex gap-3">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl ${getNotificationIconBg(n.type)}">
-                ${getNotificationIcon(n.type)}
-              </div>
-              <div class="flex-1">
-                <p class="font-semibold text-sm text-gray-800">${n.title}</p>
-                <p class="text-xs text-gray-600 line-clamp-2">${n.message}</p>
-                <p class="text-xs text-gray-400 mt-1">${formatTimeAgo(n.createdAt)}</p>
-              </div>
-              ${!n.isRead ? '<div class="w-2 h-2 bg-blue-500 rounded-full"></div>' : ''}
-            </div>
+            <p class="font-semibold text-sm text-gray-800">${n.title}</p>
+            <p class="text-xs text-gray-600">${n.message}</p>
+            <p class="text-xs text-gray-400 mt-1">${new Date(n.createdAt).toLocaleDateString('vi-VN')}</p>
           </div>
         `).join('');
       }
@@ -193,74 +204,17 @@ async function loadNotifications() {
   }
 }
 
-/**
- * Lấy icon cho từng loại thông báo
- */
-function getNotificationIcon(type) {
-  const icons = {
-    comment: '💬',   // Bình luận
-    like: '❤️',      // Thích
-    interest: '🙋',  // Quan tâm
-    booking: '📅',   // Đặt sân
-    system: '📢',    // Hệ thống
-    warning: '⚠️'    // Cảnh báo
-  };
-  return icons[type] || '🔔';
-}
-
-/**
- * Lấy màu nền cho icon thông báo
- */
-function getNotificationIconBg(type) {
-  const colors = {
-    comment: 'bg-blue-100',
-    like: 'bg-red-100',
-    interest: 'bg-green-100',
-    booking: 'bg-purple-100',
-    system: 'bg-yellow-100',
-    warning: 'bg-orange-100'
-  };
-  return colors[type] || 'bg-gray-100';
-}
-
-/**
- * Chuyển đổi thời gian thành dạng "X phút trước", "X giờ trước"...
- */
-function formatTimeAgo(dateStr) {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diff = Math.floor((now - date) / 1000); // Số giây chênh lệch
-  
-  if (diff < 60) return 'Vừa xong';
-  if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)} ngày trước`;
-  return date.toLocaleDateString('vi-VN');
-}
-
-/**
- * Mở thông báo - đánh dấu đã đọc và chuyển đến link
- */
 async function openNotification(id, link) {
-  // Đánh dấu đã đọc
   try {
     await fetch(`${API_URL}/notifications/${id}/read`, {
       method: 'PATCH',
       headers: { 'Authorization': `Bearer ${getToken()}` }
     });
   } catch (e) {}
-  
-  // Chuyển đến link nếu có
-  if (link) {
-    window.location.href = link;
-  } else {
-    loadNotifications(); // Tải lại danh sách
-  }
+  if (link) window.location.href = link;
+  else loadNotifications();
 }
 
-/**
- * Đánh dấu tất cả thông báo đã đọc
- */
 async function markAllNotificationsRead() {
   try {
     await fetch(`${API_URL}/notifications/read-all`, {
@@ -294,31 +248,48 @@ function updateMobileUserMenu() {
   if (!mobileUserMenu) return;
   
   const isInPages = window.location.pathname.includes('/pages/');
-  const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/');
-  const notifPath = isInPages ? 'notifications.html' : 'pages/notifications.html';
   const profilePath = isInPages ? 'profile.html' : 'pages/profile.html';
   const loginPath = isInPages ? 'login.html' : 'pages/login.html';
-  
-  // Style khác nhau cho trang index (nền trắng) và các trang khác (nền xanh)
-  const textClass = (isIndexPage && !isInPages) ? 'text-gray-600 hover:text-green-600' : 'text-white/80 hover:text-white';
-  const btnClass = (isIndexPage && !isInPages) ? 'bg-green-600 text-white' : 'bg-white text-green-600';
+  const registerPath = isInPages ? 'register.html' : 'pages/register.html';
+  const adminPath = isInPages ? '../admin/index.html' : 'admin/index.html';
   
   if (checkAuth()) {
     const user = getUser();
-    mobileUserMenu.innerHTML = `
-      <a href="${notifPath}" class="${textClass} transition flex items-center gap-2">
-        🔔 Thông báo
-        <span id="mobileNotifBadge" class="hidden bg-red-500 text-white text-xs px-2 py-0.5 rounded-full"></span>
+    if (!user || !user.name) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      mobileUserMenu.innerHTML = `
+        <a href="${loginPath}" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-center block">
+          Đăng nhập
+        </a>
+      `;
+      return;
+    }
+    
+    // Kiểm tra nếu là admin hoặc staff thì hiển thị nút quản lý
+    const isAdminOrStaff = user.role === 'admin' || user.role === 'staff';
+    const adminButton = isAdminOrStaff ? `
+      <a href="${adminPath}" class="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold text-center block">
+        ${user.role === 'admin' ? '👑 Trang Admin' : '📋 Trang Nhân viên'}
       </a>
-      <a href="${profilePath}" class="${textClass} transition">👤 ${user.name}</a>
+    ` : '';
+    
+    mobileUserMenu.innerHTML = `
+      <a href="${profilePath}" class="text-gray-600 hover:text-green-600 transition flex items-center gap-2">
+        👤 ${user.name}
+      </a>
+      ${adminButton}
       <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition text-left w-full">
         🚪 Đăng xuất
       </button>
     `;
   } else {
     mobileUserMenu.innerHTML = `
-      <a href="${loginPath}" class="${btnClass} px-4 py-2 rounded-lg font-semibold text-center block">
+      <a href="${loginPath}" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-center block">
         Đăng nhập
+      </a>
+      <a href="${registerPath}" class="bg-yellow-400 text-green-800 px-4 py-2 rounded-lg font-semibold text-center block">
+        Đăng ký
       </a>
     `;
   }

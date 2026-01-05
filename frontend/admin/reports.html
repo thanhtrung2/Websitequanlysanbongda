@@ -16,68 +16,43 @@
 </head>
 <body class="bg-slate-50">
   <div class="flex h-screen">
-    <aside class="w-64 bg-gradient-to-b from-slate-800 to-slate-900 text-white flex flex-col flex-shrink-0">
-      <div class="p-5 border-b border-white/10">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl">⚽</div>
-          <div><h1 class="font-bold text-lg">Thành Trung M10</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
-        </div>
-      </div>
-      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-        <a href="index.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📊</span> Dashboard</a>
-        <a href="fields.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>⚽</span> Quản lý sân</a>
-        <a href="bookings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📅</span> Lịch đặt sân</a>
-        <a href="customers.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👥</span> Khách hàng</a>
-        <a href="community.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🏆</span> Cộng đồng</a>
-        <div class="pt-2 mt-2 border-t border-white/10"><p class="px-4 py-2 text-xs text-slate-500 uppercase">Quản lý</p></div>
-        <a href="revenue.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>💰</span> Tài chính</a>
-        <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>📦</span> Kho hàng</a>
-        <a href="promotions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>🎁</span> Khuyến mãi</a>
-        <a href="staff.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300"><span>👔</span> Nhân viên</a>
-        <a href="reports.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><span>📈</span> Báo cáo</a>
-      </nav>
-      <div class="p-3 border-t border-white/10">
-        <a href="../index.html" class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-slate-400"><span>🏠</span> Về trang chủ</a>
-        <button onclick="logout()" class="w-full sidebar-link flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/20"><span>🚪</span> Đăng xuất</button>
-      </div>
-    </aside>
+    <!-- Sidebar - Dynamic -->
+    <div id="admin-sidebar"></div>
 
     <main class="flex-1 overflow-y-auto">
-      <header class="glass sticky top-0 z-10 border-b border-slate-200">
-        <div class="flex justify-between items-center px-6 py-4">
-          <div><h2 class="text-xl font-bold text-slate-800">Báo cáo & Thống kê</h2><p class="text-sm text-slate-500">Phân tích hoạt động kinh doanh</p></div>
-          <div class="flex items-center gap-3">
-            <select id="filterType" onchange="changeFilterType()" class="px-4 py-2 border-2 border-slate-200 rounded-xl text-sm font-medium focus:border-green-500">
-              <option value="all">Tất cả</option>
-              <option value="day">Theo ngày</option>
-              <option value="month">Theo tháng</option>
-              <option value="year">Theo năm</option>
-              <option value="range">Khoảng thời gian</option>
-            </select>
-            <div id="dayFilter" class="hidden">
-              <input type="date" id="filterDay" onchange="loadReports()" class="px-4 py-2 border-2 border-slate-200 rounded-xl text-sm">
-            </div>
-            <div id="monthFilter" class="hidden flex gap-2">
-              <select id="filterMonth" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm">
-                <option value="1">Tháng 1</option><option value="2">Tháng 2</option><option value="3">Tháng 3</option>
-                <option value="4">Tháng 4</option><option value="5">Tháng 5</option><option value="6">Tháng 6</option>
-                <option value="7">Tháng 7</option><option value="8">Tháng 8</option><option value="9">Tháng 9</option>
-                <option value="10">Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
-              </select>
-              <select id="filterMonthYear" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm"></select>
-            </div>
-            <div id="yearFilter" class="hidden">
-              <select id="filterYear" onchange="loadReports()" class="px-4 py-2 border-2 border-slate-200 rounded-xl text-sm"></select>
-            </div>
-            <div id="rangeFilter" class="hidden flex gap-2">
-              <input type="date" id="filterFrom" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm">
-              <span class="text-slate-400 self-center">→</span>
-              <input type="date" id="filterTo" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm">
-            </div>
-            <button onclick="exportReport()" class="px-4 py-2 bg-green-100 text-green-700 rounded-xl text-sm font-medium hover:bg-green-200">📥 Xuất báo cáo</button>
-          </div>
+      <!-- Header - Dynamic -->
+      <div id="admin-header"></div>
+      
+      <div class="flex justify-end items-center gap-3 px-6 pt-4">
+        <select id="filterType" onchange="changeFilterType()" class="px-4 py-2 border-2 border-slate-200 rounded-xl text-sm font-medium focus:border-green-500">
+          <option value="all">Tất cả</option>
+          <option value="day">Theo ngày</option>
+          <option value="month">Theo tháng</option>
+          <option value="year">Theo năm</option>
+          <option value="range">Khoảng thời gian</option>
+        </select>
+        <div id="dayFilter" class="hidden">
+          <input type="date" id="filterDay" onchange="loadReports()" class="px-4 py-2 border-2 border-slate-200 rounded-xl text-sm">
         </div>
-      </header>
+        <div id="monthFilter" class="hidden flex gap-2">
+          <select id="filterMonth" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm">
+            <option value="1">Tháng 1</option><option value="2">Tháng 2</option><option value="3">Tháng 3</option>
+            <option value="4">Tháng 4</option><option value="5">Tháng 5</option><option value="6">Tháng 6</option>
+            <option value="7">Tháng 7</option><option value="8">Tháng 8</option><option value="9">Tháng 9</option>
+            <option value="10">Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+          </select>
+          <select id="filterMonthYear" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm"></select>
+        </div>
+        <div id="yearFilter" class="hidden">
+          <select id="filterYear" onchange="loadReports()" class="px-4 py-2 border-2 border-slate-200 rounded-xl text-sm"></select>
+        </div>
+        <div id="rangeFilter" class="hidden flex gap-2">
+          <input type="date" id="filterFrom" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm">
+          <span class="text-slate-400 self-center">→</span>
+          <input type="date" id="filterTo" onchange="loadReports()" class="px-3 py-2 border-2 border-slate-200 rounded-xl text-sm">
+        </div>
+        <button onclick="exportReport()" class="px-4 py-2 bg-green-100 text-green-700 rounded-xl text-sm font-medium hover:bg-green-200">📥 Xuất báo cáo</button>
+      </div>
       <div class="p-6">
         <div class="grid grid-cols-4 gap-4 mb-6">
           <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-5 text-white">
@@ -313,8 +288,20 @@ TỔNG QUAN:
       a.click();
     }
     
-    initFilters();
-    loadReports();
+    // Kiểm tra quyền - chỉ admin mới được truy cập
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!token || user.role !== 'admin') {
+      alert('Chỉ Admin mới có quyền truy cập trang Báo cáo!');
+      window.location.href = 'index.html';
+    } else {
+      initFilters();
+      loadReports();
+    }
+  </script>
+  <script src="components/sidebar.js"></script>
+  <script>
+    renderAdminSidebar('reports');
+    renderAdminHeader('Báo cáo & Thống kê', 'Phân tích hoạt động kinh doanh');
   </script>
 </body>
 </html>

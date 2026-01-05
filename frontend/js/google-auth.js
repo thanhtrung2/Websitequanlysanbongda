@@ -2,7 +2,8 @@
 // ⚠️ QUAN TRỌNG: Thay YOUR_GOOGLE_CLIENT_ID bằng Client ID thật từ Google Cloud Console
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
 
-const API_URL = 'http://localhost:3000/api';
+// Sử dụng API_URL từ auth.js nếu đã có, nếu không thì khai báo mới
+const GOOGLE_API_URL = typeof API_URL !== 'undefined' ? API_URL : 'http://localhost:3000/api';
 
 // Khởi tạo Google Sign-In
 function initGoogleSignIn() {

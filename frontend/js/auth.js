@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:3000/api';
+// Sử dụng API_URL từ main.js nếu đã có
+if (typeof API_URL === 'undefined') {
+  var API_URL = 'http://localhost:3000/api';
+}
 
 // Show notification
 function showNotification(message, type = 'success') {
@@ -42,7 +45,7 @@ if (loginForm) {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('user', JSON.stringify(data.user));
         showNotification('Đăng nhập thành công! Đang chuyển hướng...', 'success');
         setTimeout(() => {
           window.location.href = '../index.html';

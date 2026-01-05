@@ -53,19 +53,35 @@ exports.getUserById = async (req, res) => {
 // Admin: Update user
 exports.updateUser = async (req, res) => {
   try {
-    const { name, email, phone, role } = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { name, email, phone, role },
-      { new: true, runValidators: true }
-    ).select('-password');
+    const { name, email, phone, role, password } = req.body;
     
+    // Tìm user
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng' });
     }
     
-    res.json(user);
+    // Cập nhật thông tin cơ bản
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone !== undefined) user.phone = phone;
+    if (role) user.role = role;
+    
+    // Cập nhật mật khẩu nếu có - đánh dấu modified để trigger pre-save hook
+    if (password && password.trim().length > 0) {
+      user.password = password.trim();
+      user.markModified('password');
+    }
+    
+    await user.save();
+    
+    // Trả về user không có password
+    const updatedUser = user.toObject();
+    delete updatedUser.password;
+    
+    res.json(updatedUser);
   } catch (error) {
+    console.error('Update user error:', error);
     res.status(500).json({ message: error.message });
   }
 };

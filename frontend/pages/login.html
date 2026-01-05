@@ -6,7 +6,6 @@
   <title>Đăng nhập - Thành Trung M10</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -67,19 +66,6 @@
     <!-- Alert -->
     <div id="alert" class="hidden mb-4 p-4 rounded-xl"></div>
 
-    <!-- Google Login Button -->
-    <div id="googleBtn" class="mb-4 flex justify-center"></div>
-    
-    <!-- Divider -->
-    <div class="relative my-6">
-      <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-gray-200"></div>
-      </div>
-      <div class="relative flex justify-center">
-        <span class="px-4 bg-white text-gray-400 text-sm rounded-full">hoặc</span>
-      </div>
-    </div>
-
     <!-- Form -->
     <form id="loginForm" class="space-y-5">
       <div>
@@ -134,7 +120,6 @@
   </div>
 
   <script src="../js/auth.js"></script>
-  <script src="../js/google-auth.js"></script>
   <script>
     function togglePassword() {
       const passwordInput = document.getElementById('password');
@@ -148,5 +133,5 @@
       }
     }
   </script>
-  <!-- Footer -->`n  <div id="footer"></div>`n</body>
+</body>
 </html>

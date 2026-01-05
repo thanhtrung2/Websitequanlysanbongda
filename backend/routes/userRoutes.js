@@ -16,8 +16,10 @@ const router = express.Router();
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
 
-// Admin routes
-router.get('/', protect, authorize('admin'), getAllUsers);
+// Admin & Staff routes - xem danh sách users
+router.get('/', protect, authorize('admin', 'staff'), getAllUsers);
+
+// Admin only routes
 router.post('/', protect, authorize('admin'), createUser);
 router.get('/:id', protect, authorize('admin'), getUserById);
 router.put('/:id', protect, authorize('admin'), updateUser);

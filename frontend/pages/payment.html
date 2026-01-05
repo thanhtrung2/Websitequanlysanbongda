@@ -122,7 +122,7 @@
 
           <div class="space-y-4" id="paymentMethods">
             <!-- Momo -->
-            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('momo')">
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('momo', this)">
               <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-pink-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
                   M
@@ -137,7 +137,7 @@
             </div>
 
             <!-- ZaloPay -->
-            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('zalopay')">
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('zalopay', this)">
               <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
                   Z
@@ -152,7 +152,7 @@
             </div>
 
             <!-- VNPay -->
-            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('vnpay')">
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('vnpay', this)">
               <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-red-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
                   VN
@@ -167,7 +167,7 @@
             </div>
 
             <!-- Bank Transfer -->
-            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('bank')">
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('bank', this)">
               <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-green-600 rounded-xl flex items-center justify-center text-white text-2xl">
                   🏦
@@ -182,7 +182,7 @@
             </div>
 
             <!-- Cash -->
-            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('cash')">
+            <div class="payment-method border-2 border-gray-200 rounded-xl p-4 cursor-pointer" onclick="selectPayment('cash', this)">
               <div class="flex items-center gap-4">
                 <div class="w-14 h-14 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-2xl">
                   💵
@@ -479,7 +479,7 @@
     startCountdown();
 
     // Select payment method
-    function selectPayment(method) {
+    function selectPayment(method, element) {
       selectedPayment = method;
       
       // Reset all
@@ -493,7 +493,7 @@
       });
 
       // Select current
-      event.currentTarget.classList.add('selected');
+      element.classList.add('selected');
       const radio = document.getElementById(`radio-${method}`);
       radio.innerHTML = '<div class="w-3 h-3 bg-green-500 rounded-full"></div>';
       radio.classList.remove('border-gray-300');
@@ -672,7 +672,7 @@
         </head>
         <body class="bg-white p-8 max-w-2xl mx-auto">
           ${invoiceContent}
-          <!-- Footer -->`n  <div id="footer"></div>`n</body>
+        </body>
         </html>
       `);
       printWindow.document.close();

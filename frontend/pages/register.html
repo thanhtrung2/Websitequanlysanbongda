@@ -6,7 +6,6 @@
   <title>Đăng ký - Thành Trung M10</title>
   <link rel="stylesheet" href="../css/tailwind-fallback.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -33,7 +32,7 @@
     }
   </style>
 </head>
-<body class="gradient-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4 relative overflow-x-hidden overflow-y-auto">
   <!-- Background decorations -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
     <div class="absolute top-10 right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
@@ -62,19 +61,6 @@
 
     <!-- Alert -->
     <div id="alert" class="hidden mb-4 p-4 rounded-xl"></div>
-
-    <!-- Google Login Button -->
-    <div id="googleBtn" class="mb-4 flex justify-center"></div>
-    
-    <!-- Divider -->
-    <div class="relative my-5">
-      <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-gray-200"></div>
-      </div>
-      <div class="relative flex justify-center">
-        <span class="px-4 bg-white text-gray-400 text-sm rounded-full">hoặc</span>
-      </div>
-    </div>
 
     <!-- Form -->
     <form id="registerForm" class="space-y-4">
@@ -109,18 +95,171 @@
         <div class="relative">
           <input type="password" id="password" required placeholder="Tối thiểu 6 ký tự"
             class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300 input-focus pr-12">
-          <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+          <button type="button" onclick="togglePassword('password', 'eyeIcon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
             <span id="eyeIcon">👁️</span>
           </button>
         </div>
       </div>
 
+      <div>
+        <label class="block text-gray-700 font-medium mb-2 flex items-center gap-2">
+          <span>🔐</span> Nhập lại mật khẩu
+        </label>
+        <div class="relative">
+          <input type="password" id="confirmPassword" required placeholder="Nhập lại mật khẩu"
+            class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all duration-300 input-focus pr-12">
+          <button type="button" onclick="togglePassword('confirmPassword', 'eyeIcon2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+            <span id="eyeIcon2">👁️</span>
+          </button>
+        </div>
+        <p id="passwordMatchError" class="text-red-500 text-sm mt-1 hidden">Mật khẩu không khớp!</p>
+      </div>
+
+      <!-- Điều khoản sử dụng -->
+      <div class="mt-4 space-y-3">
+        <div class="flex items-start gap-3">
+          <input type="checkbox" id="agreeTerms" required
+            class="w-5 h-5 mt-0.5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 cursor-pointer">
+          <label for="agreeTerms" class="text-sm text-gray-600 cursor-pointer">
+            Tôi đã đọc và đồng ý với 
+            <button type="button" onclick="openTermsModal()" class="text-green-600 hover:text-green-700 font-semibold hover:underline">
+              Điều khoản sử dụng
+            </button>
+            và
+            <button type="button" onclick="openPrivacyModal()" class="text-green-600 hover:text-green-700 font-semibold hover:underline">
+              Chính sách bảo mật
+            </button>
+          </label>
+        </div>
+        <div class="flex items-start gap-3">
+          <input type="checkbox" id="agreeMarketing"
+            class="w-5 h-5 mt-0.5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 cursor-pointer">
+          <label for="agreeMarketing" class="text-sm text-gray-500 cursor-pointer">
+            Tôi đồng ý nhận thông tin khuyến mãi qua email và SMS (không bắt buộc)
+          </label>
+        </div>
+      </div>
+
       <button type="submit" id="submitBtn"
-        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-6">
+        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-6 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
         <span>✨</span>
         <span>Tạo tài khoản</span>
       </button>
     </form>
+
+  <!-- Modal Điều khoản sử dụng -->
+  <div id="termsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl">
+      <div class="bg-gradient-to-r from-green-500 to-green-600 p-5 text-white flex justify-between items-center">
+        <h3 class="text-xl font-bold">📜 Điều khoản sử dụng</h3>
+        <button onclick="closeTermsModal()" class="text-white/80 hover:text-white text-2xl">&times;</button>
+      </div>
+      <div class="p-6 overflow-y-auto max-h-[60vh] text-gray-700 space-y-4">
+        <h4 class="font-bold text-green-700">1. Điều khoản chung</h4>
+        <p>Khi sử dụng dịch vụ của Thành Trung M10, bạn đồng ý tuân thủ các điều khoản sau đây. Vui lòng đọc kỹ trước khi đăng ký tài khoản.</p>
+        
+        <h4 class="font-bold text-green-700">2. Tài khoản người dùng</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Bạn phải cung cấp thông tin chính xác và đầy đủ khi đăng ký.</li>
+          <li>Bạn chịu trách nhiệm bảo mật thông tin tài khoản của mình.</li>
+          <li>Mỗi người chỉ được đăng ký một tài khoản duy nhất.</li>
+          <li>Không được chia sẻ tài khoản cho người khác sử dụng.</li>
+        </ul>
+        
+        <h4 class="font-bold text-green-700">3. Quy định đặt sân</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Đặt sân trước ít nhất 2 giờ so với thời gian sử dụng.</li>
+          <li>Hủy đặt sân trước 4 giờ để được hoàn tiền 100%.</li>
+          <li>Hủy trong vòng 2-4 giờ được hoàn 50% phí đặt sân.</li>
+          <li>Hủy dưới 2 giờ sẽ không được hoàn tiền.</li>
+        </ul>
+        
+        <h4 class="font-bold text-green-700">4. Thanh toán</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Chấp nhận thanh toán qua MoMo, ZaloPay, VNPay, chuyển khoản và tiền mặt.</li>
+          <li>Giá sân có thể thay đổi theo khung giờ và ngày lễ.</li>
+          <li>Hóa đơn điện tử sẽ được gửi qua email sau khi thanh toán.</li>
+        </ul>
+        
+        <h4 class="font-bold text-green-700">5. Quy tắc sử dụng sân</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Đến đúng giờ đã đặt, trễ quá 15 phút có thể bị hủy lịch.</li>
+          <li>Giữ gìn vệ sinh và cơ sở vật chất của sân.</li>
+          <li>Không mang đồ ăn, thức uống có cồn vào sân.</li>
+          <li>Tuân thủ nội quy an toàn khi chơi bóng.</li>
+        </ul>
+        
+        <h4 class="font-bold text-green-700">6. Trách nhiệm</h4>
+        <p>Thành Trung M10 không chịu trách nhiệm về các chấn thương xảy ra trong quá trình sử dụng sân. Người chơi tự chịu trách nhiệm về sức khỏe và an toàn của bản thân.</p>
+        
+        <h4 class="font-bold text-green-700">7. Thay đổi điều khoản</h4>
+        <p>Chúng tôi có quyền thay đổi điều khoản bất cứ lúc nào. Thay đổi sẽ được thông báo qua email hoặc trên website.</p>
+      </div>
+      <div class="p-4 bg-gray-50 border-t flex justify-end">
+        <button onclick="closeTermsModal()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
+          Đã hiểu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Chính sách bảo mật -->
+  <div id="privacyModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl">
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-5 text-white flex justify-between items-center">
+        <h3 class="text-xl font-bold">🔒 Chính sách bảo mật</h3>
+        <button onclick="closePrivacyModal()" class="text-white/80 hover:text-white text-2xl">&times;</button>
+      </div>
+      <div class="p-6 overflow-y-auto max-h-[60vh] text-gray-700 space-y-4">
+        <h4 class="font-bold text-blue-700">1. Thu thập thông tin</h4>
+        <p>Chúng tôi thu thập các thông tin sau khi bạn đăng ký:</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Họ tên, email, số điện thoại</li>
+          <li>Lịch sử đặt sân và giao dịch</li>
+          <li>Thông tin thiết bị và trình duyệt</li>
+        </ul>
+        
+        <h4 class="font-bold text-blue-700">2. Mục đích sử dụng</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Xử lý đơn đặt sân và thanh toán</li>
+          <li>Gửi thông báo về lịch đặt và khuyến mãi</li>
+          <li>Cải thiện chất lượng dịch vụ</li>
+          <li>Hỗ trợ khách hàng khi cần thiết</li>
+        </ul>
+        
+        <h4 class="font-bold text-blue-700">3. Bảo mật thông tin</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Mật khẩu được mã hóa bằng thuật toán bcrypt</li>
+          <li>Dữ liệu truyền tải được bảo vệ bằng SSL/TLS</li>
+          <li>Chỉ nhân viên được ủy quyền mới truy cập dữ liệu</li>
+          <li>Không bán hoặc chia sẻ thông tin cho bên thứ ba</li>
+        </ul>
+        
+        <h4 class="font-bold text-blue-700">4. Quyền của người dùng</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Xem và chỉnh sửa thông tin cá nhân</li>
+          <li>Yêu cầu xóa tài khoản và dữ liệu</li>
+          <li>Từ chối nhận email marketing</li>
+          <li>Khiếu nại về việc xử lý dữ liệu</li>
+        </ul>
+        
+        <h4 class="font-bold text-blue-700">5. Cookie</h4>
+        <p>Website sử dụng cookie để lưu trữ phiên đăng nhập và cải thiện trải nghiệm. Bạn có thể tắt cookie trong cài đặt trình duyệt.</p>
+        
+        <h4 class="font-bold text-blue-700">6. Liên hệ</h4>
+        <p>Nếu có thắc mắc về chính sách bảo mật, vui lòng liên hệ:</p>
+        <ul class="list-disc pl-5">
+          <li>Email: support@thanhtrungm10.com</li>
+          <li>Hotline: 0123 456 789</li>
+        </ul>
+      </div>
+      <div class="p-4 bg-gray-50 border-t flex justify-end">
+        <button onclick="closePrivacyModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+          Đã hiểu
+        </button>
+      </div>
+    </div>
+  </div>
 
     <!-- Benefits -->
     <div class="mt-6 p-4 bg-green-50 rounded-xl">
@@ -145,7 +284,6 @@
   </div>
 
   <script src="../js/auth.js"></script>
-  <script src="../js/google-auth.js"></script>
   <script>
     function togglePassword() {
       const passwordInput = document.getElementById('password');
@@ -158,6 +296,49 @@
         eyeIcon.textContent = '👁️';
       }
     }
+
+    // Modal functions
+    function openTermsModal() {
+      document.getElementById('termsModal').classList.remove('hidden');
+      document.getElementById('termsModal').classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTermsModal() {
+      document.getElementById('termsModal').classList.add('hidden');
+      document.getElementById('termsModal').classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    function openPrivacyModal() {
+      document.getElementById('privacyModal').classList.remove('hidden');
+      document.getElementById('privacyModal').classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePrivacyModal() {
+      document.getElementById('privacyModal').classList.add('hidden');
+      document.getElementById('privacyModal').classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('termsModal').addEventListener('click', function(e) {
+      if (e.target === this) closeTermsModal();
+    });
+    document.getElementById('privacyModal').addEventListener('click', function(e) {
+      if (e.target === this) closePrivacyModal();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeTermsModal();
+        closePrivacyModal();
+      }
+    });
   </script>
-  <!-- Footer -->`n  <div id="footer"></div>`n</body>
+  <!-- Footer -->
+  <div id="footer"></div>
+</body>
 </html>
